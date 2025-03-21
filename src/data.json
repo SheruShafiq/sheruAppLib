@@ -1,58 +1,67 @@
 {
-  "posts": {
-    "1": {
+  "posts": [
+    {
+      "id": 1,
       "title": "Family Guy S12E06",
       "resource": "https://www.dailymotion.com/video/x7xyz12",
       "description": "Found this episode on Dailymotion after it was removed from Hulu in my region (Germany). There's one unskippable ad at the start, but if you use uBlock Origin, it skips the mid-rolls. Also recommend setting quality manually to 720p, auto mode keeps lagging.",
-      "upvotes": 42,
-      "downvotes": 3,
-      "offlineReports": 2,
+      "upvotes": 46,
+      "downvotes": 5,
+      "offlineReports": 3,
       "category": "tv-shows",
-      "comments": {
-        "1": {
+      "comments": [
+        {
+          "id": 1,
           "author": "StewieFan42",
           "text": "Worked great, thanks! Subtitles were auto-generated though.",
-          "replies": {
-            "1": {
+          "replies": [
+            {
+              "id": 1,
               "author": "GriffinWatcher",
               "text": "Yeah, I usually download the SRT from opensubtitles.org and load it with VLC."
             }
-          }
+          ]
         }
-      }
+      ]
     },
-    "2": {
+    {
+      "id": 2,
       "title": "Where to watch Spirited Away legally in the Netherlands?",
       "resource": "https://netflix.com/title/60023642",
       "description": "It's currently available on Dutch Netflix with Dutch and English subtitles. If you’re outside NL, use a Netherlands-based VPN. Windscribe free tier works, but only during non-peak hours.",
       "upvotes": 67,
       "downvotes": 0,
-      "offlineReports": 0,
+      "offlineReports": 2,
       "category": "anime",
-      "comments": {
-        "1": {
+      "comments": [
+        {
+          "id": 1,
           "author": "TotoroFan",
           "text": "Tried Windscribe and it worked! But only on browser, not mobile app.",
-          "replies": {
-            "1": {
+          "replies": [
+            {
+              "id": 1,
               "author": "VPNWizard",
               "text": "Yep, Netflix app has tighter VPN detection. Use desktop browser instead."
             }
-          }
+          ]
         },
-        "2": {
+        {
+          "id": 2,
           "author": "HakaFan",
           "text": "Tried Windscribe and it worked! But only on browser, not mobile app.",
-          "replies": {
-            "1": {
+          "replies": [
+            {
+              "id": 1,
               "author": "VPNWizard",
               "text": "Yep, Netflix app has tighter VPN detection. Use desktop browser instead."
             }
-          }
+          ]
         }
-      }
+      ]
     },
-    "3": {
+    {
+      "id": 3,
       "title": "Free alternative for Interstellar (2014)",
       "resource": "https://www.archive.org/details/interstellar-2014",
       "description": "Someone uploaded it here for archival purposes. Quality is 720p, not perfect, but decent. Beware: Archive.org servers can be slow, so I recommend using a download manager.",
@@ -60,20 +69,23 @@
       "downvotes": 10,
       "offlineReports": 4,
       "category": "movies",
-      "comments": {
-        "1": {
+      "comments": [
+        {
+          "id": 1,
           "author": "SpaceNerd",
           "text": "This looks sketchy. Is it even legal?",
-          "replies": {
-            "1": {
+          "replies": [
+            {
+              "id": 1,
               "author": "EthicalPirate",
               "text": "Definitely falls in a grey area. Use only if you already own a copy."
             }
-          }
+          ]
         }
-      }
+      ]
     },
-    "4": {
+    {
+      "id": 4,
       "title": "Breaking Bad Season 3 full episodes",
       "resource": "https://www.tubitv.com/series/300007260",
       "description": "Tubi has it for free with ads. Works only in the US, so you'll need a US VPN. Ads can’t be skipped but are minimal (15-30 seconds, 3 times per episode).",
@@ -81,15 +93,17 @@
       "downvotes": 2,
       "offlineReports": 0,
       "category": "tv-shows",
-      "comments": {
-        "1": {
+      "comments": [
+        {
+          "id": 1,
           "author": "HeisenbergFan",
           "text": "I used ProtonVPN (free US server) and it worked without buffering!",
-          "replies": {}
+          "replies": []
         }
-      }
+      ]
     },
-    "5": {
+    {
+      "id": 5,
       "title": "Rick and Morty Season 6 in India?",
       "resource": "https://fmovies.to/series/rick-and-morty-2k63/1-6",
       "description": "Not on Netflix India yet. FMovies has it, but prepare for lots of popups. Use Brave browser and block scripts. No subtitles though!",
@@ -97,18 +111,20 @@
       "downvotes": 15,
       "offlineReports": 6,
       "category": "tv-shows",
-      "comments": {
-        "1": {
+      "comments": [
+        {
+          "id": 1,
           "author": "MortifiedRick",
           "text": "The ads were wild. Took me 3 tries to hit the actual play button lol",
-          "replies": {
-            "1": {
+          "replies": [
+            {
+              "id": 1,
               "author": "AdBlockSensei",
               "text": "Enable shields on Brave and block 3rd-party cookies — smooth sailing after that."
             }
-          }
+          ]
         }
-      }
+      ]
     }
-  }
+  ]
 }
