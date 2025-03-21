@@ -25,6 +25,11 @@ function Home() {
           title={posts[key].title}
           resource={posts[key].resource}
           description={posts[key].description}
+          upvotes={posts[key].upvotes}
+          downvotes={posts[key].downvotes}
+          offlineReports={posts[key].offlineReports}
+          category={posts[key].category}
+          commentsCount={Object.keys(posts[key].comments).length}
           key={key}
         />
       ))}
