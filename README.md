@@ -26,4 +26,9 @@ if (Resource === legit) ? upvote : downvote
 
 #### *Will use JSON server till I get to the backend part.*
 ---
+### Things I have learned due to this project
+1) Being able to use two remotes simultaneously to push to.
+---
 Yes. Sauce is inspired from the 6 digit sauce. 
+
+
