@@ -1,0 +1,161 @@
+{
+  "posts": {
+    "1": {
+      "title": "Post 1",
+      "resource": "Resource 1",
+      "description": "Description 1",
+      "upvotes": 10,
+      "downvotes": 2,
+      "offlineReports": 1,
+      "category": "anime",
+      "comments": {
+        "1": {
+          "author": "Author 1",
+          "text": "Comment 1",
+          "replies": {
+            "1": {
+              "author": "Reply Author 1",
+              "text": "Reply 1",
+              "replies": {
+                "1": {
+                  "author": "Reply Author 1.1",
+                  "text": "Reply 1.1"
+                },
+                "2": {
+                  "author": "Reply Author 1.2",
+                  "text": "Reply 1.2"
+                }
+              }
+            },
+            "2": {
+              "author": "Reply Author 2",
+              "text": "Reply 2"
+            }
+          }
+        },
+        "2": {
+          "author": "Author 2",
+          "text": "Comment 2",
+          "replies": {
+            "1": {
+              "author": "Reply Author 3",
+              "text": "Reply 3"
+            }
+          }
+        }
+      }
+    },
+    "2": {
+      "title": "Post 2",
+      "resource": "Resource 2",
+      "description": "Description 2",
+      "upvotes": 25,
+      "downvotes": 5,
+      "offlineReports": 0,
+      "category": "gaming",
+      "comments": {
+        "1": {
+          "author": "GamerGuy",
+          "text": "This game is fire!",
+          "replies": {
+            "1": {
+              "author": "NoobMaster",
+              "text": "I agree",
+              "replies": {
+                "1": {
+                  "author": "ProGamer",
+                  "text": "Same here!"
+                }
+              }
+            }
+          }
+        },
+        "2": {
+          "author": "LagQueen",
+          "text": "Too much lag on mobile :(",
+          "replies": {
+            "1": {
+              "author": "DevTeam",
+              "text": "We're working on it!"
+            }
+          }
+        }
+      }
+    },
+    "3": {
+      "title": "Post 3",
+      "resource": "Resource 3",
+      "description": "Description 3",
+      "upvotes": 5,
+      "downvotes": 8,
+      "offlineReports": 3,
+      "category": "tech",
+      "comments": {
+        "1": {
+          "author": "Coder123",
+          "text": "Can someone explain this?",
+          "replies": {
+            "1": {
+              "author": "TechGuru",
+              "text": "Sure, what part?",
+              "replies": {
+                "1": {
+                  "author": "Coder123",
+                  "text": "The part about memory leaks."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "4": {
+      "title": "Post 4",
+      "resource": "Resource 4",
+      "description": "Description 4",
+      "upvotes": 100,
+      "downvotes": 1,
+      "offlineReports": 0,
+      "category": "movies",
+      "comments": {
+        "1": {
+          "author": "MovieBuff",
+          "text": "Amazing cinematography!",
+          "replies": {
+            "1": {
+              "author": "Critic99",
+              "text": "Bit overrated though"
+            }
+          }
+        },
+        "2": {
+          "author": "IndieFan",
+          "text": "Soundtrack was 🔥",
+          "replies": {}
+        }
+      }
+    },
+    "5": {
+      "title": "Post 5",
+      "resource": "Resource 5",
+      "description": "Description 5",
+      "upvotes": 15,
+      "downvotes": 0,
+      "offlineReports": 0,
+      "category": "education",
+      "comments": {
+        "1": {
+          "author": "StudentLife",
+          "text": "This helped me pass my exam!",
+          "replies": {
+            "1": {
+              "author": "TutorTom",
+              "text": "Happy to hear that!",
+              "replies": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}
