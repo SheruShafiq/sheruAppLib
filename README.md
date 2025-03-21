@@ -11,4 +11,19 @@ The application's prominent features are:
 4) Completely anonymouse usage
 5) Non comercial
 ---
+### **Design**
+Product properties
+>Must haves
+1) SHARE DATA (WHAT IS DATA? DATA: {Resource Name, Resource Value, Resource Description})
+2) Data can be evalunted by other users on its legitimacy.
+if (Resource === legit) ? upvote : downvote
+3) Home feed based off of uprotes.
+4) A report button to report inactive resources that were active before
+5) No accounts system. Anyone can make a post without any signup and comment on it as well. Username will be generated automatically and kept track of locally via cookies.
+>Nice to have
+1) Topic based filtering to be able to look up resources with specific assosciations.
+2) Resource requesting.
+
+#### *Will use JSON server till I get to the backend part.*
+---
 Yes. Sauce is inspired from the 6 digit sauce. 
