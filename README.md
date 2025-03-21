@@ -23,6 +23,7 @@ if (Resource === legit) ? upvote : downvote
 >Nice to have
 1) Topic based filtering to be able to look up resources with specific assosciations.
 2) Resource requesting.
+3) Feedbased off "Sauces" where audio based is mustard, more explicit is chili etc
 
 #### *Will use JSON server till I get to the backend part.*
 ---
