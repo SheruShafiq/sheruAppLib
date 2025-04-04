@@ -9,20 +9,19 @@ function Post() {
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
-
-  const fetchPost = async () => {
-    const response = await fetchPostById(id);
-    setPost(response.data);
-    console.log(post);
-  };
   useEffect(() => {
-    fetchPost();
-  }, [id]);
-  useEffect(() => {
-    if (post) {
-      setLoading(false);
-    }
-  }, [post]);
+    fetchPostById(
+      id,
+      (data) => {
+        setPost(data);
+        setLoading(false);
+      },
+      (error) => {
+        setLoading(false);
+        enqueueSnackbar(`Error fetching post ${error}`, { variant: "error" });
+      }
+    );
+  }, [id, enqueueSnackbar]);
 
   if (loading) {
     return <Typography>Loading...</Typography>;

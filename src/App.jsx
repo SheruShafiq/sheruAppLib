@@ -5,7 +5,7 @@ import "./App.css";
 import { SnackbarProvider } from "notistack";
 import { createRef } from "react";
 import CustomSnackbar from "./Components/CustomSnackbar";
-import Post from "./Components/Post";
+import Post from "./Pages/Post";
 function App() {
   const notistackRef = createRef();
 
