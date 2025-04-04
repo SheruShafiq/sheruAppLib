@@ -1,7 +1,7 @@
 {
   "posts": [
     {
-      "id": "1",
+      "id": 1,
       "title": "Family Guy S12E06",
       "resource": "https://www.dailymotion.com/video/x7xyz12",
       "description": "Found this episode on Dailymotion after it was removed from Hulu in my region (Germany). There's one unskippable ad at the start, but if you use uBlock Origin, it skips the mid-rolls. Also recommend setting quality manually to 720p, auto mode keeps lagging.",
@@ -9,122 +9,520 @@
       "downvotes": 5,
       "offlineReports": 3,
       "category": "tv-shows",
-      "comments": [
-        {
-          "id": 1,
-          "author": "StewieFan42",
-          "text": "Worked great, thanks! Subtitles were auto-generated though.",
-          "replies": [
-            {
-              "id": 1,
-              "author": "GriffinWatcher",
-              "text": "Yeah, I usually download the SRT from opensubtitles.org and load it with VLC."
-            }
-          ]
-        }
-      ]
+      "comments": [1, 3, 4]
     },
     {
-      "id": "2",
-      "title": "Where to watch Spirited Away legally in the Netherlands?",
-      "resource": "https://netflix.com/title/60023642",
-      "description": "It's currently available on Dutch Netflix with Dutch and English subtitles. If you’re outside NL, use a Netherlands-based VPN. Windscribe free tier works, but only during non-peak hours.",
-      "upvotes": 67,
-      "downvotes": 0,
-      "offlineReports": 2,
-      "category": "anime",
-      "comments": [
-        {
-          "id": 1,
-          "author": "TotoroFan",
-          "text": "Tried Windscribe and it worked! But only on browser, not mobile app.",
-          "replies": [
-            {
-              "id": 1,
-              "author": "VPNWizard",
-              "text": "Yep, Netflix app has tighter VPN detection. Use desktop browser instead."
-            }
-          ]
-        },
-        {
-          "id": 2,
-          "author": "HakaFan",
-          "text": "Tried Windscribe and it worked! But only on browser, not mobile app.",
-          "replies": [
-            {
-              "id": 1,
-              "author": "VPNWizard",
-              "text": "Yep, Netflix app has tighter VPN detection. Use desktop browser instead."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "3",
-      "title": "Free alternative for Interstellar (2014)",
-      "resource": "https://www.archive.org/details/interstellar-2014",
-      "description": "Someone uploaded it here for archival purposes. Quality is 720p, not perfect, but decent. Beware: Archive.org servers can be slow, so I recommend using a download manager.",
-      "upvotes": 33,
-      "downvotes": 11,
-      "offlineReports": 5,
-      "category": "movies",
-      "comments": [
-        {
-          "id": 1,
-          "author": "SpaceNerd",
-          "text": "This looks sketchy. Is it even legal?",
-          "replies": [
-            {
-              "id": 1,
-              "author": "EthicalPirate",
-              "text": "Definitely falls in a grey area. Use only if you already own a copy."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "4",
-      "title": "Breaking Bad Season 3 full episodes",
-      "resource": "https://www.tubitv.com/series/300007260",
-      "description": "Tubi has it for free with ads. Works only in the US, so you'll need a US VPN. Ads can’t be skipped but are minimal (15-30 seconds, 3 times per episode).",
-      "upvotes": 54,
+      "id": 2,
+      "title": "Breaking Bad S02E01",
+      "resource": "https://archive.org/details/breaking-bad-s02e01",
+      "description": "Surprisingly still up on Archive.org. Not the best quality (480p), but totally watchable. No ads, no login required. Use VLC to skip through slow buffering.",
+      "upvotes": 78,
       "downvotes": 2,
-      "offlineReports": 0,
+      "offlineReports": 1,
       "category": "tv-shows",
-      "comments": [
-        {
-          "id": 1,
-          "author": "HeisenbergFan",
-          "text": "I used ProtonVPN (free US server) and it worked without buffering!",
-          "replies": []
-        }
-      ]
+      "comments": [5, 6]
     },
     {
-      "id": "5",
-      "title": "Rick and Morty Season 6 in India?",
-      "resource": "https://fmovies.to/series/rick-and-morty-2k63/1-6",
-      "description": "Not on Netflix India yet. FMovies has it, but prepare for lots of popups. Use Brave browser and block scripts. No subtitles though!",
-      "upvotes": 75,
+      "id": 3,
+      "title": "Shrek (2001)",
+      "resource": "https://ok.ru/video/123456789",
+      "description": "Full movie available in English on OK.ru. Might require a VPN if you're outside Russia. Some pop-ups at the start—just close them and hit play again. Subtitles available in English and Russian.",
+      "upvotes": 110,
+      "downvotes": 10,
+      "offlineReports": 4,
+      "category": "movies",
+      "comments": [7]
+    },
+    {
+      "id": 4,
+      "title": "Rick and Morty S05E03",
+      "resource": "https://www.bilibili.tv/en/video/20001234",
+      "description": "Bilibili TV still has this ep up. Needs free account, but it worked in the Netherlands without VPN. Subtitles are sometimes out of sync though.",
+      "upvotes": 89,
+      "downvotes": 6,
+      "offlineReports": 2,
+      "category": "tv-shows",
+      "comments": []
+    },
+    {
+      "id": 5,
+      "title": "The Office (US) S04E10",
+      "resource": "https://www.veoh.com/watch/v12345678",
+      "description": "Had to enable Flash via an old browser to get this to work (Veoh is pretty outdated). Use Brave browser for best compatibility. No subtitles, and skips a few seconds in the middle.",
+      "upvotes": 42,
       "downvotes": 15,
+      "offlineReports": 7,
+      "category": "tv-shows",
+      "comments": []
+    },
+    {
+      "id": 6,
+      "title": "Modern Family S01E02",
+      "resource": "https://tubitv.com/movies/67890/modern-family-ep2",
+      "description": "Available for free on Tubi with a VPN set to the US. Three ad breaks, but they’re short. No account needed, and quality is solid at 720p.",
+      "upvotes": 95,
+      "downvotes": 3,
+      "offlineReports": 1,
+      "category": "tv-shows",
+      "comments": []
+    },
+    {
+      "id": 7,
+      "title": "The Shawshank Redemption (1994)",
+      "resource": "https://vimeo.com/1234567890",
+      "description": "Found a surprisingly good quality upload on Vimeo. No ads, but might get taken down soon, so watch it quick! Direct download enabled too.",
+      "upvotes": 156,
+      "downvotes": 8,
+      "offlineReports": 0,
+      "category": "movies",
+      "comments": [8, 9]
+    },
+    {
+      "id": 8,
+      "title": "Avatar (2009) - Cam Rip",
+      "resource": "https://streamtape.com/v/abcdef123456",
+      "description": "Potato quality cam rip from Streamtape. Audio is muffled, and there are watermarks, but it's the only way to watch it in my region without paying. Use headphones to improve audio slightly.",
+      "upvotes": 23,
+      "downvotes": 67,
+      "offlineReports": 15,
+      "category": "movies",
+      "comments": [10]
+    },
+    {
+      "id": 9,
+      "title": "Stranger Things S01E01 - DMCA free mirror",
+      "resource": "https://fmovies.to/watch/stranger-things-12345/123456",
+      "description": "FMovies mirror of the first episode. Works without VPN but expect pop-under ads when clicking. Use an ad-blocker!",
+      "upvotes": 123,
+      "downvotes": 12,
       "offlineReports": 6,
       "category": "tv-shows",
-      "comments": [
-        {
-          "id": 1,
-          "author": "MortifiedRick",
-          "text": "The ads were wild. Took me 3 tries to hit the actual play button lol",
-          "replies": [
-            {
-              "id": 1,
-              "author": "AdBlockSensei",
-              "text": "Enable shields on Brave and block 3rd-party cookies — smooth sailing after that."
-            }
-          ]
-        }
-      ]
+      "comments": []
+    },
+    {
+      "id": 10,
+      "title": "Pulp Fiction (1994)",
+      "resource": "https://www.youtube.com/watch?v=abcdefghijk",
+      "description": "Full movie on YouTube. It's mirrored and sped up slightly to avoid copyright, but it's watchable. Watch before it gets taken down!",
+      "upvotes": 98,
+      "downvotes": 22,
+      "offlineReports": 8,
+      "category": "movies",
+      "comments": [11, 12]
+    },
+    {
+      "id": 11,
+      "title": "The Lion King (1994)",
+      "resource": "https://mega.nz/#!abcdefgh!ABCDEFGHIJKL",
+      "description": "MEGA link to a high quality MKV rip. You'll need a MEGA account to download if the file is too big. Password is 'hakunamatata'.",
+      "upvotes": 201,
+      "downvotes": 3,
+      "offlineReports": 1,
+      "category": "movies",
+      "comments": [13]
+    },
+    {
+      "id": 12,
+      "title": "Seinfeld S09E11 - The Betrayal",
+      "resource": "https://www.bitchute.com/video/abcdefghijkl/",
+      "description": "Seinfeld episode on Bitchute. No ads, but the video is potato quality. Good if you just want the audio or don't care about visuals.",
+      "upvotes": 34,
+      "downvotes": 21,
+      "offlineReports": 9,
+      "category": "tv-shows",
+      "comments": []
+    },
+    {
+      "id": 13,
+      "title": "Interstellar (2014)",
+      "resource": "https://uptobox.com/abcdefghijk1",
+      "description": "Uptobox link for Interstellar. Requires a free account after a download limit. Download speeds can be slow without premium.",
+      "upvotes": 76,
+      "downvotes": 14,
+      "offlineReports": 5,
+      "category": "movies",
+      "comments": []
+    },
+    {
+      "id": 14,
+      "title": "Attack on Titan S04E28",
+      "resource": "https://9anime.to/watch/attack-on-titan-final-season-part-2.292y/ep-1",
+      "description": "Available on 9anime with English subs. Lots of redirects when you click the play button, but eventually it loads. Server #3 is the most reliable.",
+      "upvotes": 145,
+      "downvotes": 7,
+      "offlineReports": 2,
+      "category": "anime",
+      "comments": [14]
+    },
+    {
+      "id": 15,
+      "title": "Spirited Away (2001)",
+      "resource": "https://www.wcostream.net/spirited-away-english-dubbed",
+      "description": "English dubbed version on WCOStream. Some buffering issues, but overall pretty good quality. Lots of other anime here too.",
+      "upvotes": 112,
+      "downvotes": 9,
+      "offlineReports": 3,
+      "category": "anime",
+      "comments": []
+    },
+    {
+      "id": 16,
+      "title": "One Piece Episode 1015",
+      "resource": "https://aniwatch.to/one-piece-100/ep-1015",
+      "description": "Aniwatch has the latest One Piece episodes. No account needed. Just avoid clicking the fake download buttons!",
+      "upvotes": 187,
+      "downvotes": 4,
+      "offlineReports": 0,
+      "category": "anime",
+      "comments": [15]
+    },
+    {
+      "id": 17,
+      "title": "Cowboy Bebop (1998)",
+      "resource": "https://www.retrocrush.tv/watch/cowboy-bebop/1",
+      "description": "Free streaming of Cowboy Bebop on RetroCrush. Great if you like classic anime! Requires creating a free account.",
+      "upvotes": 92,
+      "downvotes": 11,
+      "offlineReports": 4,
+      "category": "anime",
+      "comments": []
+    },
+    {
+      "id": 18,
+      "title": "Fullmetal Alchemist: Brotherhood",
+      "resource": "https://animepahe.com/anime/fullmetal-alchemist-brotherhood",
+      "description": "AnimePahe has FMA: Brotherhood in small, manageable files. Great for low bandwidth connections. Batch downloads are also available.",
+      "upvotes": 134,
+      "downvotes": 6,
+      "offlineReports": 1,
+      "category": "anime",
+      "comments": []
+    },
+    {
+      "id": 19,
+      "title": "The Dark Knight (2008)",
+      "resource": "https://dl.hdencode.com/The.Dark.Knight.2008.1080p.BluRay.x264.mkv",
+      "description": "Direct download link for The Dark Knight in 1080p. Watch out for the pop-up ads when you click download!",
+      "upvotes": 88,
+      "downvotes": 23,
+      "offlineReports": 10,
+      "category": "movies",
+      "comments": []
+    },
+    {
+      "id": 20,
+      "title": "Inception (2010)",
+      "resource": "https://1337x.to/torrent/1234567/Inception-2010-1080p-BluRay-x264-YIFY/",
+      "description": "1337x torrent for Inception. You need a torrent client (like qBittorrent) to download. Check the comments for safe magnet links.",
+      "upvotes": 165,
+      "downvotes": 5,
+      "offlineReports": 2,
+      "category": "movies",
+      "comments": []
+    },
+    {
+      "id": 21,
+      "title": "Mad Men S03E07",
+      "resource": "https://soap2day.mx/e/lZmnzCjS2nLNk/",
+      "description": "Soap2day mirror for Mad Men. Works well, but make sure you have a good ad blocker. Click through the initial popups.",
+      "upvotes": 61,
+      "downvotes": 18,
+      "offlineReports": 7,
+      "category": "tv-shows",
+      "comments": []
+    },
+    {
+      "id": 22,
+      "title": "Black Mirror S02E01",
+      "resource": "https://lookmovie2.to/shows/view/black-mirror-2011",
+      "description": "Lookmovie2 has all the Black Mirror episodes. Just be careful of the fake play buttons.",
+      "upvotes": 73,
+      "downvotes": 11,
+      "offlineReports": 3,
+      "category": "tv-shows",
+      "comments": []
+    },
+    {
+      "id": 23,
+      "title": "Curb Your Enthusiasm S11E04",
+      "resource": "https://www.putlocker.vc/tv-series/curb-your-enthusiasm-8oxpj/11-4",
+      "description": "Putlocker is still kicking! This episode is available but expect lots of pop-up ads.",
+      "upvotes": 55,
+      "downvotes": 25,
+      "offlineReports": 9,
+      "category": "tv-shows",
+      "comments": []
+    },
+    {
+      "id": 24,
+      "title": "The Social Network (2010)",
+      "resource": "https://rarbgaccessed.org/torrent/abcdefg/",
+      "description": "RARBG mirror for The Social Network. Use a VPN to hide your torrenting activity.",
+      "upvotes": 102,
+      "downvotes": 4,
+      "offlineReports": 1,
+      "category": "movies",
+      "comments": []
+    },
+    {
+      "id": 25,
+      "title": "Parasite (2019)",
+      "resource": "https://dramacool.mx/parasite-2019.html",
+      "description": "Dramacool mirror for Parasite with subtitles. The video quality is quite good.",
+      "upvotes": 128,
+      "downvotes": 2,
+      "offlineReports": 0,
+      "category": "movies",
+      "comments": []
+    },
+    {
+      "id": 26,
+      "title": "Gravity Falls S01E05",
+      "resource": "https://kimcartoon.li/Cartoon/Gravity-Falls/Episode-5-Double-Dipper",
+      "description": "KimCartoon is great for older cartoons. Works without a VPN.",
+      "upvotes": 85,
+      "downvotes": 6,
+      "offlineReports": 2,
+      "category": "tv-shows",
+      "comments": []
+    },
+    {
+      "id": 27,
+      "title": "Adventure Time S03E12",
+      "resource": "https://www.thewatchcartoononline.tv/adventure-time-season-3-episode-12",
+      "description": "Adventure Time episode on WatchCartoonOnline. Standard ad situation.",
+      "upvotes": 77,
+      "downvotes": 8,
+      "offlineReports": 3,
+      "category": "tv-shows",
+      "comments": []
+    },
+    {
+      "id": 28,
+      "title": "Howl's Moving Castle (2004)",
+      "resource": "https://moviesjoy.to/movie/howls-moving-castle-16538",
+      "description": "Howl's Moving Castle on MoviesJoy. Several ad clicks to get to the video.",
+      "upvotes": 91,
+      "downvotes": 5,
+      "offlineReports": 1,
+      "category": "movies",
+      "comments": []
+    },
+    {
+      "id": 29,
+      "title": "Your Name (2016)",
+      "resource": "https://animefrenzy.org/your-name-2016/",
+      "description": "Your Name available on AnimeFrenzy. Quality is very good.",
+      "upvotes": 115,
+      "downvotes": 3,
+      "offlineReports": 0,
+      "category": "movies",
+      "comments": []
+    },
+    {
+      "id": 30,
+      "title": "Sherlock (2010) - Season 1, Episode 1",
+      "resource": "https://www.123movies.net/tv/sherlock-2010-tt1475582/season-1/episode-1",
+      "description": "First episode of Sherlock on 123movies. Adblocker is essential.",
+      "upvotes": 83,
+      "downvotes": 7,
+      "offlineReports": 2,
+      "category": "tv-shows",
+      "comments": []
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "username": "Sheru",
+      "password": "123",
+      "displayName": "Stewie Griffin",
+      "likedPosts": [1, 2, 3],
+      "dislikedPosts": [4],
+      "reportedPosts": [5],
+      "comments": [1, 2, 3]
+    },
+    {
+      "id": 2,
+      "username": "MovieBuff88",
+      "password": "abc123",
+      "displayName": "CineTracker",
+      "likedPosts": [3, 4, 6],
+      "dislikedPosts": [],
+      "reportedPosts": [],
+      "comments": [5]
+    },
+    {
+      "id": 3,
+      "username": "NeoStrm",
+      "password": "pass456",
+      "displayName": "Torrent Tactician",
+      "likedPosts": [2, 5],
+      "dislikedPosts": [1],
+      "reportedPosts": [1],
+      "comments": [6, 7]
+    },
+    {
+      "id": 4,
+      "username": "AnimeFan2000",
+      "password": "animeLover",
+      "displayName": "Weeaboo Jones",
+      "likedPosts": [14, 15, 16],
+      "dislikedPosts": [],
+      "reportedPosts": [],
+      "comments": [14, 15]
+    },
+    {
+      "id": 5,
+      "username": "StreamHunter",
+      "password": "seekandfind",
+      "displayName": "VOD Vigilante",
+      "likedPosts": [7, 9, 10],
+      "dislikedPosts": [8],
+      "reportedPosts": [8],
+      "comments": [8, 9, 10]
+    },
+    {
+      "id": 6,
+      "username": "BingeWatcher42",
+      "password": "couchpotato",
+      "displayName": "Screen Addict",
+      "likedPosts": [21, 22, 23],
+      "dislikedPosts": [],
+      "reportedPosts": [],
+      "comments": []
+    },
+    {
+      "id": 7,
+      "username": "IndieFilmLover",
+      "password": "arthouse",
+      "displayName": "Cinema Snob",
+      "likedPosts": [24, 25],
+      "dislikedPosts": [],
+      "reportedPosts": [],
+      "comments": []
+    },
+    {
+      "id": 8,
+      "username": "CartoonCrazy",
+      "password": "animation",
+      "displayName": "Toon Townie",
+      "likedPosts": [26, 27],
+      "dislikedPosts": [],
+      "reportedPosts": [],
+      "comments": []
+    },
+    {
+      "id": 9,
+      "username": "StudioGhibliFan",
+      "password": "hayaomiyazaki",
+      "displayName": "Spirited Awaier",
+      "likedPosts": [28, 29],
+      "dislikedPosts": [],
+      "reportedPosts": [],
+      "comments": []
+    },
+    {
+      "id": 10,
+      "username": "DeductionDude",
+      "password": "elementary",
+      "displayName": "Sherlockian",
+      "likedPosts": [30],
+      "dislikedPosts": [],
+      "reportedPosts": [],
+      "comments": []
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "userID": 1,
+      "text": "Worked great, thanks! Subtitles were auto-generated though.",
+      "replies": [2]
+    },
+    {
+      "id": 2,
+      "userID": 3,
+      "text": "Yeah I noticed that too, they were a bit off in timing.",
+      "replies": []
+    },
+    {
+      "id": 3,
+      "userID": 1,
+      "text": "Nice find! I added this to my watchlist.",
+      "replies": []
+    },
+    {
+      "id": 4,
+      "userID": 1,
+      "text": "Episode got removed now. Anyone have a mirror?",
+      "replies": []
+    },
+    {
+      "id": 5,
+      "userID": 2,
+      "text": "Confirmed! Archive version still works as of today. Thx for the tip.",
+      "replies": []
+    },
+    {
+      "id": 6,
+      "userID": 3,
+      "text": "Audio's slightly desynced, but still better than nothing.",
+      "replies": []
+    },
+    {
+      "id": 7,
+      "userID": 3,
+      "text": "OK.ru always works but be ready to click through sketchy ads.",
+      "replies": []
+    },
+    {
+      "id": 8,
+      "userID": 5,
+      "text": "Thanks for the Vimeo find! Quality is excellent.",
+      "replies": []
+    },
+    {
+      "id": 9,
+      "userID": 5,
+      "text": "Downloading now, hope it doesn't disappear!",
+      "replies": []
+    },
+    {
+      "id": 10,
+      "userID": 5,
+      "text": "Cam rip is awful, but I'm desperate!",
+      "replies": []
+    },
+    {
+      "id": 11,
+      "userID": 5,
+      "text": "This YouTube version is sped up a bit, makes it kinda funny.",
+      "replies": [12]
+    },
+    {
+      "id": 12,
+      "userID": 5,
+      "text": "Yeah, it's like watching a parody version.",
+      "replies": []
+    },
+    {
+      "id": 13,
+      "userID": 5,
+      "text": "Thanks! Downloading now",
+      "replies": []
+    },
+    {
+      "id": 14,
+      "userID": 4,
+      "text": "Finally caught up with AoT! Thanks!",
+      "replies": []
+    },
+    {
+      "id": 15,
+      "userID": 4,
+      "text": "One Piece never disappoints!",
+      "replies": []
     }
   ]
 }
