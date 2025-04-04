@@ -1,7 +1,7 @@
 {
   "posts": [
     {
-      "id": 1,
+      "id": "1",
       "title": "Family Guy S12E06",
       "resource": "https://www.dailymotion.com/video/x7xyz12",
       "description": "Found this episode on Dailymotion after it was removed from Hulu in my region (Germany). There's one unskippable ad at the start, but if you use uBlock Origin, it skips the mid-rolls. Also recommend setting quality manually to 720p, auto mode keeps lagging.",
@@ -25,7 +25,7 @@
       ]
     },
     {
-      "id": 2,
+      "id": "2",
       "title": "Where to watch Spirited Away legally in the Netherlands?",
       "resource": "https://netflix.com/title/60023642",
       "description": "It's currently available on Dutch Netflix with Dutch and English subtitles. If you’re outside NL, use a Netherlands-based VPN. Windscribe free tier works, but only during non-peak hours.",
@@ -61,13 +61,13 @@
       ]
     },
     {
-      "id": 3,
+      "id": "3",
       "title": "Free alternative for Interstellar (2014)",
       "resource": "https://www.archive.org/details/interstellar-2014",
       "description": "Someone uploaded it here for archival purposes. Quality is 720p, not perfect, but decent. Beware: Archive.org servers can be slow, so I recommend using a download manager.",
-      "upvotes": 32,
-      "downvotes": 10,
-      "offlineReports": 4,
+      "upvotes": 33,
+      "downvotes": 11,
+      "offlineReports": 5,
       "category": "movies",
       "comments": [
         {
@@ -85,7 +85,7 @@
       ]
     },
     {
-      "id": 4,
+      "id": "4",
       "title": "Breaking Bad Season 3 full episodes",
       "resource": "https://www.tubitv.com/series/300007260",
       "description": "Tubi has it for free with ads. Works only in the US, so you'll need a US VPN. Ads can’t be skipped but are minimal (15-30 seconds, 3 times per episode).",
@@ -103,7 +103,7 @@
       ]
     },
     {
-      "id": 5,
+      "id": "5",
       "title": "Rick and Morty Season 6 in India?",
       "resource": "https://fmovies.to/series/rick-and-morty-2k63/1-6",
       "description": "Not on Netflix India yet. FMovies has it, but prepare for lots of popups. Use Brave browser and block scripts. No subtitles though!",

@@ -1,15 +1,10 @@
-import { Typography, Box, Button } from "@mui/material";
+import { Typography, Box, Button, Link } from "@mui/material";
 import React from "react";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 import MessageOutlinedIcon from "@mui/icons-material/MessageOutlined";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
-import {
-  fetchPostById,
-  upVotePost,
-  downVotePost,
-  reportPost,
-} from "../APICalls";
+import { upVotePost, downVotePost, reportPost } from "../APICalls";
 import { useSnackbar } from "notistack";
 
 function PostPreview({
@@ -27,7 +22,7 @@ function PostPreview({
   const { enqueueSnackbar } = useSnackbar();
   return (
     <Box>
-      <Typography>{title}</Typography>
+      <Link href={`posts/${id}`}>{title}</Link>
       <Typography>{resource}</Typography>
       <Typography>{description}</Typography>
       <Button

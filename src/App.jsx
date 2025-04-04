@@ -5,6 +5,7 @@ import "./App.css";
 import { SnackbarProvider } from "notistack";
 import { createRef } from "react";
 import CustomSnackbar from "./Components/CustomSnackbar";
+import Post from "./Components/Post";
 function App() {
   const notistackRef = createRef();
 
@@ -22,6 +23,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="*" element={<Four0Four />} />
+        <Route path="/posts/:id" element={<Post />} />
       </Routes>
     </SnackbarProvider>
   );
