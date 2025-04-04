@@ -1,20 +1,26 @@
 import React from "react";
-import { forwardRef } from "react";
-import { Alert, Typography } from "@mui/material";
+import { SnackbarContent } from "notistack";
+import { Alert } from "@mui/material";
 
-const CustomSnackbar = forwardRef((props, ref) => {
+const CustomSnackbar = React.forwardRef((props, ref) => {
+  const { severity, variant, login, handleLogin, ...rest } = props;
+
   return (
-    <Alert
-      variant="outlined"
-      ref={ref}
-      severity="error"
-      sx={{
-        color: "white",
-        alignItems: "center",
-      }}
-    >
-      <Typography>{props.message}</Typography>
-    </Alert>
+    <SnackbarContent ref={ref} {...rest}>
+      <Alert
+        severity={severity}
+        variant={variant}
+        action={
+          login && (
+            <button onClick={handleLogin} style={{ marginLeft: "8px" }}>
+              Log In
+            </button>
+          )
+        }
+      >
+        {props.message}
+      </Alert>
+    </SnackbarContent>
   );
 });
 

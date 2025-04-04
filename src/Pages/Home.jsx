@@ -3,7 +3,7 @@ import { Stack } from "@mui/material";
 import { fetchPosts } from "../APICalls";
 import { useSnackbar } from "notistack";
 import PostPreview from "../Components/PostPreview";
-function Home() {
+function Home({ isLoggedIn }) {
   const [posts, setPosts] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const fetchPostsHandeled = () => {
@@ -24,6 +24,7 @@ function Home() {
     <Stack>
       {Object.keys(posts).map((key) => (
         <PostPreview
+          isLoggedIn={isLoggedIn} // changed: pass isLoggedIn prop to PostPreview
           fetchPosts={fetchPostsHandeled} // changed: pass function reference instead of invoking it
           title={posts[key].title}
           resource={posts[key].resource}

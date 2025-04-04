@@ -18,6 +18,7 @@ function PostPreview({
   commentsCount,
   id,
   fetchPosts,
+  isLoggedIn,
 }) {
   const { enqueueSnackbar } = useSnackbar();
   return (
@@ -27,6 +28,10 @@ function PostPreview({
       <Typography>{description}</Typography>
       <Button
         onClick={() => {
+          if (!isLoggedIn) {
+            enqueueSnackbar("Please log in to vote", { variant: "login" });
+            return;
+          }
           upVotePost(
             id,
             upvotes,
@@ -47,6 +52,10 @@ function PostPreview({
       </Button>
       <Button
         onClick={() => {
+          if (!isLoggedIn) {
+            enqueueSnackbar("Please log in to vote", { variant: "login" });
+            return;
+          }
           downVotePost(
             id,
             downvotes,
@@ -67,6 +76,10 @@ function PostPreview({
       </Button>
       <Button
         onClick={() => {
+          if (!isLoggedIn) {
+            enqueueSnackbar("Please log in to vote", { variant: "login" });
+            return;
+          }
           reportPost(
             id,
             offlineReports,
