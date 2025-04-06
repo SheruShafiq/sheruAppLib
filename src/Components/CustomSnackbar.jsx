@@ -1,20 +1,30 @@
 import React from "react";
 import { SnackbarContent } from "notistack";
 import { Alert } from "@mui/material";
+import Button from "@mui/material/Button";
 
 const CustomSnackbar = React.forwardRef((props, ref) => {
-  const { severity, variant, login, handleLogin, ...rest } = props;
+  const { severity, login, handleLogin } = props;
 
   return (
-    <SnackbarContent ref={ref} {...rest}>
+    <SnackbarContent ref={ref}>
       <Alert
         severity={severity}
-        variant={variant}
+        sx={{
+          alignItems: "center",
+        }}
         action={
           login && (
-            <button onClick={handleLogin} style={{ marginLeft: "8px" }}>
+            <Button
+              variant="outlined"
+              onClick={handleLogin}
+              sx={{
+                color: "white",
+                border: "1px solid white",
+              }}
+            >
               Log In
-            </button>
+            </Button>
           )
         }
       >

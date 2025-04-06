@@ -8,3 +8,7 @@ html, body{
 * {
   font-family: monospace !important;
 }
+
+.MuiAlert-action {
+  padding-top: 0px !important;
+}

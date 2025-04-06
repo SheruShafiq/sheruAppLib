@@ -8,6 +8,15 @@ import { createRef } from "react";
 import CustomSnackbar from "./Components/CustomSnackbar";
 import Post from "./Pages/Post";
 import SignUpAndLogin from "./Components/SignUpAndLogin";
+
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+});
 function App() {
   const notistackRef = createRef();
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -19,37 +28,40 @@ function App() {
   });
   const [loginDialogue, setLogInDialogue] = useState(false);
   return (
-    <SnackbarProvider
-      maxSnack={3}
-      autoHideDuration={2000}
-      ref={notistackRef}
-      Components={{
-        error: (props) => (
-          <CustomSnackbar {...props} severity="error" variant="outlined" />
-        ),
-        login: (props) => (
-          <CustomSnackbar
-            {...props}
-            severity="warning"
-            login={true}
-            handleLogin={() => {
-              setLogInDialogue(true);
-            }}
-          />
-        ),
-      }}
-    >
-      <SignUpAndLogin
-        isOpen={loginDialogue}
-        setOpen={setLogInDialogue}
-        setIsLoggedIn={setIsLoggedIn}
-      />
-      <Routes>
-        <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
-        <Route path="*" element={<Four0Four />} />
-        <Route path="/posts/:id" element={<Post isLoggedIn={isLoggedIn} />} />
-      </Routes>
-    </SnackbarProvider>
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <SnackbarProvider
+        maxSnack={3}
+        autoHideDuration={2000}
+        ref={notistackRef}
+        Components={{
+          error: (props) => (
+            <CustomSnackbar {...props} severity="error" variant="outlined" />
+          ),
+          login: (props) => (
+            <CustomSnackbar
+              {...props}
+              severity="info"
+              login={true}
+              handleLogin={() => {
+                setLogInDialogue(true);
+              }}
+            />
+          ),
+        }}
+      >
+        <SignUpAndLogin
+          isOpen={loginDialogue}
+          setOpen={setLogInDialogue}
+          setIsLoggedIn={setIsLoggedIn}
+        />
+        <Routes>
+          <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
+          <Route path="*" element={<Four0Four />} />
+          <Route path="/posts/:id" element={<Post isLoggedIn={isLoggedIn} />} />
+        </Routes>
+      </SnackbarProvider>
+    </ThemeProvider>
   );
 }
 
