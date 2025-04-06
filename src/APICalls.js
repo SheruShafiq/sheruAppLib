@@ -137,7 +137,6 @@ async function reportPost(id, currentReports, onSuccess, onError) {
     }
 }
 
-// New functions for undoing votes/reports
 
 async function undoUpVotePost(id, currentUpvotes, onSuccess, onError) {
     try {
@@ -267,6 +266,39 @@ async function createUser(user, onSuccess, onError) {
     }
 }
 
+async function loginUser({ username, password }, onSuccess, onError) {
+    try {
+        // JSON Server supports filtering via query parameters
+        const response = await fetch(`http://localhost:3000/users?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
+        if (!response.ok) throw new Error("Network response was not ok");
+        const data = await response.json();
+        if (data.length > 0) {
+            onSuccess(data[0]);
+        } else {
+            throw new Error("Invalid credentials");
+        }
+    } catch (error) {
+        onError(error);
+    }
+}
+
+async function signUpUser({ username, password }, onSuccess, onError) {
+    try {
+        // Use createUser and set username = username, and default displayName for simplicity.
+        const user = { username: username, password, displayName: username, likedPosts: [], dislikedPosts: [], reportedPosts: [], comments: [] };
+        const response = await fetch(`http://localhost:3000/users`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(user),
+        });
+        if (!response.ok) throw new Error("Network response was not ok");
+        const data = await response.json();
+        onSuccess(data);
+    } catch (error) {
+        onError(error);
+    }
+}
+
 export {
     fetchPosts,
     fetchPostById,
@@ -285,4 +317,6 @@ export {
     fetchUsers,
     fetchUserById,
     createUser,
+    loginUser,
+    signUpUser,
 };

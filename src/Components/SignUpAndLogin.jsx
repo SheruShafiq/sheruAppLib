@@ -1,5 +1,5 @@
 import * as React from "react";
-import Button from "@mui/material/Button";
+import { Button } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -7,6 +7,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
+import { loginUser, signUpUser } from "../APICalls";
 
 function SignUpAndLogin({ isOpen, setOpen, setIsLoggedIn }) {
   const handleClose = () => {
@@ -14,15 +15,14 @@ function SignUpAndLogin({ isOpen, setOpen, setIsLoggedIn }) {
   };
 
   const [mode, setMode] = useState("login");
+
   return (
     <>
       <Dialog
         open={isOpen}
         onClose={handleClose}
         sx={{
-          "& .MuiDialog-paper": {
-            minWidth: "40vw",
-          },
+          "& .MuiDialog-paper": { minWidth: "40vw" },
         }}
         slotProps={{
           paper: {
@@ -30,42 +30,32 @@ function SignUpAndLogin({ isOpen, setOpen, setIsLoggedIn }) {
             onSubmit: (event) => {
               event.preventDefault();
               const formData = new FormData(event.currentTarget);
-              const email = formData.get("email");
+              const username = formData.get("username");
               const password = formData.get("password");
+
               if (mode === "login") {
-                fetch("/api/login", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
+                loginUser(
+                  { username, password },
+                  (user) => {
+                    document.cookie = `userID=${user.id}; path=/;`;
+                    setIsLoggedIn(true);
+                    handleClose();
                   },
-                  body: JSON.stringify({ email, password }),
-                })
-                  .then((response) => response.json())
-                  .then((data) => {
-                    if (data.success) {
-                      setIsLoggedIn(true);
-                      handleClose();
-                    } else {
-                      alert(data.message);
-                    }
-                  });
+                  (error) => {
+                    alert(error.message);
+                  }
+                );
               } else {
-                fetch("/api/signup", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
+                signUpUser(
+                  { username, password },
+                  (user) => {
+                    alert("Signup successful! Please log in.");
+                    setMode("login");
                   },
-                  body: JSON.stringify({ email, password }),
-                })
-                  .then((response) => response.json())
-                  .then((data) => {
-                    if (data.success) {
-                      alert("Signup successful! Please log in.");
-                      setMode("login");
-                    } else {
-                      alert(data.message);
-                    }
-                  });
+                  (error) => {
+                    alert(error.message);
+                  }
+                );
               }
             },
           },
@@ -80,9 +70,7 @@ function SignUpAndLogin({ isOpen, setOpen, setIsLoggedIn }) {
             <Button
               variant="text"
               onClick={() => setMode(mode === "login" ? "signup" : "login")}
-              sx={{
-                textTransform: "none",
-              }}
+              sx={{ textTransform: "none" }}
             >
               {mode === "login" ? "Signup" : "Login"}
             </Button>
@@ -91,17 +79,15 @@ function SignUpAndLogin({ isOpen, setOpen, setIsLoggedIn }) {
             autoFocus
             required
             margin="dense"
-            id="name"
-            name="email"
-            label="Email Address"
-            type="email"
+            name="username"
+            label="Username"
+            type="text"
             fullWidth
             variant="standard"
           />
           <TextField
             required
             margin="dense"
-            id="password"
             name="password"
             label="Password"
             type="password"

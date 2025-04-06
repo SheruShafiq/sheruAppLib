@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Stack } from "@mui/material";
+import { Stack, Box, Divider } from "@mui/material";
 import { fetchPosts } from "../APICalls";
 import { useSnackbar } from "notistack";
 import PostPreview from "../Components/PostPreview";
-function Home({ isLoggedIn }) {
+import Button from "@mui/material/Button";
+function Home({ isLoggedIn, userData, setOpen }) {
   const [posts, setPosts] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const fetchPostsHandeled = () => {
@@ -21,7 +22,32 @@ function Home({ isLoggedIn }) {
   }, []);
 
   return (
-    <Stack>
+    <Stack gap={2}>
+      {isLoggedIn ? (
+        <Stack flexDirection={"row"} alignItems={"center"}>
+          <Box>{userData?.displayName}</Box>
+          <Button
+            onClick={() => {
+              document.cookie = "userID=; path=/;";
+              console.log("Logged out");
+            }}
+          >
+            Logout
+          </Button>
+        </Stack>
+      ) : (
+        <Button
+          onClick={() => {
+            setOpen(true);
+          }}
+          sx={{
+            width: "fit-content",
+          }}
+        >
+          Log In
+        </Button>
+      )}
+      <Divider />
       {Object.keys(posts).map((key) => (
         <PostPreview
           isLoggedIn={isLoggedIn} // changed: pass isLoggedIn prop to PostPreview
@@ -31,7 +57,7 @@ function Home({ isLoggedIn }) {
           description={posts[key].description}
           upvotes={posts[key].upvotes}
           downvotes={posts[key].downvotes}
-          offlineReports={posts[key].offlineReports}
+          reports={posts[key].reports}
           category={posts[key].category}
           commentsCount={posts[key].comments.length}
           key={key}

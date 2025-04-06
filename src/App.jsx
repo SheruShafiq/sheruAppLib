@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Home from "./Pages/Home";
 import Four0Four from "./Pages/404";
 import "./App.css";
@@ -8,7 +8,7 @@ import { createRef } from "react";
 import CustomSnackbar from "./Components/CustomSnackbar";
 import Post from "./Pages/Post";
 import SignUpAndLogin from "./Components/SignUpAndLogin";
-
+import { fetchUserById } from "./APICalls";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
@@ -18,15 +18,36 @@ const darkTheme = createTheme({
   },
 });
 function App() {
-  const notistackRef = createRef();
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    const userID = document.cookie
+  const [userID, setUserID] = useState(
+    document.cookie
       .split("; ")
       .find((row) => row.startsWith("userID="))
-      ?.split("=")[1];
+      ?.split("=")[1]
+  );
+  const notistackRef = createRef();
+  const [userData, setUserData] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return userID || false;
   });
   const [loginDialogue, setLogInDialogue] = useState(false);
+  function getUserData(userID) {
+    fetchUserById(
+      userID,
+      (userData) => {
+        setUserData(userData);
+      },
+      (error) => {
+        notistackRef.current.enqueueSnackbar(error.message, {
+          variant: "error",
+        });
+      }
+    );
+  }
+  useEffect(() => {
+    if (isLoggedIn == typeof "string") {
+      getUserData(userID);
+    }
+  }, [isLoggedIn]);
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
@@ -56,7 +77,16 @@ function App() {
           setIsLoggedIn={setIsLoggedIn}
         />
         <Routes>
-          <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
+          <Route
+            path="/"
+            element={
+              <Home
+                userData={userData}
+                setOpen={setLogInDialogue}
+                isLoggedIn={isLoggedIn}
+              />
+            }
+          />
           <Route path="*" element={<Four0Four />} />
           <Route path="/posts/:id" element={<Post isLoggedIn={isLoggedIn} />} />
         </Routes>

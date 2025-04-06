@@ -13,7 +13,7 @@ function PostPreview({
   description,
   upvotes,
   downvotes,
-  offlineReports,
+  reports,
   category,
   commentsCount,
   id,
@@ -21,6 +21,7 @@ function PostPreview({
   isLoggedIn,
 }) {
   const { enqueueSnackbar } = useSnackbar();
+
   return (
     <Box>
       <Link href={`posts/${id}`}>{title}</Link>
@@ -32,6 +33,7 @@ function PostPreview({
             enqueueSnackbar("Please log in to vote", { variant: "login" });
             return;
           }
+
           upVotePost(
             id,
             upvotes,
@@ -82,7 +84,7 @@ function PostPreview({
           }
           reportPost(
             id,
-            offlineReports,
+            reports,
             () => {
               fetchPosts();
             },
@@ -96,7 +98,7 @@ function PostPreview({
         }}
         startIcon={<ErrorOutlinedIcon />}
       >
-        {offlineReports}
+        {reports}
       </Button>
       <Button>{category}</Button>
       <Button startIcon={<MessageOutlinedIcon />}>{commentsCount}</Button>

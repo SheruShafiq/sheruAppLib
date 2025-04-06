@@ -1,18 +1,22 @@
 {
   "posts": [
     {
-      "id": 1,
+      "id": "1",
       "title": "Family Guy S12E06",
       "resource": "https://www.dailymotion.com/video/x7xyz12",
       "description": "Found this episode on Dailymotion after it was removed from Hulu in my region (Germany). There's one unskippable ad at the start, but if you use uBlock Origin, it skips the mid-rolls. Also recommend setting quality manually to 720p, auto mode keeps lagging.",
-      "upvotes": 46,
+      "upvotes": 49,
       "downvotes": 5,
       "reports": 3,
       "category": "tv-shows",
-      "comments": [1, 3, 4]
+      "comments": [
+        1,
+        3,
+        4
+      ]
     },
     {
-      "id": 2,
+      "id": "2",
       "title": "Breaking Bad S02E01",
       "resource": "https://archive.org/details/breaking-bad-s02e01",
       "description": "Surprisingly still up on Archive.org. Not the best quality (480p), but totally watchable. No ads, no login required. Use VLC to skip through slow buffering.",
@@ -20,10 +24,13 @@
       "downvotes": 2,
       "reports": 1,
       "category": "tv-shows",
-      "comments": [5, 6]
+      "comments": [
+        5,
+        6
+      ]
     },
     {
-      "id": 3,
+      "id": "3",
       "title": "Shrek (2001)",
       "resource": "https://ok.ru/video/123456789",
       "description": "Full movie available in English on OK.ru. Might require a VPN if you're outside Russia. Some pop-ups at the start—just close them and hit play again. Subtitles available in English and Russian.",
@@ -31,10 +38,12 @@
       "downvotes": 10,
       "reports": 4,
       "category": "movies",
-      "comments": [7]
+      "comments": [
+        7
+      ]
     },
     {
-      "id": 4,
+      "id": "4",
       "title": "Rick and Morty S05E03",
       "resource": "https://www.bilibili.tv/en/video/20001234",
       "description": "Bilibili TV still has this ep up. Needs free account, but it worked in the Netherlands without VPN. Subtitles are sometimes out of sync though.",
@@ -45,7 +54,7 @@
       "comments": []
     },
     {
-      "id": 5,
+      "id": "5",
       "title": "The Office (US) S04E10",
       "resource": "https://www.veoh.com/watch/v12345678",
       "description": "Had to enable Flash via an old browser to get this to work (Veoh is pretty outdated). Use Brave browser for best compatibility. No subtitles, and skips a few seconds in the middle.",
@@ -56,7 +65,7 @@
       "comments": []
     },
     {
-      "id": 6,
+      "id": "6",
       "title": "Modern Family S01E02",
       "resource": "https://tubitv.com/movies/67890/modern-family-ep2",
       "description": "Available for free on Tubi with a VPN set to the US. Three ad breaks, but they’re short. No account needed, and quality is solid at 720p.",
@@ -67,7 +76,7 @@
       "comments": []
     },
     {
-      "id": 7,
+      "id": "7",
       "title": "The Shawshank Redemption (1994)",
       "resource": "https://vimeo.com/1234567890",
       "description": "Found a surprisingly good quality upload on Vimeo. No ads, but might get taken down soon, so watch it quick! Direct download enabled too.",
@@ -75,10 +84,13 @@
       "downvotes": 8,
       "reports": 0,
       "category": "movies",
-      "comments": [8, 9]
+      "comments": [
+        8,
+        9
+      ]
     },
     {
-      "id": 8,
+      "id": "8",
       "title": "Avatar (2009) - Cam Rip",
       "resource": "https://streamtape.com/v/abcdef123456",
       "description": "Potato quality cam rip from Streamtape. Audio is muffled, and there are watermarks, but it's the only way to watch it in my region without paying. Use headphones to improve audio slightly.",
@@ -86,10 +98,12 @@
       "downvotes": 67,
       "reports": 15,
       "category": "movies",
-      "comments": [10]
+      "comments": [
+        10
+      ]
     },
     {
-      "id": 9,
+      "id": "9",
       "title": "Stranger Things S01E01 - DMCA free mirror",
       "resource": "https://fmovies.to/watch/stranger-things-12345/123456",
       "description": "FMovies mirror of the first episode. Works without VPN but expect pop-under ads when clicking. Use an ad-blocker!",
@@ -100,7 +114,7 @@
       "comments": []
     },
     {
-      "id": 10,
+      "id": "10",
       "title": "Pulp Fiction (1994)",
       "resource": "https://www.youtube.com/watch?v=abcdefghijk",
       "description": "Full movie on YouTube. It's mirrored and sped up slightly to avoid copyright, but it's watchable. Watch before it gets taken down!",
@@ -108,10 +122,13 @@
       "downvotes": 22,
       "reports": 8,
       "category": "movies",
-      "comments": [11, 12]
+      "comments": [
+        11,
+        12
+      ]
     },
     {
-      "id": 11,
+      "id": "11",
       "title": "The Lion King (1994)",
       "resource": "https://mega.nz/#!abcdefgh!ABCDEFGHIJKL",
       "description": "MEGA link to a high quality MKV rip. You'll need a MEGA account to download if the file is too big. Password is 'hakunamatata'.",
@@ -119,10 +136,12 @@
       "downvotes": 3,
       "reports": 1,
       "category": "movies",
-      "comments": [13]
+      "comments": [
+        13
+      ]
     },
     {
-      "id": 12,
+      "id": "12",
       "title": "Seinfeld S09E11 - The Betrayal",
       "resource": "https://www.bitchute.com/video/abcdefghijkl/",
       "description": "Seinfeld episode on Bitchute. No ads, but the video is potato quality. Good if you just want the audio or don't care about visuals.",
@@ -133,7 +152,7 @@
       "comments": []
     },
     {
-      "id": 13,
+      "id": "13",
       "title": "Interstellar (2014)",
       "resource": "https://uptobox.com/abcdefghijk1",
       "description": "Uptobox link for Interstellar. Requires a free account after a download limit. Download speeds can be slow without premium.",
@@ -144,7 +163,7 @@
       "comments": []
     },
     {
-      "id": 14,
+      "id": "14",
       "title": "Attack on Titan S04E28",
       "resource": "https://9anime.to/watch/attack-on-titan-final-season-part-2.292y/ep-1",
       "description": "Available on 9anime with English subs. Lots of redirects when you click the play button, but eventually it loads. Server #3 is the most reliable.",
@@ -152,10 +171,12 @@
       "downvotes": 7,
       "reports": 2,
       "category": "anime",
-      "comments": [14]
+      "comments": [
+        14
+      ]
     },
     {
-      "id": 15,
+      "id": "15",
       "title": "Spirited Away (2001)",
       "resource": "https://www.wcostream.net/spirited-away-english-dubbed",
       "description": "English dubbed version on WCOStream. Some buffering issues, but overall pretty good quality. Lots of other anime here too.",
@@ -166,7 +187,7 @@
       "comments": []
     },
     {
-      "id": 16,
+      "id": "16",
       "title": "One Piece Episode 1015",
       "resource": "https://aniwatch.to/one-piece-100/ep-1015",
       "description": "Aniwatch has the latest One Piece episodes. No account needed. Just avoid clicking the fake download buttons!",
@@ -174,10 +195,12 @@
       "downvotes": 4,
       "reports": 0,
       "category": "anime",
-      "comments": [15]
+      "comments": [
+        15
+      ]
     },
     {
-      "id": 17,
+      "id": "17",
       "title": "Cowboy Bebop (1998)",
       "resource": "https://www.retrocrush.tv/watch/cowboy-bebop/1",
       "description": "Free streaming of Cowboy Bebop on RetroCrush. Great if you like classic anime! Requires creating a free account.",
@@ -188,7 +211,7 @@
       "comments": []
     },
     {
-      "id": 18,
+      "id": "18",
       "title": "Fullmetal Alchemist: Brotherhood",
       "resource": "https://animepahe.com/anime/fullmetal-alchemist-brotherhood",
       "description": "AnimePahe has FMA: Brotherhood in small, manageable files. Great for low bandwidth connections. Batch downloads are also available.",
@@ -199,7 +222,7 @@
       "comments": []
     },
     {
-      "id": 19,
+      "id": "19",
       "title": "The Dark Knight (2008)",
       "resource": "https://dl.hdencode.com/The.Dark.Knight.2008.1080p.BluRay.x264.mkv",
       "description": "Direct download link for The Dark Knight in 1080p. Watch out for the pop-up ads when you click download!",
@@ -210,7 +233,7 @@
       "comments": []
     },
     {
-      "id": 20,
+      "id": "20",
       "title": "Inception (2010)",
       "resource": "https://1337x.to/torrent/1234567/Inception-2010-1080p-BluRay-x264-YIFY/",
       "description": "1337x torrent for Inception. You need a torrent client (like qBittorrent) to download. Check the comments for safe magnet links.",
@@ -221,7 +244,7 @@
       "comments": []
     },
     {
-      "id": 21,
+      "id": "21",
       "title": "Mad Men S03E07",
       "resource": "https://soap2day.mx/e/lZmnzCjS2nLNk/",
       "description": "Soap2day mirror for Mad Men. Works well, but make sure you have a good ad blocker. Click through the initial popups.",
@@ -232,7 +255,7 @@
       "comments": []
     },
     {
-      "id": 22,
+      "id": "22",
       "title": "Black Mirror S02E01",
       "resource": "https://lookmovie2.to/shows/view/black-mirror-2011",
       "description": "Lookmovie2 has all the Black Mirror episodes. Just be careful of the fake play buttons.",
@@ -243,7 +266,7 @@
       "comments": []
     },
     {
-      "id": 23,
+      "id": "23",
       "title": "Curb Your Enthusiasm S11E04",
       "resource": "https://www.putlocker.vc/tv-series/curb-your-enthusiasm-8oxpj/11-4",
       "description": "Putlocker is still kicking! This episode is available but expect lots of pop-up ads.",
@@ -254,7 +277,7 @@
       "comments": []
     },
     {
-      "id": 24,
+      "id": "24",
       "title": "The Social Network (2010)",
       "resource": "https://rarbgaccessed.org/torrent/abcdefg/",
       "description": "RARBG mirror for The Social Network. Use a VPN to hide your torrenting activity.",
@@ -265,7 +288,7 @@
       "comments": []
     },
     {
-      "id": 25,
+      "id": "25",
       "title": "Parasite (2019)",
       "resource": "https://dramacool.mx/parasite-2019.html",
       "description": "Dramacool mirror for Parasite with subtitles. The video quality is quite good.",
@@ -276,7 +299,7 @@
       "comments": []
     },
     {
-      "id": 26,
+      "id": "26",
       "title": "Gravity Falls S01E05",
       "resource": "https://kimcartoon.li/Cartoon/Gravity-Falls/Episode-5-Double-Dipper",
       "description": "KimCartoon is great for older cartoons. Works without a VPN.",
@@ -287,7 +310,7 @@
       "comments": []
     },
     {
-      "id": 27,
+      "id": "27",
       "title": "Adventure Time S03E12",
       "resource": "https://www.thewatchcartoononline.tv/adventure-time-season-3-episode-12",
       "description": "Adventure Time episode on WatchCartoonOnline. Standard ad situation.",
@@ -298,7 +321,7 @@
       "comments": []
     },
     {
-      "id": 28,
+      "id": "28",
       "title": "Howl's Moving Castle (2004)",
       "resource": "https://moviesjoy.to/movie/howls-moving-castle-16538",
       "description": "Howl's Moving Castle on MoviesJoy. Several ad clicks to get to the video.",
@@ -309,7 +332,7 @@
       "comments": []
     },
     {
-      "id": 29,
+      "id": "29",
       "title": "Your Name (2016)",
       "resource": "https://animefrenzy.org/your-name-2016/",
       "description": "Your Name available on AnimeFrenzy. Quality is very good.",
@@ -320,7 +343,7 @@
       "comments": []
     },
     {
-      "id": 30,
+      "id": "30",
       "title": "Sherlock (2010) - Season 1, Episode 1",
       "resource": "https://www.123movies.net/tv/sherlock-2010-tt1475582/season-1/episode-1",
       "description": "First episode of Sherlock on 123movies. Adblocker is essential.",
@@ -333,101 +356,163 @@
   ],
   "users": [
     {
-      "id": 1,
+      "id": "1",
       "username": "Sheru",
       "password": "123",
       "displayName": "Stewie Griffin",
-      "likedPosts": [1, 2, 3],
-      "dislikedPosts": [4],
-      "reportedPosts": [5],
-      "comments": [1, 2, 3]
+      "likedPosts": [
+        1,
+        2,
+        3
+      ],
+      "dislikedPosts": [
+        4
+      ],
+      "reportedPosts": [
+        5
+      ],
+      "comments": [
+        1,
+        2,
+        3
+      ]
     },
     {
-      "id": 2,
+      "id": "2",
       "username": "MovieBuff88",
       "password": "abc123",
       "displayName": "CineTracker",
-      "likedPosts": [3, 4, 6],
+      "likedPosts": [
+        3,
+        4,
+        6
+      ],
       "dislikedPosts": [],
       "reportedPosts": [],
-      "comments": [5]
+      "comments": [
+        5
+      ]
     },
     {
-      "id": 3,
+      "id": "3",
       "username": "NeoStrm",
       "password": "pass456",
       "displayName": "Torrent Tactician",
-      "likedPosts": [2, 5],
-      "dislikedPosts": [1],
-      "reportedPosts": [1],
-      "comments": [6, 7]
+      "likedPosts": [
+        2,
+        5
+      ],
+      "dislikedPosts": [
+        1
+      ],
+      "reportedPosts": [
+        1
+      ],
+      "comments": [
+        6,
+        7
+      ]
     },
     {
-      "id": 4,
+      "id": "4",
       "username": "AnimeFan2000",
       "password": "animeLover",
       "displayName": "Weeaboo Jones",
-      "likedPosts": [14, 15, 16],
+      "likedPosts": [
+        14,
+        15,
+        16
+      ],
       "dislikedPosts": [],
       "reportedPosts": [],
-      "comments": [14, 15]
+      "comments": [
+        14,
+        15
+      ]
     },
     {
-      "id": 5,
+      "id": "5",
       "username": "StreamHunter",
       "password": "seekandfind",
       "displayName": "VOD Vigilante",
-      "likedPosts": [7, 9, 10],
-      "dislikedPosts": [8],
-      "reportedPosts": [8],
-      "comments": [8, 9, 10]
+      "likedPosts": [
+        7,
+        9,
+        10
+      ],
+      "dislikedPosts": [
+        8
+      ],
+      "reportedPosts": [
+        8
+      ],
+      "comments": [
+        8,
+        9,
+        10
+      ]
     },
     {
-      "id": 6,
+      "id": "6",
       "username": "BingeWatcher42",
       "password": "couchpotato",
       "displayName": "Screen Addict",
-      "likedPosts": [21, 22, 23],
+      "likedPosts": [
+        21,
+        22,
+        23
+      ],
       "dislikedPosts": [],
       "reportedPosts": [],
       "comments": []
     },
     {
-      "id": 7,
+      "id": "7",
       "username": "IndieFilmLover",
       "password": "arthouse",
       "displayName": "Cinema Snob",
-      "likedPosts": [24, 25],
+      "likedPosts": [
+        24,
+        25
+      ],
       "dislikedPosts": [],
       "reportedPosts": [],
       "comments": []
     },
     {
-      "id": 8,
+      "id": "8",
       "username": "CartoonCrazy",
       "password": "animation",
       "displayName": "Toon Townie",
-      "likedPosts": [26, 27],
+      "likedPosts": [
+        26,
+        27
+      ],
       "dislikedPosts": [],
       "reportedPosts": [],
       "comments": []
     },
     {
-      "id": 9,
+      "id": "9",
       "username": "StudioGhibliFan",
       "password": "hayaomiyazaki",
       "displayName": "Spirited Awaier",
-      "likedPosts": [28, 29],
+      "likedPosts": [
+        28,
+        29
+      ],
       "dislikedPosts": [],
       "reportedPosts": [],
       "comments": []
     },
     {
-      "id": 10,
+      "id": "10",
       "username": "DeductionDude",
       "password": "elementary",
       "displayName": "Sherlockian",
-      "likedPosts": [30],
+      "likedPosts": [
+        30
+      ],
       "dislikedPosts": [],
       "reportedPosts": [],
       "comments": []
@@ -435,91 +520,95 @@
   ],
   "comments": [
     {
-      "id": 1,
+      "id": "1",
       "userID": 1,
       "text": "Worked great, thanks! Subtitles were auto-generated though.",
-      "replies": [2]
+      "replies": [
+        2
+      ]
     },
     {
-      "id": 2,
+      "id": "2",
       "userID": 3,
       "text": "Yeah I noticed that too, they were a bit off in timing.",
       "replies": []
     },
     {
-      "id": 3,
+      "id": "3",
       "userID": 1,
       "text": "Nice find! I added this to my watchlist.",
       "replies": []
     },
     {
-      "id": 4,
+      "id": "4",
       "userID": 1,
       "text": "Episode got removed now. Anyone have a mirror?",
       "replies": []
     },
     {
-      "id": 5,
+      "id": "5",
       "userID": 2,
       "text": "Confirmed! Archive version still works as of today. Thx for the tip.",
       "replies": []
     },
     {
-      "id": 6,
+      "id": "6",
       "userID": 3,
       "text": "Audio's slightly desynced, but still better than nothing.",
       "replies": []
     },
     {
-      "id": 7,
+      "id": "7",
       "userID": 3,
       "text": "OK.ru always works but be ready to click through sketchy ads.",
       "replies": []
     },
     {
-      "id": 8,
+      "id": "8",
       "userID": 5,
       "text": "Thanks for the Vimeo find! Quality is excellent.",
       "replies": []
     },
     {
-      "id": 9,
+      "id": "9",
       "userID": 5,
       "text": "Downloading now, hope it doesn't disappear!",
       "replies": []
     },
     {
-      "id": 10,
+      "id": "10",
       "userID": 5,
       "text": "Cam rip is awful, but I'm desperate!",
       "replies": []
     },
     {
-      "id": 11,
+      "id": "11",
       "userID": 5,
       "text": "This YouTube version is sped up a bit, makes it kinda funny.",
-      "replies": [12]
+      "replies": [
+        12
+      ]
     },
     {
-      "id": 12,
+      "id": "12",
       "userID": 5,
       "text": "Yeah, it's like watching a parody version.",
       "replies": []
     },
     {
-      "id": 13,
+      "id": "13",
       "userID": 5,
       "text": "Thanks! Downloading now",
       "replies": []
     },
     {
-      "id": 14,
+      "id": "14",
       "userID": 4,
       "text": "Finally caught up with AoT! Thanks!",
       "replies": []
     },
     {
-      "id": 15,
+      "id": "15",
       "userID": 4,
       "text": "One Piece never disappoints!",
       "replies": []
