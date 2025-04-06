@@ -127,7 +127,7 @@ async function reportPost(id, currentReports, onSuccess, onError) {
         const response = await fetch(`http://localhost:3000/posts/${id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ offlineReports: newReports }),
+            body: JSON.stringify({ reports: newReports }),
         });
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
@@ -136,65 +136,93 @@ async function reportPost(id, currentReports, onSuccess, onError) {
         onError(error);
     }
 }
-async function addComment(
-    id,
-    comment,
-    onSuccess,
-    onError,
-) {
+
+// New functions for undoing votes/reports
+
+async function undoUpVotePost(id, currentUpvotes, onSuccess, onError) {
     try {
-        const response = await fetch(`http://localhost:3000/posts/${id}/comments`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(comment),
+        const newUpvotes = currentUpvotes - 1;
+        const response = await fetch(`http://localhost:3000/posts/${id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ upvotes: newUpvotes }),
         });
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+        if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
         onSuccess(data);
     } catch (error) {
         onError(error);
     }
 }
-async function deleteComment(
-    postId,
-    commentId,
-    onSuccess,
-    onError,
-) {
+
+async function undoDownVotePost(id, currentDownvotes, onSuccess, onError) {
     try {
-        const response = await fetch(`http://localhost:3000/posts/${postId}/comments/${commentId}`, {
+        const newDownvotes = currentDownvotes - 1;
+        const response = await fetch(`http://localhost:3000/posts/${id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ downvotes: newDownvotes }),
+        });
+        if (!response.ok) throw new Error("Network response was not ok");
+        const data = await response.json();
+        onSuccess(data);
+    } catch (error) {
+        onError(error);
+    }
+}
+
+async function undoReportPost(id, currentReports, onSuccess, onError) {
+    try {
+        const newReports = currentReports - 1;
+        const response = await fetch(`http://localhost:3000/posts/${id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ reports: newReports }),
+        });
+        if (!response.ok) throw new Error("Network response was not ok");
+        const data = await response.json();
+        onSuccess(data);
+    } catch (error) {
+        onError(error);
+    }
+}
+
+async function addComment(postId, comment, onSuccess, onError) {
+    try {
+        const newComment = { ...comment, postId };
+        const response = await fetch(`http://localhost:3000/comments`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newComment),
+        });
+        if (!response.ok) throw new Error("Network response was not ok");
+        const data = await response.json();
+        onSuccess(data);
+    } catch (error) {
+        onError(error);
+    }
+}
+
+async function deleteComment(commentId, onSuccess, onError) {
+    try {
+        const response = await fetch(`http://localhost:3000/comments/${commentId}`, {
             method: "DELETE",
         });
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+        if (!response.ok) throw new Error("Network response was not ok");
         onSuccess();
     } catch (error) {
         onError(error);
     }
 }
-async function editComment(
-    postId,
-    commentId,
-    comment,
-    onSuccess,
-    onError,
-) {
+
+async function editComment(commentId, comment, onSuccess, onError) {
     try {
-        const response = await fetch(`http://localhost:3000/posts/${postId}/comments/${commentId}`, {
+        const response = await fetch(`http://localhost:3000/comments/${commentId}`, {
             method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(comment),
         });
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+        if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
         onSuccess(data);
     } catch (error) {
@@ -202,8 +230,42 @@ async function editComment(
     }
 }
 
+async function fetchUsers(onSuccess, onError) {
+    try {
+        const response = await fetch(`http://localhost:3000/users`);
+        if (!response.ok) throw new Error("Network response was not ok");
+        const data = await response.json();
+        onSuccess(data);
+    } catch (error) {
+        onError(error);
+    }
+}
 
+async function fetchUserById(id, onSuccess, onError) {
+    try {
+        const response = await fetch(`http://localhost:3000/users/${id}`);
+        if (!response.ok) throw new Error("Network response was not ok");
+        const data = await response.json();
+        onSuccess(data);
+    } catch (error) {
+        onError(error);
+    }
+}
 
+async function createUser(user, onSuccess, onError) {
+    try {
+        const response = await fetch(`http://localhost:3000/users`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(user),
+        });
+        if (!response.ok) throw new Error("Network response was not ok");
+        const data = await response.json();
+        onSuccess(data);
+    } catch (error) {
+        onError(error);
+    }
+}
 
 export {
     fetchPosts,
@@ -214,7 +276,13 @@ export {
     upVotePost,
     downVotePost,
     reportPost,
+    undoUpVotePost,
+    undoDownVotePost,
+    undoReportPost,
     addComment,
     deleteComment,
     editComment,
+    fetchUsers,
+    fetchUserById,
+    createUser,
 };
