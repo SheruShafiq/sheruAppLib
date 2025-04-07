@@ -8,12 +8,14 @@ function Header({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
       <Fade in={isLoggedIn} timeout={1000}>
         <Box sx={{ position: "absolute", width: "100%" }}>
           <Stack flexDirection={"row"} alignItems={"center"}>
-            <TextGlitchEffect
-              text={userData?.displayName}
-              speed={40}
-              letterCase="lowercase"
-              includeSpecialChars
-            />
+            {userData?.displayName && (
+              <TextGlitchEffect
+                text={userData?.displayName}
+                speed={40}
+                letterCase="lowercase"
+                includeSpecialChars
+              />
+            )}
             <Button
               onClick={() => {
                 document.cookie = "userID=; path=/;";

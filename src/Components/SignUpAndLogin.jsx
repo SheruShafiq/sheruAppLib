@@ -91,12 +91,23 @@ function SignUpAndLogin({
             <span
               style={{
                 width: "400px",
+                display: "flex",
+                alignItems: "center",
               }}
               ref={glitch?.ref}
             >
               {mode === "login" ? (
                 <>
-                  No account?{" "}
+                  <img
+                    src="public/noBitches.png"
+                    alt="emoji"
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      marginRight: "2px",
+                    }}
+                  />
+                  No account?
                   <Button
                     variant="text"
                     onClick={() => setMode("signup")}
@@ -107,7 +118,7 @@ function SignUpAndLogin({
                 </>
               ) : (
                 <>
-                  Enter your username and password below:
+                  Been already browsing sauce?{" "}
                   <Button
                     variant="text"
                     onClick={() => setMode("login")}
