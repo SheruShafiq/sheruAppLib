@@ -33,6 +33,11 @@ async function postPost(
     onError,
 ) {
     try {
+        // Ensure new date fields are set
+        const now = new Date().toISOString();
+        post.dateCreated = post.dateCreated || now;
+        post.dateModified = now;
+        post.dateDeleted = post.dateDeleted || "";
         const response = await fetch("http://localhost:3000/posts", {
             method: "POST",
             headers: {
@@ -56,6 +61,8 @@ async function updatePost(
     onError,
 ) {
     try {
+        // Update dateModified field
+        post.dateModified = new Date().toISOString();
         const response = await fetch(`http://localhost:3000/posts/${id}`, {
             method: "PUT",
             headers: {
@@ -78,13 +85,18 @@ async function deletePost(
     onError,
 ) {
     try {
+        // Instead of physical deletion, mark the post as deleted
+        const now = new Date().toISOString();
         const response = await fetch(`http://localhost:3000/posts/${id}`, {
-            method: "DELETE",
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ dateDeleted: now, dateModified: now }),
         });
         if (!response.ok) {
             throw new Error("Network response was not ok");
         }
-        onSuccess();
+        const data = await response.json();
+        onSuccess(data);
     } catch (error) {
         onError(error);
     }
@@ -92,10 +104,11 @@ async function deletePost(
 async function upVotePost(id, currentUpvotes, onSuccess, onError) {
     try {
         const newUpvotes = currentUpvotes + 1;
+        const now = new Date().toISOString();
         const response = await fetch(`http://localhost:3000/posts/${id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ upvotes: newUpvotes }),
+            body: JSON.stringify({ upvotes: newUpvotes, dateModified: now }),
         });
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
@@ -108,10 +121,11 @@ async function upVotePost(id, currentUpvotes, onSuccess, onError) {
 async function downVotePost(id, currentDownvotes, onSuccess, onError) {
     try {
         const newDownvotes = currentDownvotes + 1;
+        const now = new Date().toISOString();
         const response = await fetch(`http://localhost:3000/posts/${id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ downvotes: newDownvotes }),
+            body: JSON.stringify({ downvotes: newDownvotes, dateModified: now }),
         });
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
@@ -124,10 +138,11 @@ async function downVotePost(id, currentDownvotes, onSuccess, onError) {
 async function reportPost(id, currentReports, onSuccess, onError) {
     try {
         const newReports = currentReports + 1;
+        const now = new Date().toISOString();
         const response = await fetch(`http://localhost:3000/posts/${id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ reports: newReports }),
+            body: JSON.stringify({ reports: newReports, dateModified: now }),
         });
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
@@ -141,10 +156,11 @@ async function reportPost(id, currentReports, onSuccess, onError) {
 async function undoUpVotePost(id, currentUpvotes, onSuccess, onError) {
     try {
         const newUpvotes = currentUpvotes - 1;
+        const now = new Date().toISOString();
         const response = await fetch(`http://localhost:3000/posts/${id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ upvotes: newUpvotes }),
+            body: JSON.stringify({ upvotes: newUpvotes, dateModified: now }),
         });
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
@@ -157,10 +173,11 @@ async function undoUpVotePost(id, currentUpvotes, onSuccess, onError) {
 async function undoDownVotePost(id, currentDownvotes, onSuccess, onError) {
     try {
         const newDownvotes = currentDownvotes - 1;
+        const now = new Date().toISOString();
         const response = await fetch(`http://localhost:3000/posts/${id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ downvotes: newDownvotes }),
+            body: JSON.stringify({ downvotes: newDownvotes, dateModified: now }),
         });
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
@@ -173,10 +190,11 @@ async function undoDownVotePost(id, currentDownvotes, onSuccess, onError) {
 async function undoReportPost(id, currentReports, onSuccess, onError) {
     try {
         const newReports = currentReports - 1;
+        const now = new Date().toISOString();
         const response = await fetch(`http://localhost:3000/posts/${id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ reports: newReports }),
+            body: JSON.stringify({ reports: newReports, dateModified: now }),
         });
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
