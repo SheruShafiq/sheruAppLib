@@ -29,7 +29,15 @@ if (Resource === legit) ? upvote : downvote
 ---
 ### Things I have learned due to this project
 1) Being able to use two remotes simultaneously to push to.
+2) How epic JSON server is
 ---
 Yes. Sauce is inspired from the 6 digit sauce. 
 
-
+---
+## TODO:
+1) Are you sure and provide a reason dialogue on report post.
+2) Creating a post formulier
+3) Post page
+4) create a acomment formulier
+5) MUI theming
+6) Creating the UI proper once all functionality is online

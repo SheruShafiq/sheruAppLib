@@ -49,6 +49,7 @@ function App() {
       getUserData(userID);
     }
   }, [userID]);
+  console.log("Rerendering");
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />

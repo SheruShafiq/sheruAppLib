@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button } from "@mui/material";
+import { Button, Collapse, Fade, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -8,6 +8,8 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
 import { loginUser, signUpUser } from "../APICalls";
+import { useGlitch } from "react-powerglitch";
+import { TextGlitchEffect } from "./TextGlitchEffect";
 
 function SignUpAndLogin({
   isOpen,
@@ -20,11 +22,16 @@ function SignUpAndLogin({
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
-
   const handleClose = () => {
     setOpen(false);
   };
-
+  const glitch = useGlitch({
+    timing: {
+      iterations: 1,
+      easing: "ease-in-out",
+    },
+    playMode: "click",
+  });
   const handleSubmit = (event) => {
     event.preventDefault();
     if (mode === "login") {
@@ -70,19 +77,39 @@ function SignUpAndLogin({
           },
         }}
       >
-        <DialogTitle>{mode === "login" ? "Login" : "Signup"}</DialogTitle>
+        <DialogTitle>
+          <TextGlitchEffect
+            text={mode === "login" ? "Login" : "Signup"}
+            speed={40}
+            letterCase="lowercase"
+            includeSpecialChars
+          />
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {mode === "login"
-              ? "No account?"
-              : "Enter your username and password below:"}
-            <Button
-              variant="text"
-              onClick={() => setMode(mode === "login" ? "signup" : "login")}
-              sx={{ textTransform: "none" }}
-            >
-              {mode === "login" ? "Signup" : "Login"}
-            </Button>
+            {mode === "login" ? (
+              <span ref={glitch.ref}>
+                No account?{" "}
+                <Button
+                  variant="text"
+                  onClick={() => setMode("signup")}
+                  sx={{ textTransform: "none" }}
+                >
+                  Signup
+                </Button>
+              </span>
+            ) : (
+              <span ref={glitch.ref}>
+                Enter your username and password below:
+                <Button
+                  variant="text"
+                  onClick={() => setMode("login")}
+                  sx={{ textTransform: "none" }}
+                >
+                  Login
+                </Button>
+              </span>
+            )}
           </DialogContentText>
           <TextField
             autoFocus
@@ -96,19 +123,21 @@ function SignUpAndLogin({
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
-          {mode === "signup" && (
-            <TextField
-              required
-              margin="dense"
-              name="displayName"
-              label="Display Name"
-              type="text"
-              fullWidth
-              variant="standard"
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-            />
-          )}
+          <Collapse in={mode === "signup"}>
+            <Fade in={mode === "signup"}>
+              <TextField
+                required
+                margin="dense"
+                name="displayName"
+                label="Display Name"
+                type="text"
+                fullWidth
+                variant="standard"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+              />
+            </Fade>
+          </Collapse>
           <TextField
             required
             margin="dense"
