@@ -44,7 +44,11 @@ function App() {
       }
     );
   }
-
+  useEffect(() => {
+    if (userID) {
+      getUserData(userID);
+    }
+  }, [userID]);
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />

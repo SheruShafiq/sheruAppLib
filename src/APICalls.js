@@ -282,9 +282,9 @@ async function loginUser({ username, password }, onSuccess, onError) {
     }
 }
 
-async function signUpUser({ username, password }, onSuccess, onError) {
+async function signUpUser({ username, password, displayName }, onSuccess, onError) {
     try {
-        const user = { username: username, password, displayName: username, likedPosts: [], dislikedPosts: [], reportedPosts: [], comments: [] };
+        const user = { username: username, password, displayName: displayName, likedPosts: [], dislikedPosts: [], reportedPosts: [], comments: [] };
         const response = await fetch(`http://localhost:3000/users`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
