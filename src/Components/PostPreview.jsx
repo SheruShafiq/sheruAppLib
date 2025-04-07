@@ -1,5 +1,6 @@
 import { Typography, Box, Button, Link } from "@mui/material";
 import React from "react";
+import { useState } from "react";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 import MessageOutlinedIcon from "@mui/icons-material/MessageOutlined";
@@ -29,10 +30,13 @@ function PostPreview({
   fetchPosts,
   isLoggedIn,
   deteCreated,
+  upvotedByCurrentUser,
+  downvotedByCurrentUser,
+  reportedByCurrentUser,
 }) {
   const { enqueueSnackbar } = useSnackbar();
 
-  const [voted, setVoted] = React.useState({
+  const [voted, setVoted] = useState({
     upvote: false,
     downvote: false,
     report: false,
@@ -127,11 +131,14 @@ function PostPreview({
 
   const convertedDate = new Date(deteCreated);
   const formattedDate = formatDateRedditStyle(convertedDate);
-
   return (
     <Stack gap={1}>
       <Stack flexDirection={"row"} alignItems={"center"} gap={1}>
-        <Link href={`posts/${id}`}>{title}</Link>
+        <Link href={`posts/${id}`}>
+          <Typography fontSize={16} fontWeight={"bold"}>
+            {title}
+          </Typography>
+        </Link>
         <Chip size="small" label={formattedDate} variant="outlined" />{" "}
       </Stack>
       <Box>
@@ -139,24 +146,38 @@ function PostPreview({
         <Typography>{description}</Typography>
         <Button
           onClick={() => handleVote("upvote")}
-          startIcon={<EmojiEmotionsIcon />}
+          startIcon={
+            <EmojiEmotionsIcon
+              htmlColor={upvotedByCurrentUser ? "green" : "inherit"}
+            />
+          }
         >
           {upvotes}
         </Button>
         <Button
           onClick={() => handleVote("downvote")}
-          startIcon={<SentimentVeryDissatisfiedIcon />}
+          startIcon={
+            <SentimentVeryDissatisfiedIcon
+              htmlColor={downvotedByCurrentUser ? "red" : "inherit"}
+            />
+          }
         >
           {downvotes}
         </Button>
         <Button
           onClick={() => handleVote("report")}
-          startIcon={<ErrorOutlinedIcon />}
+          startIcon={
+            <ErrorOutlinedIcon
+              htmlColor={reportedByCurrentUser ? "orange" : "inherit"}
+            />
+          }
         >
           {reports}
         </Button>
         <Button>{category}</Button>
-        <Button startIcon={<MessageOutlinedIcon />}>{commentsCount}</Button>
+        <Button startIcon={<MessageOutlinedIcon color="secondary" />}>
+          {commentsCount}
+        </Button>
       </Box>
     </Stack>
   );

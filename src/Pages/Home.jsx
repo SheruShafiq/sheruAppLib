@@ -34,7 +34,7 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
         />
         <Divider />
       </Stack>
-      <Stack gap={2}>
+      <Stack gap={2} maxWidth={"600px"} alignSelf={"center"}>
         {Object.keys(posts).map((key) => (
           <PostPreview
             isLoggedIn={isLoggedIn}
@@ -50,6 +50,15 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
             key={key}
             id={posts[key].id}
             deteCreated={posts[key].dateCreated}
+            upvotedByCurrentUser={userData?.likedPosts
+              ?.map(Number)
+              .includes(Number(posts[key].id))}
+            downvotedByCurrentUser={userData?.dislikedPosts
+              ?.map(Number)
+              .includes(Number(posts[key].id))}
+            reportedByCurrentUser={userData?.reportedPosts
+              ?.map(Number)
+              .includes(Number(posts[key].id))}
           />
         ))}
       </Stack>
