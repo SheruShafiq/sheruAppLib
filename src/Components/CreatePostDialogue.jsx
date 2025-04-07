@@ -13,10 +13,12 @@ import {
   FormControl,
 } from "@mui/material";
 import { useState } from "react";
-import { postPost } from "../APICalls";
+import { postPost, updateUser } from "../APICalls";
 import { TextGlitchEffect } from "./TextGlitchEffect";
+import { useSnackbar } from "notistack";
 
-function CreatePostDialogue({ isOpen, setOpen, onPostCreated }) {
+function CreatePostDialogue({ isOpen, setOpen, onPostCreated, userData }) {
+  const { enqueueSnackbar } = useSnackbar();
   const [title, setTitle] = useState("");
   const [resource, setResource] = useState("");
   const [description, setDescription] = useState("");
@@ -28,12 +30,13 @@ function CreatePostDialogue({ isOpen, setOpen, onPostCreated }) {
   const handleClose = () => {
     setOpen(false);
   };
-
+  const userID = userData?.id;
   const handleSubmit = (event) => {
     event.preventDefault();
     const newPost = {
       title,
       resource,
+      author: userID,
       description,
       category,
       upvotes: 0,
@@ -45,12 +48,22 @@ function CreatePostDialogue({ isOpen, setOpen, onPostCreated }) {
       newPost,
       (data) => {
         if (onPostCreated) {
-          onPostCreated(data);
+          updateUser(
+            userID,
+            { ...userData, posts: [...userData.posts, data.id] },
+            onPostCreated(),
+            enqueueSnackbar("Post created successfully!", {
+              variant: "success",
+            }),
+            (error) => {
+              enqueueSnackbar(error.message, { variant: "error" });
+            }
+          );
         }
         handleClose();
       },
       (error) => {
-        alert(error.message);
+        enqueueSnackbar(error.message, { variant: "error" });
       }
     );
   };

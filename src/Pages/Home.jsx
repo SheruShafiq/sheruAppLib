@@ -26,7 +26,7 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
 
   return (
     <Stack gap={2} px={2}>
-      <Stack mt={2}>
+      <Stack mt={0.5}>
         <Header
           isLoggedIn={isLoggedIn}
           userData={userData}
@@ -44,6 +44,7 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
         isOpen={isCreatePostModalOpen}
         setOpen={setIsCreatePostModalOpen}
         onPostCreated={fetchPostsHandeled}
+        userData={userData}
       />
       <Stack gap={2} maxWidth={"600px"} alignSelf={"center"} width={"100%"}>
         {Object.keys(posts)

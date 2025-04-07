@@ -317,6 +317,21 @@ async function signUpUser({ username, password, displayName }, onSuccess, onErro
     }
 }
 
+async function updateUser(id, user, onSuccess, onError) {
+    try {
+        const response = await fetch(`${APIURL}/users/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(user),
+        });
+        if (!response.ok) throw new Error("Network response was not ok");
+        const data = await response.json();
+        onSuccess(data);
+    } catch (error) {
+        onError(error);
+    }
+}
+
 export {
     fetchPosts,
     fetchPostById,
@@ -337,4 +352,5 @@ export {
     createUser,
     loginUser,
     signUpUser,
+    updateUser,
 };
