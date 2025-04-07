@@ -4,7 +4,7 @@ import { fetchPosts } from "../APICalls";
 import { useSnackbar } from "notistack";
 import PostPreview from "../Components/PostPreview";
 import Button from "@mui/material/Button";
-function Home({ isLoggedIn, userData, setOpen }) {
+function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
   const [posts, setPosts] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const fetchPostsHandeled = () => {
@@ -30,6 +30,7 @@ function Home({ isLoggedIn, userData, setOpen }) {
             onClick={() => {
               document.cookie = "userID=; path=/;";
               console.log("Logged out");
+              setIsLoggedIn(false);
             }}
           >
             Logout

@@ -30,6 +30,7 @@ function App() {
     return userID || false;
   });
   const [loginDialogue, setLogInDialogue] = useState(false);
+
   function getUserData(userID) {
     fetchUserById(
       userID,
@@ -43,11 +44,7 @@ function App() {
       }
     );
   }
-  useEffect(() => {
-    if (isLoggedIn == typeof "string") {
-      getUserData(userID);
-    }
-  }, [isLoggedIn]);
+
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
@@ -75,12 +72,15 @@ function App() {
           isOpen={loginDialogue}
           setOpen={setLogInDialogue}
           setIsLoggedIn={setIsLoggedIn}
+          setUserID={setUserID}
+          setUserData={setUserData}
         />
         <Routes>
           <Route
             path="/"
             element={
               <Home
+                setIsLoggedIn={setIsLoggedIn}
                 userData={userData}
                 setOpen={setLogInDialogue}
                 isLoggedIn={isLoggedIn}

@@ -284,7 +284,6 @@ async function loginUser({ username, password }, onSuccess, onError) {
 
 async function signUpUser({ username, password }, onSuccess, onError) {
     try {
-        // Use createUser and set username = username, and default displayName for simplicity.
         const user = { username: username, password, displayName: username, likedPosts: [], dislikedPosts: [], reportedPosts: [], comments: [] };
         const response = await fetch(`http://localhost:3000/users`, {
             method: "POST",

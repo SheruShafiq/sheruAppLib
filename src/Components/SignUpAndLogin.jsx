@@ -9,7 +9,13 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
 import { loginUser, signUpUser } from "../APICalls";
 
-function SignUpAndLogin({ isOpen, setOpen, setIsLoggedIn }) {
+function SignUpAndLogin({
+  isOpen,
+  setOpen,
+  setIsLoggedIn,
+  setUserID,
+  setUserData,
+}) {
   const handleClose = () => {
     setOpen(false);
   };
@@ -38,6 +44,8 @@ function SignUpAndLogin({ isOpen, setOpen, setIsLoggedIn }) {
                   { username, password },
                   (user) => {
                     document.cookie = `userID=${user.id}; path=/;`;
+                    setUserID(user.id);
+                    setUserData(user);
                     setIsLoggedIn(true);
                     handleClose();
                   },
