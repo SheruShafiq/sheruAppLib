@@ -80,11 +80,11 @@ export const TextGlitchEffect = ({
       startGlitchEffect({ target: textElementRef.current });
     }
   }, [text]);
-  // useEffect(() => {
-  //   if (textElementRef.current) {
-  //     startGlitchEffect({ target: textElementRef.current });
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (textElementRef.current) {
+      startGlitchEffect({ target: textElementRef.current });
+    }
+  }, []);
 
   return (
     <div
