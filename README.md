@@ -30,9 +30,10 @@ if (Resource === legit) ? upvote : downvote
 ### Things I have learned due to this project
 1) Being able to use two remotes simultaneously to push to.
 2) How epic JSON server is
+3) You can make a shitty DB out of Vercel cache (And it worked WOOO IT FEELS SO GOOD)!
+4) MUI doesn't let u do OLED black as body BG (You need to tell it how ```!important``` it is)
 ---
 Yes. Sauce is inspired from the 6 digit sauce. 
-
 ---
 ## TODO:
 1) Are you sure and provide a reason dialogue on report post.
