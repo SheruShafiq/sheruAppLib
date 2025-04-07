@@ -101,7 +101,7 @@ function SignUpAndLogin({
               {mode === "login" ? (
                 <>
                   <img
-                    src="public/noBitches.png"
+                    src="/noBitches.png"
                     alt="emoji"
                     style={{
                       width: "40px",
