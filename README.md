@@ -41,3 +41,4 @@ Yes. Sauce is inspired from the 6 digit sauce.
 4) create a a comment formulier
 5) MUI theming
 6) Creating the UI proper once all functionality is online
+7) Make API URLs dynamic from .env to make it easy to deploy
