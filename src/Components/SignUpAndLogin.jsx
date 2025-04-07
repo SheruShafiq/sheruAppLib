@@ -91,7 +91,11 @@ function SignUpAndLogin({
           />
         </div>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent
+        sx={{
+          overflowX: "hidden",
+        }}
+      >
         <DialogContentText>
           <span
             style={{

@@ -442,6 +442,34 @@
       "dateCreated": "2023-05-02T12:00:00.000Z",
       "dateModified": "2023-06-15T15:30:00.000Z",
       "dateDeleted": ""
+    },
+    {
+      "id": "ef11",
+      "title": "Sheru's first post",
+      "resource": "https://sauce-weld.vercel.app/",
+      "description": "Sheru's post",
+      "category": "tv-shows",
+      "upvotes": 0,
+      "downvotes": 0,
+      "reports": 0,
+      "comments": [],
+      "dateCreated": "2025-04-07T19:15:15.679Z",
+      "dateModified": "2025-04-07T19:15:34.345Z",
+      "dateDeleted": ""
+    },
+    {
+      "id": "202b",
+      "title": "LmaoXD",
+      "resource": "http://localhost:5173/",
+      "description": "asdasdasd23e3124",
+      "category": "movies",
+      "upvotes": 0,
+      "downvotes": 0,
+      "reports": 0,
+      "comments": [],
+      "dateCreated": "2025-04-07T19:15:56.463Z",
+      "dateModified": "2025-04-07T19:15:56.463Z",
+      "dateDeleted": ""
     }
   ],
   "users": [
