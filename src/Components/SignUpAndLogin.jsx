@@ -18,7 +18,7 @@ function SignUpAndLogin({
   setUserID,
   setUserData,
 }) {
-  const [mode, setMode] = useState("login");
+  const [mode, setMode] = useState("signup");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
@@ -90,7 +90,7 @@ function SignUpAndLogin({
           <DialogContentText>
             <span
               style={{
-                width: "100%",
+                width: "400px",
               }}
               ref={glitch?.ref}
             >

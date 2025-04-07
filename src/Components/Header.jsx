@@ -36,7 +36,7 @@ function Header({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
               width: "fit-content",
             }}
           >
-            Log In
+            Sign up
           </Button>
         </Box>
       </Fade>
