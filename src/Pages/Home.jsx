@@ -34,23 +34,25 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
         />
         <Divider />
       </Stack>
-
-      {Object.keys(posts).map((key) => (
-        <PostPreview
-          isLoggedIn={isLoggedIn}
-          fetchPosts={fetchPostsHandeled}
-          title={posts[key].title}
-          resource={posts[key].resource}
-          description={posts[key].description}
-          upvotes={posts[key].upvotes}
-          downvotes={posts[key].downvotes}
-          reports={posts[key].reports}
-          category={posts[key].category}
-          commentsCount={posts[key].comments.length}
-          key={key}
-          id={posts[key].id}
-        />
-      ))}
+      <Stack gap={2}>
+        {Object.keys(posts).map((key) => (
+          <PostPreview
+            isLoggedIn={isLoggedIn}
+            fetchPosts={fetchPostsHandeled}
+            title={posts[key].title}
+            resource={posts[key].resource}
+            description={posts[key].description}
+            upvotes={posts[key].upvotes}
+            downvotes={posts[key].downvotes}
+            reports={posts[key].reports}
+            category={posts[key].category}
+            commentsCount={posts[key].comments.length}
+            key={key}
+            id={posts[key].id}
+            deteCreated={posts[key].dateCreated}
+          />
+        ))}
+      </Stack>
     </Stack>
   );
 }

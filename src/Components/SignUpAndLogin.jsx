@@ -18,7 +18,7 @@ function SignUpAndLogin({
   setUserID,
   setUserData,
 }) {
-  const [mode, setMode] = useState("signup");
+  const [mode, setMode] = useState("login");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
