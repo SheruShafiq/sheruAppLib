@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Stack, Box, Divider } from "@mui/material";
+import { Stack, Divider } from "@mui/material";
 import { fetchPosts } from "../APICalls";
 import { useSnackbar } from "notistack";
 import PostPreview from "../Components/PostPreview";
-import Button from "@mui/material/Button";
+import Header from "../Components/Header";
+
 function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
   const [posts, setPosts] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
+
   const fetchPostsHandeled = () => {
     fetchPosts(
       (posts) => {
@@ -23,36 +25,20 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
 
   return (
     <Stack gap={2}>
-      {isLoggedIn ? (
-        <Stack flexDirection={"row"} alignItems={"center"}>
-          <Box>{userData?.displayName}</Box>
-          <Button
-            onClick={() => {
-              document.cookie = "userID=; path=/;";
-              console.log("Logged out");
-              setIsLoggedIn(false);
-            }}
-          >
-            Logout
-          </Button>
-        </Stack>
-      ) : (
-        <Button
-          onClick={() => {
-            setOpen(true);
-          }}
-          sx={{
-            width: "fit-content",
-          }}
-        >
-          Log In
-        </Button>
-      )}
-      <Divider />
+      <Stack>
+        <Header
+          isLoggedIn={isLoggedIn}
+          userData={userData}
+          setOpen={setOpen}
+          setIsLoggedIn={setIsLoggedIn}
+        />
+        <Divider />
+      </Stack>
+
       {Object.keys(posts).map((key) => (
         <PostPreview
-          isLoggedIn={isLoggedIn} // changed: pass isLoggedIn prop to PostPreview
-          fetchPosts={fetchPostsHandeled} // changed: pass function reference instead of invoking it
+          isLoggedIn={isLoggedIn}
+          fetchPosts={fetchPostsHandeled}
           title={posts[key].title}
           resource={posts[key].resource}
           description={posts[key].description}

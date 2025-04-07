@@ -32,6 +32,7 @@ function SignUpAndLogin({
     },
     playMode: "click",
   });
+
   const handleSubmit = (event) => {
     event.preventDefault();
     if (mode === "login") {
@@ -87,29 +88,36 @@ function SignUpAndLogin({
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {mode === "login" ? (
-              <span ref={glitch.ref}>
-                No account?{" "}
-                <Button
-                  variant="text"
-                  onClick={() => setMode("signup")}
-                  sx={{ textTransform: "none" }}
-                >
-                  Signup
-                </Button>
-              </span>
-            ) : (
-              <span ref={glitch.ref}>
-                Enter your username and password below:
-                <Button
-                  variant="text"
-                  onClick={() => setMode("login")}
-                  sx={{ textTransform: "none" }}
-                >
-                  Login
-                </Button>
-              </span>
-            )}
+            <span
+              style={{
+                width: "100%",
+              }}
+              ref={glitch?.ref}
+            >
+              {mode === "login" ? (
+                <>
+                  No account?{" "}
+                  <Button
+                    variant="text"
+                    onClick={() => setMode("signup")}
+                    sx={{ textTransform: "none" }}
+                  >
+                    Signup
+                  </Button>
+                </>
+              ) : (
+                <>
+                  Enter your username and password below:
+                  <Button
+                    variant="text"
+                    onClick={() => setMode("login")}
+                    sx={{ textTransform: "none" }}
+                  >
+                    Login
+                  </Button>
+                </>
+              )}
+            </span>
           </DialogContentText>
           <TextField
             autoFocus
@@ -123,7 +131,7 @@ function SignUpAndLogin({
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
-          <Collapse in={mode === "signup"}>
+          <Collapse in={mode === "signup"} unmountOnExit>
             <Fade in={mode === "signup"}>
               <TextField
                 required
@@ -160,7 +168,12 @@ function SignUpAndLogin({
             }
             type="submit"
           >
-            {mode === "login" ? "Login" : "Signup"}
+            <TextGlitchEffect
+              text={mode === "login" ? "Login" : "Signup"}
+              speed={40}
+              letterCase="lowercase"
+              includeSpecialChars
+            />
           </Button>
         </DialogActions>
       </Dialog>

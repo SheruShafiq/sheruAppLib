@@ -12,3 +12,6 @@ html, body{
 .MuiAlert-action {
   padding-top: 0px !important;
 }
+.PC_SignupAndLogin_LoginMessage, .PC_SignupAndLogin_SignupMessage{
+  width: 400px;
+}
