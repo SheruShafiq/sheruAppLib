@@ -51,6 +51,9 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
           .reverse()
           .map((key) => (
             <PostPreview
+              isPostAuthoredByCurrentUser={userData?.posts
+                ?.map(Number)
+                .includes(Number(posts[key].id))}
               isLoggedIn={isLoggedIn}
               fetchPosts={fetchPostsHandeled}
               title={posts[key].title}

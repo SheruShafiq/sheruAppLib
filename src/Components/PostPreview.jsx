@@ -30,6 +30,7 @@ function PostPreview({
   upvotedByCurrentUser,
   downvotedByCurrentUser,
   reportedByCurrentUser,
+  isPostAuthoredByCurrentUser,
 }) {
   const { enqueueSnackbar } = useSnackbar();
 
@@ -178,7 +179,13 @@ function PostPreview({
   };
 
   return (
-    <Stack gap={1} width={"100%"}>
+    <Stack
+      gap={1}
+      width={"100%"}
+      border={isPostAuthoredByCurrentUser ? "1px solid #ccc" : "none"}
+      p={2}
+      borderRadius={2}
+    >
       <Stack direction="row" alignItems="center" gap={1}>
         <Link href={`posts/${id}`}>
           <Typography fontSize={16} fontWeight="bold">

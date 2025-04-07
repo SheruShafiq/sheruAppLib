@@ -530,7 +530,22 @@
       "reports": 0,
       "comments": [],
       "dateCreated": "2025-04-07T19:31:55.679Z",
-      "dateModified": "2025-04-07T19:31:55.679Z",
+      "dateModified": "2025-04-07T19:52:58.200Z",
+      "dateDeleted": ""
+    },
+    {
+      "id": "a798",
+      "title": "LmaoXD",
+      "resource": "https://mui.com/material-ui/material-icons/?srsltid=AfmBOoqSBKq8RhWNtmM99Wgio9dtNPSn2GEQe5wf956XXmPyYxwia2Ex&query=Add&selected=Add",
+      "author": "1",
+      "description": "asdadadasd",
+      "category": "movies",
+      "upvotes": 0,
+      "downvotes": 0,
+      "reports": 0,
+      "comments": [],
+      "dateCreated": "2025-04-07T19:57:34.948Z",
+      "dateModified": "2025-04-07T19:57:34.948Z",
       "dateDeleted": ""
     }
   ],
@@ -542,7 +557,8 @@
       "displayName": "Stewie Griffin",
       "posts": [
         1,
-        "5632"
+        "5632",
+        "a798"
       ],
       "likedPosts": [
         1,
