@@ -42,3 +42,10 @@ Yes. Sauce is inspired from the 6 digit sauce.
 5) MUI theming
 6) Creating the UI proper once all functionality is online
 7) Make API URLs dynamic from .env to make it easy to deploy
+   
+---
+
+- Frontend Server: 
+``` npm run dev ```
+- Backend Server:
+  ``` npx json-server db.json ```
