@@ -178,7 +178,7 @@ function PostPreview({
   };
 
   return (
-    <Stack gap={1}>
+    <Stack gap={1} width={"100%"}>
       <Stack direction="row" alignItems="center" gap={1}>
         <Link href={`posts/${id}`}>
           <Typography fontSize={16} fontWeight="bold">
@@ -188,8 +188,12 @@ function PostPreview({
         <Chip size="small" label={formattedDate} variant="outlined" />
       </Stack>
       <Box>
-        <Typography>{resource}</Typography>
-        <Typography>{description}</Typography>
+        <Typography textOverflow={"ellipsis"} overflow={"clip"}>
+          {resource}
+        </Typography>
+        <Typography textOverflow={"ellipsis"} overflow={"clip"}>
+          {description}
+        </Typography>
         <Button
           onClick={() => handleVote("upvote")}
           disabled={isVoting}

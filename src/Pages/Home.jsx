@@ -24,17 +24,21 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
   }, []);
 
   return (
-    <Stack gap={2}>
-      <Stack>
+    <Stack gap={2} px={2}>
+      <Stack mt={2}>
         <Header
           isLoggedIn={isLoggedIn}
           userData={userData}
           setOpen={setOpen}
           setIsLoggedIn={setIsLoggedIn}
         />
-        <Divider />
+        <Divider
+          sx={{
+            borderColor: "white",
+          }}
+        />
       </Stack>
-      <Stack gap={2} maxWidth={"600px"} alignSelf={"center"}>
+      <Stack gap={2} maxWidth={"600px"} alignSelf={"center"} width={"100%"}>
         {Object.keys(posts).map((key) => (
           <PostPreview
             isLoggedIn={isLoggedIn}

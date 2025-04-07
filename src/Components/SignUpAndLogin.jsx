@@ -68,7 +68,11 @@ function SignUpAndLogin({
       open={isOpen}
       onClose={handleClose}
       sx={{
-        "& .MuiDialog-paper": { minWidth: "40vw" },
+        "& .MuiDialog-paper": {
+          maxWidth: "40vw",
+          width: "100%",
+          minWidth: "280px",
+        },
       }}
       slotProps={{
         paper: {
@@ -91,7 +95,8 @@ function SignUpAndLogin({
         <DialogContentText>
           <span
             style={{
-              width: "400px",
+              maxWidth: "400px",
+              width: "100%",
               display: "flex",
               alignItems: "center",
             }}
