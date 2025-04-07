@@ -79,12 +79,14 @@ function SignUpAndLogin({
         }}
       >
         <DialogTitle>
-          <TextGlitchEffect
-            text={mode === "login" ? "Login" : "Signup"}
-            speed={40}
-            letterCase="lowercase"
-            includeSpecialChars
-          />
+          <div key={`TextGlitchEffect-dialog-${mode}`}>
+            <TextGlitchEffect
+              text={mode === "login" ? "Login" : "Signup"}
+              speed={40}
+              letterCase="lowercase"
+              includeSpecialChars
+            />
+          </div>
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -137,6 +139,7 @@ function SignUpAndLogin({
             name="username"
             label="Username"
             type="text"
+            autoComplete="username"
             fullWidth
             variant="standard"
             value={username}
@@ -165,6 +168,7 @@ function SignUpAndLogin({
             type="password"
             fullWidth
             variant="standard"
+            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -179,12 +183,7 @@ function SignUpAndLogin({
             }
             type="submit"
           >
-            <TextGlitchEffect
-              text={mode === "login" ? "Login" : "Signup"}
-              speed={40}
-              letterCase="lowercase"
-              includeSpecialChars
-            />
+            {mode === "login" ? "Login" : "Signup"}
           </Button>
         </DialogActions>
       </Dialog>

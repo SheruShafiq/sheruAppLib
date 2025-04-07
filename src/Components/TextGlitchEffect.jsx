@@ -1,51 +1,43 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 
-const LETTERS = 'abcdefghijklmnopqrstuvwxyz';
+const LETTERS = "abcdefghijklmnopqrstuvwxyz";
 
-const SPECIAL_CHARS = '~`!@#$%^&*()-+=/*[]{}:<>?';
+const SPECIAL_CHARS = "~`!@#$%^&*()-+=/*[]{}:<>?";
 
-const NUMBERS = '0123456789';
-
-interface Props {
-  text: string;
-  speed?: number;
-  letterCase?: 'lowercase' | 'uppercase';
-  className?: string;
-  type?: 'alphabets' | 'specialchars' | 'numbers' | 'alphanumeric';
-}
+const NUMBERS = "0123456789";
 
 const TYPES = {
-  ALPHABETS: 'alphabets',
-  NUMBERS: 'numbers',
-  SPECIAL_CHARS: 'specialchars',
-  ALPHA_NUMERIC: 'alphanumeric',
-} as const;
+  ALPHABETS: "alphabets",
+  NUMBERS: "numbers",
+  SPECIAL_CHARS: "specialchars",
+  ALPHA_NUMERIC: "alphanumeric",
+};
 
-let interval: any = null;
+let interval = null;
 
-export const TextGlitchEffect: React.FC<Props> = ({
+export const TextGlitchEffect = ({
   text,
   speed = 30,
-  letterCase = 'uppercase',
+  letterCase = "uppercase",
   className,
-  type = 'alphabets',
+  type = "alphabets",
 }) => {
-  const textElementRef = useRef<HTMLDivElement>(null);
+  const textElementRef = useRef(null);
 
-  const startGlitchEffect = (event: any): void => {
+  const startGlitchEffect = (event) => {
     let iteration = 0;
 
     clearInterval(interval);
 
-    interval = setInterval((): void => {
+    interval = setInterval(() => {
       event.target.innerText = event.target.innerText
-        .split('')
-        .map((alphabet: string, index: number) => {
+        .split("")
+        .map((alphabet, index) => {
           if (index < iteration) {
             return event.target.dataset.value[index];
           }
 
-          let letters: string = LETTERS;
+          let letters = LETTERS;
 
           // Assigning the letters string based on the type
           switch (type) {
@@ -66,14 +58,14 @@ export const TextGlitchEffect: React.FC<Props> = ({
           const individualLetter =
             letters[Math.floor(Math.random() * letters.length)];
 
-          return letterCase === 'uppercase'
+          return letterCase === "uppercase"
             ? individualLetter.toUpperCase()
             : individualLetter.toLowerCase();
 
           //Build will fail because of the unused variable
           return alphabet;
         })
-        .join('');
+        .join("");
 
       if (iteration >= event.target.dataset.value.length) {
         clearInterval(interval);
@@ -88,11 +80,11 @@ export const TextGlitchEffect: React.FC<Props> = ({
       startGlitchEffect({ target: textElementRef.current });
     }
   }, [text]);
-  useEffect(() => {
-    if (textElementRef.current) {
-      startGlitchEffect({ target: textElementRef.current });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (textElementRef.current) {
+  //     startGlitchEffect({ target: textElementRef.current });
+  //   }
+  // }, []);
 
   return (
     <div
@@ -100,7 +92,7 @@ export const TextGlitchEffect: React.FC<Props> = ({
       data-value={text}
       className={className}
       style={{
-        fontVariantNumeric: 'tabular-nums',
+        fontVariantNumeric: "tabular-nums",
       }}
     >
       {text}
