@@ -5,9 +5,9 @@
       "title": "Family Guy S12E06",
       "resource": "https://www.dailymotion.com/video/x7xyz12",
       "description": "Found this episode on Dailymotion after it was removed from Hulu in my region (Germany). There's one unskippable ad at the start, but if you use uBlock Origin, it skips the mid-rolls. Also recommend setting quality manually to 720p, auto mode keeps lagging.",
-      "upvotes": 53,
-      "downvotes": 5,
-      "reports": 3,
+      "upvotes": 6,
+      "downvotes": 10,
+      "reports": "11",
       "category": "tv-shows",
       "comments": [
         1,
@@ -15,7 +15,7 @@
         4
       ],
       "dateCreated": "2025-04-07T10:15:23.345Z",
-      "dateModified": "2025-04-07T12:34:27.260Z",
+      "dateModified": "2025-04-07T13:05:19.603Z",
       "dateDeleted": ""
     },
     {
@@ -23,16 +23,16 @@
       "title": "Breaking Bad S02E01",
       "resource": "https://archive.org/details/breaking-bad-s02e01",
       "description": "Surprisingly still up on Archive.org. Not the best quality (480p), but totally watchable. No ads, no login required. Use VLC to skip through slow buffering.",
-      "upvotes": 78,
-      "downvotes": 2,
-      "reports": 1,
+      "upvotes": 72,
+      "downvotes": 5,
+      "reports": 2,
       "category": "tv-shows",
       "comments": [
         5,
         6
       ],
       "dateCreated": "2023-06-07T14:45:00.001Z",
-      "dateModified": "2023-07-08T17:20:11.456Z",
+      "dateModified": "2025-04-07T12:57:35.844Z",
       "dateDeleted": ""
     },
     {
@@ -56,13 +56,13 @@
       "title": "Rick and Morty S05E03",
       "resource": "https://www.bilibili.tv/en/video/20001234",
       "description": "Bilibili TV still has this ep up. Needs free account, but it worked in the Netherlands without VPN. Subtitles are sometimes out of sync though.",
-      "upvotes": 89,
-      "downvotes": 6,
+      "upvotes": 94,
+      "downvotes": 1,
       "reports": 2,
       "category": "tv-shows",
       "comments": [],
       "dateCreated": "2023-07-01T09:00:00.000Z",
-      "dateModified": "2023-08-01T10:15:00.000Z",
+      "dateModified": "2025-04-07T12:51:00.794Z",
       "dateDeleted": ""
     },
     {
@@ -70,13 +70,13 @@
       "title": "The Office (US) S04E10",
       "resource": "https://www.veoh.com/watch/v12345678",
       "description": "Had to enable Flash via an old browser to get this to work (Veoh is pretty outdated). Use Brave browser for best compatibility. No subtitles, and skips a few seconds in the middle.",
-      "upvotes": 42,
-      "downvotes": 15,
+      "upvotes": 45,
+      "downvotes": 18,
       "reports": 7,
       "category": "tv-shows",
       "comments": [],
       "dateCreated": "2023-06-10T08:30:00.000Z",
-      "dateModified": "2023-07-15T09:45:00.000Z",
+      "dateModified": "2025-04-07T12:43:47.049Z",
       "dateDeleted": ""
     },
     {
@@ -115,7 +115,7 @@
       "title": "Avatar (2009) - Cam Rip",
       "resource": "https://streamtape.com/v/abcdef123456",
       "description": "Potato quality cam rip from Streamtape. Audio is muffled, and there are watermarks, but it's the only way to watch it in my region without paying. Use headphones to improve audio slightly.",
-      "upvotes": 23,
+      "upvotes": 24,
       "downvotes": 67,
       "reports": 15,
       "category": "movies",
@@ -123,7 +123,7 @@
         10
       ],
       "dateCreated": "2024-03-10T05:15:00.000Z",
-      "dateModified": "2023-04-15T06:30:00.000Z",
+      "dateModified": "2025-04-07T12:58:55.110Z",
       "dateDeleted": ""
     },
     {
@@ -131,13 +131,13 @@
       "title": "Stranger Things S01E01 - DMCA free mirror",
       "resource": "https://fmovies.to/watch/stranger-things-12345/123456",
       "description": "FMovies mirror of the first episode. Works without VPN but expect pop-under ads when clicking. Use an ad-blocker!",
-      "upvotes": 123,
+      "upvotes": 124,
       "downvotes": 12,
-      "reports": 6,
+      "reports": 7,
       "category": "tv-shows",
       "comments": [],
       "dateCreated": "2023-02-20T04:00:00.000Z",
-      "dateModified": "2023-03-25T05:15:00.000Z",
+      "dateModified": "2025-04-07T12:58:42.808Z",
       "dateDeleted": ""
     },
     {
@@ -147,14 +147,14 @@
       "description": "Full movie on YouTube. It's mirrored and sped up slightly to avoid copyright, but it's watchable. Watch before it gets taken down!",
       "upvotes": 98,
       "downvotes": 22,
-      "reports": 8,
+      "reports": 9,
       "category": "movies",
       "comments": [
         11,
         12
       ],
       "dateCreated": "2023-01-15T03:45:00.000Z",
-      "dateModified": "2023-02-20T04:00:00.000Z",
+      "dateModified": "2025-04-07T12:56:56.793Z",
       "dateDeleted": ""
     },
     {
@@ -162,7 +162,7 @@
       "title": "The Lion King (1994)",
       "resource": "https://mega.nz/#!abcdefgh!ABCDEFGHIJKL",
       "description": "MEGA link to a high quality MKV rip. You'll need a MEGA account to download if the file is too big. Password is 'hakunamatata'.",
-      "upvotes": 201,
+      "upvotes": 202,
       "downvotes": 3,
       "reports": 1,
       "category": "movies",
@@ -170,7 +170,7 @@
         13
       ],
       "dateCreated": "2023-03-05T02:30:00.000Z",
-      "dateModified": "2023-04-10T03:45:00.000Z",
+      "dateModified": "2025-04-07T12:55:17.925Z",
       "dateDeleted": ""
     },
     {
@@ -178,13 +178,13 @@
       "title": "Seinfeld S09E11 - The Betrayal",
       "resource": "https://www.bitchute.com/video/abcdefghijkl/",
       "description": "Seinfeld episode on Bitchute. No ads, but the video is potato quality. Good if you just want the audio or don't care about visuals.",
-      "upvotes": 34,
-      "downvotes": 21,
+      "upvotes": 35,
+      "downvotes": 22,
       "reports": 9,
       "category": "tv-shows",
       "comments": [],
       "dateCreated": "2023-02-10T01:15:00.000Z",
-      "dateModified": "2023-03-15T02:30:00.000Z",
+      "dateModified": "2025-04-07T12:54:45.243Z",
       "dateDeleted": ""
     },
     {

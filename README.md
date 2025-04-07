@@ -38,6 +38,6 @@ Yes. Sauce is inspired from the 6 digit sauce.
 1) Are you sure and provide a reason dialogue on report post.
 2) Creating a post formulier
 3) Post page
-4) create a acomment formulier
+4) create a a comment formulier
 5) MUI theming
 6) Creating the UI proper once all functionality is online

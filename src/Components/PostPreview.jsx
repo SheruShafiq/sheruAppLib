@@ -1,12 +1,9 @@
-import { Typography, Box, Button, Link } from "@mui/material";
-import React from "react";
-import { useState } from "react";
-import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
+import React, { useEffect, useState } from "react";
+import { Typography, Box, Button, Link, Chip, Stack } from "@mui/material";
+import InsertEmotionIcon from "@mui/icons-material/InsertEmoticon";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 import MessageOutlinedIcon from "@mui/icons-material/MessageOutlined";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
-import Chip from "@mui/material/Chip";
-import Stack from "@mui/material/Stack";
 import {
   upVotePost,
   downVotePost,
@@ -36,70 +33,21 @@ function PostPreview({
 }) {
   const { enqueueSnackbar } = useSnackbar();
 
-  const [voted, setVoted] = useState({
-    upvote: false,
-    downvote: false,
-    report: false,
-  });
+  // Local state to track the current vote and report status
+  const [voteStatus, setVoteStatus] = useState("none"); // "up", "down", or "none"
+  const [reported, setReported] = useState(false);
+  const [isVoting, setIsVoting] = useState(false);
 
-  const handleVote = (voteType) => {
-    if (!isLoggedIn) {
-      enqueueSnackbar("Please log in to vote", { variant: "login" });
-      return;
-    }
+  // Sync local state with props whenever they change
+  useEffect(() => {
+    if (upvotedByCurrentUser) setVoteStatus("up");
+    else if (downvotedByCurrentUser) setVoteStatus("down");
+    else setVoteStatus("none");
 
-    const voteActions = {
-      upvote: {
-        vote: upVotePost,
-        undo: undoUpVotePost,
-        count: upvotes,
-      },
-      downvote: {
-        vote: downVotePost,
-        undo: undoDownVotePost,
-        count: downvotes,
-      },
-      report: {
-        vote: reportPost,
-        undo: undoReportPost,
-        count: reports,
-      },
-    };
+    setReported(!!reportedByCurrentUser);
+  }, [upvotedByCurrentUser, downvotedByCurrentUser, reportedByCurrentUser]);
 
-    const { vote, undo, count } = voteActions[voteType];
-
-    if (voted[voteType]) {
-      undo(
-        id,
-        count,
-        (data) => {
-          setVoted((prev) => ({ ...prev, [voteType]: false }));
-          fetchPosts();
-        },
-        (error) => {
-          enqueueSnackbar(
-            `Network error, couldn't undo ${voteType}. Try again later.`,
-            { variant: "error" }
-          );
-        }
-      );
-    } else {
-      vote(
-        id,
-        count,
-        (data) => {
-          setVoted((prev) => ({ ...prev, [voteType]: true }));
-          fetchPosts();
-        },
-        (error) => {
-          enqueueSnackbar(
-            `Network error, couldn't ${voteType}. Try again later.`,
-            { variant: "error" }
-          );
-        }
-      );
-    }
-  };
+  // Helper to format the date in Reddit style.
   const formatDateRedditStyle = (date) => {
     const now = new Date();
     const diffInSeconds = Math.floor((now - date) / 1000);
@@ -131,24 +79,123 @@ function PostPreview({
 
   const convertedDate = new Date(deteCreated);
   const formattedDate = formatDateRedditStyle(convertedDate);
+
+  // Handle vote actions using async/await for clarity.
+  const handleVote = async (type) => {
+    if (!isLoggedIn) {
+      enqueueSnackbar("Please log in to vote", { variant: "login" });
+      return;
+    }
+    if (isVoting) return; // Prevent concurrent actions
+    setIsVoting(true);
+
+    try {
+      if (type === "upvote") {
+        if (voteStatus === "up") {
+          // If already upvoted, undo it.
+          await undoUpVotePost(id, upvotes, () => {
+            console.log("success"),
+              () => {
+                console.log("failure");
+              };
+          });
+          setVoteStatus("none");
+        } else {
+          // If a downvote exists, undo it first.
+          if (voteStatus === "down") {
+            await undoDownVotePost(id, downvotes, () => {
+              console.log("success"),
+                () => {
+                  console.log("failure");
+                };
+            });
+          }
+          await upVotePost(id, upvotes, () => {
+            console.log("success"),
+              () => {
+                console.log("failure");
+              };
+          });
+          setVoteStatus("up");
+        }
+      } else if (type === "downvote") {
+        if (voteStatus === "down") {
+          // If already downvoted, undo it.
+          await undoDownVotePost(id, downvotes, () => {
+            console.log("success"),
+              () => {
+                console.log("failure");
+              };
+          });
+          setVoteStatus("none");
+        } else {
+          // If an upvote exists, undo it first.
+          if (voteStatus === "up") {
+            await undoUpVotePost(id, upvotes, () => {
+              console.log("success"),
+                () => {
+                  console.log("failure");
+                };
+            });
+          }
+          await downVotePost(id, downvotes, () => {
+            console.log("success"),
+              () => {
+                console.log("failure");
+              };
+          });
+          setVoteStatus("down");
+        }
+      } else if (type === "report") {
+        if (reported) {
+          // Undo report if already reported.
+          await undoReportPost(id, reports, () => {
+            console.log("success"),
+              () => {
+                console.log("failure");
+              };
+          });
+          setReported(false);
+        } else {
+          await reportPost(id, reports, () => {
+            console.log("success"),
+              () => {
+                console.log("failure");
+              };
+          });
+          setReported(true);
+        }
+      }
+      // Refresh the post data after a successful action.
+      fetchPosts();
+    } catch (error) {
+      enqueueSnackbar(`Network error on: ${type}. ${error}`, {
+        variant: "error",
+      });
+    } finally {
+      setIsVoting(false);
+    }
+  };
+
   return (
     <Stack gap={1}>
-      <Stack flexDirection={"row"} alignItems={"center"} gap={1}>
+      <Stack direction="row" alignItems="center" gap={1}>
         <Link href={`posts/${id}`}>
-          <Typography fontSize={16} fontWeight={"bold"}>
+          <Typography fontSize={16} fontWeight="bold">
             {title}
           </Typography>
         </Link>
-        <Chip size="small" label={formattedDate} variant="outlined" />{" "}
+        <Chip size="small" label={formattedDate} variant="outlined" />
       </Stack>
       <Box>
         <Typography>{resource}</Typography>
         <Typography>{description}</Typography>
         <Button
           onClick={() => handleVote("upvote")}
+          disabled={isVoting}
           startIcon={
-            <EmojiEmotionsIcon
-              htmlColor={upvotedByCurrentUser ? "green" : "inherit"}
+            <InsertEmotionIcon
+              htmlColor={voteStatus === "up" ? "rgb(137 255 137)" : "inherit"}
             />
           }
         >
@@ -156,9 +203,10 @@ function PostPreview({
         </Button>
         <Button
           onClick={() => handleVote("downvote")}
+          disabled={isVoting}
           startIcon={
             <SentimentVeryDissatisfiedIcon
-              htmlColor={downvotedByCurrentUser ? "red" : "inherit"}
+              htmlColor={voteStatus === "down" ? "rgb(230 109 109)" : "inherit"}
             />
           }
         >
@@ -166,9 +214,10 @@ function PostPreview({
         </Button>
         <Button
           onClick={() => handleVote("report")}
+          disabled={isVoting}
           startIcon={
             <ErrorOutlinedIcon
-              htmlColor={reportedByCurrentUser ? "orange" : "inherit"}
+              htmlColor={reported ? "rgb(248 190 82)" : "inherit"}
             />
           }
         >
