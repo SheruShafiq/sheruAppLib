@@ -13,7 +13,7 @@ function Header({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
                 text={userData?.displayName}
                 speed={40}
                 letterCase="lowercase"
-                includeSpecialChars
+                type="alphanumeric"
               />
             )}
             <Button

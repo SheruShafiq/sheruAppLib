@@ -18,7 +18,7 @@ export const TextGlitchEffect = ({
   speed = 30,
   letterCase = "uppercase",
   className,
-  type = "alphabets",
+  type = "alphanumeric",
 }) => {
   const intervalRef = useRef(null);
   const textElementRef = useRef(null);
