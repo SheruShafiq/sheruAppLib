@@ -13,8 +13,6 @@ const TYPES = {
   ALPHA_NUMERIC: "alphanumeric",
 };
 
-let interval = null;
-
 export const TextGlitchEffect = ({
   text,
   speed = 30,
@@ -22,14 +20,17 @@ export const TextGlitchEffect = ({
   className,
   type = "alphabets",
 }) => {
+  const intervalRef = useRef(null);
   const textElementRef = useRef(null);
 
   const startGlitchEffect = (event) => {
     let iteration = 0;
 
-    clearInterval(interval);
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
 
-    interval = setInterval(() => {
+    intervalRef.current = setInterval(() => {
       event.target.innerText = event.target.innerText
         .split("")
         .map((alphabet, index) => {
@@ -37,9 +38,8 @@ export const TextGlitchEffect = ({
             return event.target.dataset.value[index];
           }
 
-          let letters = LETTERS;
+          let letters = "";
 
-          // Assigning the letters string based on the type
           switch (type) {
             case TYPES.ALPHABETS:
               letters = LETTERS;
@@ -53,6 +53,8 @@ export const TextGlitchEffect = ({
             case TYPES.ALPHA_NUMERIC:
               letters = LETTERS + NUMBERS;
               break;
+            default:
+              letters = LETTERS;
           }
 
           const individualLetter =
@@ -68,7 +70,7 @@ export const TextGlitchEffect = ({
         .join("");
 
       if (iteration >= event.target.dataset.value.length) {
-        clearInterval(interval);
+        clearInterval(intervalRef.current);
       }
 
       iteration += 1 / 3;
@@ -79,11 +81,17 @@ export const TextGlitchEffect = ({
     if (textElementRef.current) {
       startGlitchEffect({ target: textElementRef.current });
     }
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, [text]);
   useEffect(() => {
     if (textElementRef.current) {
       startGlitchEffect({ target: textElementRef.current });
     }
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, []);
 
   return (

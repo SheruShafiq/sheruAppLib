@@ -113,7 +113,11 @@ function SignUpAndLogin({
                   <Button
                     variant="text"
                     onClick={() => setMode("signup")}
-                    sx={{ textTransform: "none" }}
+                    sx={{
+                      textTransform: "none",
+                      ml: "4px",
+                      fontWeight: "bold",
+                    }}
                   >
                     Signup
                   </Button>
@@ -124,7 +128,11 @@ function SignUpAndLogin({
                   <Button
                     variant="text"
                     onClick={() => setMode("login")}
-                    sx={{ textTransform: "none" }}
+                    sx={{
+                      textTransform: "none",
+                      ml: "4px",
+                      fontWeight: "bold",
+                    }}
                   >
                     Login
                   </Button>
@@ -183,7 +191,12 @@ function SignUpAndLogin({
             }
             type="submit"
           >
-            {mode === "login" ? "Login" : "Signup"}
+            <TextGlitchEffect
+              text={mode === "login" ? "Login" : "Signup"}
+              speed={40}
+              letterCase="lowercase"
+              includeSpecialChars
+            />
           </Button>
         </DialogActions>
       </Dialog>
