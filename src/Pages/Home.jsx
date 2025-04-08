@@ -76,6 +76,7 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
               reportedByCurrentUser={userData?.reportedPosts
                 ?.map(Number)
                 .includes(Number(posts[key].id))}
+              userData={userData}
             />
           ))}
       </Stack>

@@ -11,6 +11,7 @@ import {
   undoUpVotePost,
   undoDownVotePost,
   undoReportPost,
+  updateUser, // ensure updateUser is imported
 } from "../APICalls";
 import { useSnackbar } from "notistack";
 
@@ -31,6 +32,7 @@ function PostPreview({
   downvotedByCurrentUser,
   reportedByCurrentUser,
   isPostAuthoredByCurrentUser,
+  userData,
 }) {
   const { enqueueSnackbar } = useSnackbar();
 
@@ -93,78 +95,232 @@ function PostPreview({
     try {
       if (type === "upvote") {
         if (voteStatus === "up") {
-          // If already upvoted, undo it.
-          await undoUpVotePost(id, upvotes, () => {
-            console.log("success"),
-              () => {
-                console.log("failure");
-              };
-          });
+          // Undo upvote if already upvoted.
+          await undoUpVotePost(
+            id,
+            upvotes,
+            () => {
+              console.log("success");
+            },
+            (error) => {
+              console.log("failure", error);
+            }
+          );
           setVoteStatus("none");
+          // remove post id from likedPosts if present
+          const updatedUser = {
+            ...userData,
+            likedPosts: (userData?.likedPosts || []).filter(
+              (pid) => pid !== id
+            ),
+          };
+          updateUser(
+            userData.id,
+            updatedUser,
+            () => {
+              console.log("User update success");
+            },
+            (error) => {
+              console.error("User update error", error);
+            }
+          );
         } else {
           // If a downvote exists, undo it first.
           if (voteStatus === "down") {
-            await undoDownVotePost(id, downvotes, () => {
-              console.log("success"),
-                () => {
-                  console.log("failure");
-                };
-            });
-          }
-          await upVotePost(id, upvotes, () => {
-            console.log("success"),
+            await undoDownVotePost(
+              id,
+              downvotes,
               () => {
-                console.log("failure");
-              };
-          });
+                console.log("success");
+              },
+              (error) => {
+                console.log("failure", error);
+              }
+            );
+            // Remove id from dislikedPosts.
+            const updatedUser = {
+              ...userData,
+              dislikedPosts: userData.dislikedPosts.filter((pid) => pid !== id),
+            };
+            updateUser(
+              userData.id,
+              updatedUser,
+              () => {
+                console.log("User updated");
+              },
+              (error) => {
+                console.error(error);
+              }
+            );
+          }
+          await upVotePost(
+            id,
+            upvotes,
+            () => {
+              console.log("success");
+            },
+            (error) => {
+              console.log("failure", error);
+            }
+          );
           setVoteStatus("up");
+          // Add id to likedPosts.
+          const updatedUser = {
+            ...userData,
+            likedPosts: [...userData.likedPosts, id],
+          };
+          updateUser(
+            userData.id,
+            updatedUser,
+            () => {
+              console.log("User updated");
+            },
+            (error) => {
+              console.error(error);
+            }
+          );
         }
       } else if (type === "downvote") {
         if (voteStatus === "down") {
           // If already downvoted, undo it.
-          await undoDownVotePost(id, downvotes, () => {
-            console.log("success"),
-              () => {
-                console.log("failure");
-              };
-          });
+          await undoDownVotePost(
+            id,
+            downvotes,
+            () => {
+              console.log("success");
+            },
+            (error) => {
+              console.log("failure", error);
+            }
+          );
           setVoteStatus("none");
+          // remove post id from dislikedPosts
+          const updatedUser = {
+            ...userData,
+            dislikedPosts: userData.dislikedPosts.filter((pid) => pid !== id),
+          };
+          updateUser(
+            userData.id,
+            updatedUser,
+            () => {
+              console.log("User updated");
+            },
+            (error) => {
+              console.error(error);
+            }
+          );
         } else {
           // If an upvote exists, undo it first.
           if (voteStatus === "up") {
-            await undoUpVotePost(id, upvotes, () => {
-              console.log("success"),
-                () => {
-                  console.log("failure");
-                };
-            });
-          }
-          await downVotePost(id, downvotes, () => {
-            console.log("success"),
+            await undoUpVotePost(
+              id,
+              upvotes,
               () => {
-                console.log("failure");
-              };
-          });
+                console.log("success");
+              },
+              (error) => {
+                console.log("failure", error);
+              }
+            );
+            // remove id from likedPosts.
+            const updatedUser = {
+              ...userData,
+              likedPosts: userData.likedPosts.filter((pid) => pid !== id),
+            };
+            updateUser(
+              userData.id,
+              updatedUser,
+              () => {
+                console.log("User updated");
+              },
+              (error) => {
+                console.error(error);
+              }
+            );
+          }
+          await downVotePost(
+            id,
+            downvotes,
+            () => {
+              console.log("success");
+            },
+            (error) => {
+              console.log("failure", error);
+            }
+          );
           setVoteStatus("down");
+          // Add id to dislikedPosts.
+          const updatedUser = {
+            ...userData,
+            dislikedPosts: [...userData.dislikedPosts, id],
+          };
+          updateUser(
+            userData.id,
+            updatedUser,
+            () => {
+              console.log("User updated");
+            },
+            (error) => {
+              console.error(error);
+            }
+          );
         }
       } else if (type === "report") {
         if (reported) {
           // Undo report if already reported.
-          await undoReportPost(id, reports, () => {
-            console.log("success"),
-              () => {
-                console.log("failure");
-              };
-          });
+          await undoReportPost(
+            id,
+            reports,
+            () => {
+              console.log("success");
+            },
+            (error) => {
+              console.log("failure", error);
+            }
+          );
           setReported(false);
+          // remove post id from reportedPosts.
+          const updatedUser = {
+            ...userData,
+            reportedPosts: userData.reportedPosts.filter((pid) => pid !== id),
+          };
+          updateUser(
+            userData.id,
+            updatedUser,
+            () => {
+              console.log("User updated");
+            },
+            (error) => {
+              console.error(error);
+            }
+          );
         } else {
-          await reportPost(id, reports, () => {
-            console.log("success"),
-              () => {
-                console.log("failure");
-              };
-          });
+          await reportPost(
+            id,
+            reports,
+            () => {
+              console.log("success");
+            },
+            (error) => {
+              console.log("failure", error);
+            }
+          );
           setReported(true);
+          // Add id to reportedPosts.
+          const updatedUser = {
+            ...userData,
+            reportedPosts: [...userData.reportedPosts, id],
+          };
+          updateUser(
+            userData.id,
+            updatedUser,
+            () => {
+              console.log("User updated");
+            },
+            (error) => {
+              console.error(error);
+            }
+          );
         }
       }
       // Refresh the post data after a successful action.

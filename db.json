@@ -464,13 +464,13 @@
       "resource": "https://www.123movies.net/tv/sherlock-2010-tt1475582/season-1/episode-1",
       "author": 2,
       "description": "First episode of Sherlock on 123movies. Adblocker is essential.",
-      "upvotes": 83,
+      "upvotes": 84,
       "downvotes": 7,
       "reports": 2,
       "category": "tv-shows",
       "comments": [],
       "dateCreated": "2023-05-02T12:00:00.000Z",
-      "dateModified": "2023-06-15T15:30:00.000Z",
+      "dateModified": "2025-04-08T17:25:09.008Z",
       "dateDeleted": ""
     },
     {
@@ -510,12 +510,12 @@
       "author": "1",
       "description": "No hassle",
       "category": "tv-shows",
-      "upvotes": 0,
+      "upvotes": 1,
       "downvotes": 0,
       "reports": 0,
       "comments": [],
       "dateCreated": "2025-04-07T19:22:53.096Z",
-      "dateModified": "2025-04-07T19:22:57.206Z",
+      "dateModified": "2025-04-08T17:19:54.703Z",
       "dateDeleted": ""
     },
     {
@@ -525,12 +525,12 @@
       "author": "1",
       "description": "asdasda",
       "category": "tv-shows",
-      "upvotes": 0,
-      "downvotes": 0,
-      "reports": 0,
+      "upvotes": 1,
+      "downvotes": 1,
+      "reports": 1,
       "comments": [],
       "dateCreated": "2025-04-07T19:31:55.679Z",
-      "dateModified": "2025-04-07T19:52:58.200Z",
+      "dateModified": "2025-04-08T17:29:06.803Z",
       "dateDeleted": ""
     },
     {
@@ -540,12 +540,12 @@
       "author": "1",
       "description": "asdadadasd",
       "category": "movies",
-      "upvotes": 0,
-      "downvotes": 0,
+      "upvotes": 5,
+      "downvotes": 1,
       "reports": 0,
       "comments": [],
       "dateCreated": "2025-04-07T19:57:34.948Z",
-      "dateModified": "2025-04-07T19:57:34.948Z",
+      "dateModified": "2025-04-08T17:28:46.612Z",
       "dateDeleted": ""
     }
   ],
@@ -563,13 +563,16 @@
       "likedPosts": [
         1,
         2,
-        3
+        3,
+        "5632"
       ],
       "dislikedPosts": [
-        4
+        4,
+        "a798"
       ],
       "reportedPosts": [
-        5
+        5,
+        "5632"
       ],
       "comments": [
         1,
