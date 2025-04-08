@@ -15,3 +15,77 @@ html, body{
 .PC_SignupAndLogin_LoginMessage, .PC_SignupAndLogin_SignupMessage{
   width: 400px;
 }
+
+
+
+.neonText {
+  color: #fff;
+  text-shadow:
+    0 0 10px #fff,
+    0 0 20px #fff,
+    0 0 30px #fff,
+    0 0 50px #ff0066,
+    0 0 100px #ff0066,
+    0 0 120px #ff0066,
+    0 0 140px #ff0066,
+    0 0 200px #ff0066;
+}
+  
+  
+
+.HeaderLogo{
+  text-align: center;
+  font-weight: 400;
+}
+  .HeaderLogo:hover{
+    cursor: pointer;
+  }
+.HeaderLogo{
+  font-family: "Sacramento", sans-serif !important;
+  font-size: 3.2rem;
+  animation: pulsate 1.5s infinite alternate;  
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -20%;
+}
+
+@keyframes pulsate {
+    
+  100% {
+
+      text-shadow:
+      0 0 8px #fff,
+      0 0 16px #fff,
+      0 0 24px #fff,
+      0 0 50px #ff0066,
+      0 0 100px #ff0066,
+      0 0 120px #ff0066,
+      0 0 140px #ff0066,
+      0 0 200px #ff0066;
+  
+  }
+  
+  0% {
+
+    text-shadow:
+    0 0 4px #fff,
+    0 0 8px #fff,
+    0 0 12px #fff,
+    0 0 20px #ff0066,
+    0 0 45px #ff0066,
+    0 0 55px #ff0066,
+    0 0 70px #ff0066,
+    0 0 80px #ff0066;
+
+}
+}
+.loggedInUserName{
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .loggedInUserName{
+    display: none;
+  }
+}

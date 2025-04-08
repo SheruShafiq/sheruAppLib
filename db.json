@@ -541,11 +541,11 @@
       "description": "asdadadasd",
       "category": "movies",
       "upvotes": 5,
-      "downvotes": 1,
+      "downvotes": 0,
       "reports": 0,
       "comments": [],
       "dateCreated": "2025-04-07T19:57:34.948Z",
-      "dateModified": "2025-04-08T17:28:46.612Z",
+      "dateModified": "2025-04-08T18:34:32.784Z",
       "dateDeleted": ""
     }
   ],

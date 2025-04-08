@@ -29,10 +29,14 @@ function SignUpAndLogin({
     timing: {
       iterations: 1,
       easing: "ease-in-out",
+      duration: 1000,
+    },
+    glitchTimeSpan: {
+      start: 0,
+      end: 0.1,
     },
     playMode: "click",
   });
-
   const handleSubmit = (event) => {
     event.preventDefault();
     if (mode === "login") {
@@ -82,14 +86,12 @@ function SignUpAndLogin({
       }}
     >
       <DialogTitle>
-        <div key={`TextGlitchEffect-dialog-${mode}`}>
-          <TextGlitchEffect
-            text={mode === "login" ? "Login" : "Signup"}
-            speed={40}
-            letterCase="lowercase"
-            includeSpecialChars
-          />
-        </div>
+        <TextGlitchEffect
+          text={mode === "login" ? "Login" : "Signup"}
+          speed={40}
+          letterCase="lowercase"
+          includeSpecialChars
+        />
       </DialogTitle>
       <DialogContent
         sx={{

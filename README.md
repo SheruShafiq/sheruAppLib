@@ -37,13 +37,14 @@ Yes. Sauce is inspired from the 6 digit sauce.
 ---
 ## TODO:
 1) Are you sure and provide a reason dialogue on report post.
-2) Creating a post formulier
+2) <del>Creating a post formulier</del>
 3) Post page
 4) create a a comment formulier
 5) MUI theming
 6) Creating the UI proper once all functionality is online
 7) Loaders for litteraly everything and check if all API calls are async
-8) Make API URLs dynamic from .env to make it easy to deploy
+8) Once I have the loaders, redo the functionality on system to remove any dependency on localdata and make it completely live only.
+9) <del>Make API URLs dynamic from .env to make it easy to deploy</del>
    
 ---
 

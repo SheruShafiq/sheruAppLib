@@ -21,6 +21,18 @@ const darkTheme = createTheme({
     primary: {
       main: "#ffffff",
     },
+    success: {
+      main: "rgb(137 255 137)",
+    },
+    error: {
+      main: "rgb(230 109 109)",
+    },
+    warning: {
+      main: "rgb(248 190 82)",
+    },
+    info: {
+      main: "rgb(194 82 128)",
+    },
   },
 });
 function App() {
@@ -64,9 +76,7 @@ function App() {
         autoHideDuration={2000}
         ref={notistackRef}
         Components={{
-          error: (props) => (
-            <CustomSnackbar {...props} severity="error" variant="outlined" />
-          ),
+          error: (props) => <CustomSnackbar {...props} severity="error" />,
           login: (props) => (
             <CustomSnackbar
               {...props}

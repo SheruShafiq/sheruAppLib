@@ -14,7 +14,6 @@ import {
   updateUser, // ensure updateUser is imported
 } from "../APICalls";
 import { useSnackbar } from "notistack";
-
 function PostPreview({
   title,
   resource,
@@ -362,7 +361,7 @@ function PostPreview({
           disabled={isVoting}
           startIcon={
             <InsertEmotionIcon
-              htmlColor={voteStatus === "up" ? "rgb(137 255 137)" : "inherit"}
+              color={voteStatus === "up" ? "success" : "inherit"}
             />
           }
         >
@@ -373,7 +372,7 @@ function PostPreview({
           disabled={isVoting}
           startIcon={
             <SentimentVeryDissatisfiedIcon
-              htmlColor={voteStatus === "down" ? "rgb(230 109 109)" : "inherit"}
+              color={voteStatus === "down" ? "error" : "inherit"}
             />
           }
         >
@@ -383,9 +382,7 @@ function PostPreview({
           onClick={() => handleVote("report")}
           disabled={isVoting}
           startIcon={
-            <ErrorOutlinedIcon
-              htmlColor={reported ? "rgb(248 190 82)" : "inherit"}
-            />
+            <ErrorOutlinedIcon color={reported ? "warning" : "inherit"} />
           }
         >
           {reports}
