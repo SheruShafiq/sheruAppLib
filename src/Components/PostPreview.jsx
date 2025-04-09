@@ -14,6 +14,8 @@ import {
   updateUser, // ensure updateUser is imported
 } from "../APICalls";
 import { useSnackbar } from "notistack";
+import LinkIcon from "@mui/icons-material/Link";
+import { TextGlitchEffect } from "./TextGlitchEffect";
 function PostPreview({
   title,
   resource,
@@ -344,11 +346,15 @@ function PostPreview({
     }
   };
 
+  const formattedResource =
+    resource.length > 20 ? `${resource.slice(0, 20)}...` : resource;
+
   return (
     <Stack
       gap={1}
       width={"100%"}
-      className={isPostAuthoredByCurrentUser ? "neonBorder" : "standardBorder"}
+      // className={isPostAuthoredByCurrentUser ? "neonBorder" : "standardBorder"}
+      className="standardBorder"
       p={2}
     >
       <Stack direction="row" alignItems="center" gap={1}>
@@ -360,28 +366,53 @@ function PostPreview({
         <Chip size="small" label={formattedDate} variant="outlined" />
       </Stack>
       <Box>
-        <Typography textOverflow={"ellipsis"} overflow={"clip"}>
-          {resource}
-        </Typography>
-        <Box
-          sx={{ position: "relative", maxHeight: "100px", overflow: "hidden" }}
-          ref={descRef}
-        >
-          <Typography>{description}</Typography>
-          {isOverflow && (
-            <Box
+        <Stack gap={1}>
+          <Link href={resource} target="_blank" rel="noopener noreferrer">
+            <Stack
+              gap={1}
+              width={"fit-content"}
+              px={1}
+              maxWidth={"50%"}
+              flexDirection={"row"}
               sx={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                width: "100%",
-                height: "100px",
-                background: "linear-gradient(transparent, black)",
+                backgroundColor: "#ffffff21",
+                borderRadius: "5px",
               }}
-            />
-          )}
-        </Box>
+            >
+              <LinkIcon />
+              <TextGlitchEffect
+                text={formattedResource}
+                speed={20}
+                letterCase="lowercase"
+                className="resourceLink"
+                type="alphanumeric"
+              />
+            </Stack>
+          </Link>
 
+          <Box
+            sx={{
+              position: "relative",
+              maxHeight: "100px",
+              overflow: "hidden",
+            }}
+            ref={descRef}
+          >
+            <Typography>{description}</Typography>
+            {isOverflow && (
+              <Box
+                sx={{
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100px",
+                  background: "linear-gradient(transparent, black)",
+                }}
+              />
+            )}
+          </Box>
+        </Stack>
         <Button
           onClick={() => handleVote("upvote")}
           disabled={isVoting}
