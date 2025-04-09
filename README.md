@@ -40,7 +40,7 @@ Yes. Sauce is inspired from the 6 digit sauce.
 2) <del>Creating a post formulier</del>
 3) Post page
 4) create a a comment formulier
-5) MUI theming
+5) <del>MUI theming</del>
 6) Creating the UI proper once all functionality is online
 7) Loaders for litteraly everything and check if all API calls are async
 8) Once I have the loaders, redo the functionality on system to remove any dependency on localdata and make it completely live only.
