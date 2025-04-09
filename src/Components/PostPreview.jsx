@@ -365,6 +365,14 @@ function PostPreview({
           </Typography>
         </Link>
         <Chip size="small" label={formattedDate} variant="outlined" />
+        {isPostAuthoredByCurrentUser && (
+          <Chip
+            size="small"
+            label="Your Post"
+            variant="outlined"
+            color="success"
+          />
+        )}
       </Stack>
       <Box>
         <Stack gap={1}>

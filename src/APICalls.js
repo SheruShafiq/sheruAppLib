@@ -22,7 +22,7 @@ async function fetchPostsPaginated(
     maxPostPreviews
 ) {
     try {
-        const response = await fetch(`${APIURL}/posts?_sort=id,-views&_page=${page}&_per_page=${maxPostPreviews}`);
+        const response = await fetch(`${APIURL}/posts?_sort=dateCreated&_order=desc&_page=${page}&_limit=${maxPostPreviews}`);
         if (!response.ok) {
             throw new Error("Network response was not ok");
         }
@@ -356,7 +356,6 @@ async function signUpUser({ username, password, displayName }, onSuccess, onErro
 
 async function updateUser(id, user, onSuccess, onError) {
     try {
-        // Update the modification timestamp
         user.dateModified = new Date().toISOString();
         const response = await fetch(`${APIURL}/users/${id}`, {
             method: "PUT",

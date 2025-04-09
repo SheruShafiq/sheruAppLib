@@ -52,7 +52,6 @@ function Header({
                 variant="outlined"
                 onClick={() => {
                   document.cookie = "userID=; path=/;";
-                  console.log("Logged out");
                   setIsLoggedIn(false);
                 }}
               >

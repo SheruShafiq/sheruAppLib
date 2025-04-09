@@ -68,9 +68,7 @@ function App() {
       getUserData(userID);
     }
   }, [userID]);
-  useEffect(() => {
-    console.log("userData", userData);
-  }, [userData]);
+
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
