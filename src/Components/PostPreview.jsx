@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Typography, Box, Button, Link, Chip, Stack } from "@mui/material";
 import InsertEmotionIcon from "@mui/icons-material/InsertEmoticon";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
@@ -39,6 +39,17 @@ function PostPreview({
   const [voteStatus, setVoteStatus] = useState("none"); // "up", "down", or "none"
   const [reported, setReported] = useState(false);
   const [isVoting, setIsVoting] = useState(false);
+
+  const descRef = useRef(null);
+  const [isOverflow, setIsOverflow] = useState(false);
+
+  useEffect(() => {
+    if (descRef.current) {
+      setIsOverflow(
+        descRef.current.scrollHeight > descRef.current.clientHeight
+      );
+    }
+  }, [description]);
 
   // Sync local state with props whenever they change
   useEffect(() => {
@@ -337,9 +348,8 @@ function PostPreview({
     <Stack
       gap={1}
       width={"100%"}
-      border={isPostAuthoredByCurrentUser ? "1px solid #ccc" : "none"}
+      className={isPostAuthoredByCurrentUser ? "neonBorder" : "standardBorder"}
       p={2}
-      borderRadius={2}
     >
       <Stack direction="row" alignItems="center" gap={1}>
         <Link href={`posts/${id}`}>
@@ -353,9 +363,25 @@ function PostPreview({
         <Typography textOverflow={"ellipsis"} overflow={"clip"}>
           {resource}
         </Typography>
-        <Typography textOverflow={"ellipsis"} overflow={"clip"}>
-          {description}
-        </Typography>
+        <Box
+          sx={{ position: "relative", maxHeight: "100px", overflow: "hidden" }}
+          ref={descRef}
+        >
+          <Typography>{description}</Typography>
+          {isOverflow && (
+            <Box
+              sx={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                width: "100%",
+                height: "100px",
+                background: "linear-gradient(transparent, black)",
+              }}
+            />
+          )}
+        </Box>
+
         <Button
           onClick={() => handleVote("upvote")}
           disabled={isVoting}
