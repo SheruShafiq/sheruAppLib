@@ -303,7 +303,7 @@
       "downvotes": 23,
       "reports": 10,
       "category": "movies",
-      "comments": [],
+      "comments": [1,2,3,4,5],
       "dateCreated": "2023-01-01T00:00:00.000Z",
       "dateModified": "2023-02-05T01:15:00.000Z",
       "dateDeleted": ""
@@ -1040,7 +1040,7 @@
       "id": "5",
       "userID": 2,
       "text": "Confirmed! Archive version still works as of today. Thx for the tip.",
-      "replies": [],
+      "replies": [6,7],
       "dateCreated": "2023-04-15T06:00:00.000Z",
       "dateModified": "2023-05-20T07:15:00.000Z",
       "dateDeleted": ""
@@ -1049,7 +1049,7 @@
       "id": "6",
       "userID": 3,
       "text": "Audio's slightly desynced, but still better than nothing.",
-      "replies": [],
+      "replies": [8],
       "dateCreated": "2023-03-30T05:30:00.000Z",
       "dateModified": "2023-05-05T06:45:00.000Z",
       "dateDeleted": ""

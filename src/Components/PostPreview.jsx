@@ -348,7 +348,7 @@ function PostPreview({
   };
 
   const formattedResource =
-    resource.length > 20 ? `${resource.slice(0, 20)}...` : resource;
+    resource?.length > 20 ? `${resource.slice(0, 20)}...` : resource;
 
   return (
     <Stack
@@ -356,7 +356,8 @@ function PostPreview({
       width={"100%"}
       // className={isPostAuthoredByCurrentUser ? "neonBorder" : "standardBorder"}
       className={pageVariant ? "" : "standardBorder"}
-      p={2}
+      py={2}
+      px={pageVariant ? 0 : 2}
     >
       <Stack direction="row" alignItems="center" gap={1}>
         <Link href={`posts/${id}`} target="_blank">

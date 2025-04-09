@@ -288,6 +288,11 @@ async function fetchUserById(id, onSuccess, onError) {
     }
 }
 
+// New helper function to get user by ID (alias for fetchUserById)
+function getUserByID(userId, onSuccess, onError) {
+    fetchUserById(userId, onSuccess, onError);
+}
+
 async function createUser(user, onSuccess, onError) {
     try {
         const now = new Date().toISOString();
@@ -398,6 +403,7 @@ export {
     editComment,
     fetchUsers,
     fetchUserById,
+    getUserByID, // newly added
     createUser,
     loginUser,
     signUpUser,

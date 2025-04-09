@@ -39,7 +39,9 @@ html, body{
   width: 400px;
 }
 
-
+.postPageCommentsTitle{
+  font-size: 1.4rem;
+}
 .HeaderLogo{
   text-align: center;
   font-weight: 400;

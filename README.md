@@ -46,6 +46,8 @@ Yes. Sauce is inspired from the 6 digit sauce.
 7) Loaders for litteraly everything and check if all API calls are async
 8) Once I have the loaders, redo the functionality on system to remove any dependency on localdata and make it completely live only.
 9) <del>Make API URLs dynamic from .env to make it easy to deploy</del>
+10) Sorting functionality on Home
+11) Search functionality on Home
    
 ---
 

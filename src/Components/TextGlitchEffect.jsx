@@ -69,7 +69,7 @@ export const TextGlitchEffect = ({
         })
         .join("");
 
-      if (iteration >= event.target.dataset.value.length) {
+      if (iteration >= event.target.dataset.value?.length) {
         clearInterval(intervalRef.current);
       }
 

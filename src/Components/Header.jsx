@@ -2,7 +2,8 @@ import React from "react";
 import { Box, Button, Fade, IconButton, Stack } from "@mui/material";
 import { TextGlitchEffect } from "./TextGlitchEffect";
 import AddIcon from "@mui/icons-material/Add";
-import { useGlitch } from "react-powerglitch";
+
+import SauceLogo from "./SauceLogo";
 
 function Header({
   isLoggedIn,
@@ -11,18 +12,6 @@ function Header({
   setIsLoggedIn,
   setIsCreatePostModalOpen,
 }) {
-  const glitch = useGlitch({
-    timing: {
-      iterations: 1,
-      easing: "ease-in-out",
-      duration: 1000,
-    },
-    glitchTimeSpan: {
-      start: 0,
-      end: 0.5,
-    },
-    playMode: "hover",
-  });
   return (
     <Box sx={{ position: "relative", minHeight: "3rem" }} mt={0.5}>
       <Fade in={isLoggedIn} timeout={1000}>
@@ -58,21 +47,7 @@ function Header({
                 Logout
               </Button>
             </Stack>
-            <Box
-              sx={{
-                minWidth: "90px",
-                justifyItems: "center",
-              }}
-              ref={glitch?.ref}
-            >
-              <TextGlitchEffect
-                text={"Sauce"}
-                speed={100}
-                letterCase="lowercase"
-                className="neonText HeaderLogo"
-                type="alphanumeric"
-              />
-            </Box>
+            <SauceLogo />
             <IconButton
               variant="outlined"
               onClick={() => {
@@ -111,22 +86,7 @@ function Header({
               Login
             </Button>
           </Box>
-          <Box
-            sx={{
-              minWidth: "90px",
-              justifyItems: "center",
-            }}
-            ref={glitch?.ref}
-          >
-            <TextGlitchEffect
-              text={"Sauce"}
-              speed={100}
-              letterCase="lowercase"
-              className="neonText HeaderLogo"
-              type="alphanumeric"
-            />
-          </Box>
-
+          <SauceLogo />
           <Box
             sx={{
               visibility: "hidden",
