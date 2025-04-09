@@ -68,7 +68,9 @@ function App() {
       getUserData(userID);
     }
   }, [userID]);
-  console.log("Rerendering");
+  useEffect(() => {
+    console.log("userData", userData);
+  }, [userData]);
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
@@ -110,7 +112,17 @@ function App() {
             }
           />
           <Route path="*" element={<Four0Four />} />
-          <Route path="/posts/:id" element={<Post isLoggedIn={isLoggedIn} />} />
+          <Route
+            path="/posts/:id"
+            element={
+              <Post
+                setIsLoggedIn={setIsLoggedIn}
+                userData={userData}
+                setOpen={setLogInDialogue}
+                isLoggedIn={isLoggedIn}
+              />
+            }
+          />
         </Routes>
       </SnackbarProvider>
     </ThemeProvider>

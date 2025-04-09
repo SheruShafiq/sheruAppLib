@@ -33,6 +33,7 @@ function PostPreview({
   downvotedByCurrentUser,
   reportedByCurrentUser,
   isPostAuthoredByCurrentUser,
+  pageVariant,
   userData,
 }) {
   const { enqueueSnackbar } = useSnackbar();
@@ -354,11 +355,11 @@ function PostPreview({
       gap={1}
       width={"100%"}
       // className={isPostAuthoredByCurrentUser ? "neonBorder" : "standardBorder"}
-      className="standardBorder"
+      className={pageVariant ? "" : "standardBorder"}
       p={2}
     >
       <Stack direction="row" alignItems="center" gap={1}>
-        <Link href={`posts/${id}`}>
+        <Link href={`posts/${id}`} target="_blank">
           <Typography fontSize={16} fontWeight="bold">
             {title}
           </Typography>
@@ -367,7 +368,7 @@ function PostPreview({
       </Stack>
       <Box>
         <Stack gap={1}>
-          <Link href={resource} target="_blank" rel="noopener noreferrer">
+          <Link href={resource} target="_blank">
             <Stack
               gap={1}
               width={"fit-content"}
@@ -392,7 +393,7 @@ function PostPreview({
           <Box
             sx={{
               position: "relative",
-              maxHeight: "100px",
+              maxHeight: pageVariant ? "100%" : "100px",
               overflow: "hidden",
             }}
             ref={descRef}

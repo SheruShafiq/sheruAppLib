@@ -24,7 +24,7 @@ function Header({
     playMode: "hover",
   });
   return (
-    <Box sx={{ position: "relative", minHeight: "3rem" }}>
+    <Box sx={{ position: "relative", minHeight: "3rem" }} mt={0.5}>
       <Fade in={isLoggedIn} timeout={1000}>
         <Box
           sx={{

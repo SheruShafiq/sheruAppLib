@@ -57,7 +57,7 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
   const lastPage = metaData?.last?.match(/_page=(\d+)/)?.[1];
   return (
     <Stack gap={2} px={2} pb={2}>
-      <Stack mt={0.5}>
+      <Stack>
         <Header
           isLoggedIn={isLoggedIn}
           userData={userData}
@@ -98,6 +98,7 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
           >
             {Object.keys(posts).map((key) => (
               <PostPreview
+                pageVariant={false}
                 isPostAuthoredByCurrentUser={userData?.posts
                   ?.map(Number)
                   .includes(Number(posts[key].id))}

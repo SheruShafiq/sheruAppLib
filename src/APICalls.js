@@ -290,6 +290,11 @@ async function fetchUserById(id, onSuccess, onError) {
 
 async function createUser(user, onSuccess, onError) {
     try {
+        const now = new Date().toISOString();
+        // Ensure required date fields are present
+        user.dateCreated = user.dateCreated || now;
+        user.dateModified = user.dateModified || now;
+        user.dateDeleted = user.dateDeleted || "";
         const response = await fetch(`${APIURL}/users`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -321,7 +326,21 @@ async function loginUser({ username, password }, onSuccess, onError) {
 
 async function signUpUser({ username, password, displayName }, onSuccess, onError) {
     try {
-        const user = { username: username, password, displayName: displayName, likedPosts: [], dislikedPosts: [], reportedPosts: [], comments: [] };
+        const now = new Date().toISOString();
+        // Create a new user with all required fields
+        const user = {
+            username,
+            password,
+            displayName,
+            likedPosts: [],
+            dislikedPosts: [],
+            reportedPosts: [],
+            comments: [],
+            posts: [],
+            dateCreated: now,
+            dateModified: now,
+            dateDeleted: ""
+        };
         const response = await fetch(`${APIURL}/users`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -337,11 +356,24 @@ async function signUpUser({ username, password, displayName }, onSuccess, onErro
 
 async function updateUser(id, user, onSuccess, onError) {
     try {
+        // Update the modification timestamp
+        user.dateModified = new Date().toISOString();
         const response = await fetch(`${APIURL}/users/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(user),
         });
+        if (!response.ok) throw new Error("Network response was not ok");
+        const data = await response.json();
+        onSuccess(data);
+    } catch (error) {
+        onError(error);
+    }
+}
+
+async function getCommentByID(commentId, onSuccess, onError) {
+    try {
+        const response = await fetch(`${APIURL}/comments/${commentId}`);
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
         onSuccess(data);
@@ -371,5 +403,6 @@ export {
     loginUser,
     signUpUser,
     updateUser,
-    fetchPostsPaginated
+    fetchPostsPaginated,
+    getCommentByID
 };
