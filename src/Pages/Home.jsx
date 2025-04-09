@@ -25,15 +25,15 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
   const [posts, setPosts] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
-  const [data, setData] = useState(null);
+  const [metaData, setmetaData] = useState(null);
 
   const fetchPostsHandeled = (page, maxPostPreviews) => {
     setFetchingPosts(true);
     setTimeout(() => {
       fetchPostsPaginated(
         (posts) => {
-          setPosts(posts?.data);
-          setData(posts);
+          setPosts(posts?.posts);
+          setmetaData(posts?.metadata);
           setFetchingPosts(false);
         },
         (error) => {
@@ -50,6 +50,11 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
   }, [curentPage]);
 
   const isNoPosts = posts.length === 0;
+
+  const firstPage = metaData?.first?.match(/_page=(\d+)/)?.[1];
+  const prevPage = metaData?.prev?.match(/_page=(\d+)/)?.[1];
+  const nextPage = metaData?.next?.match(/_page=(\d+)/)?.[1];
+  const lastPage = metaData?.last?.match(/_page=(\d+)/)?.[1];
   return (
     <Stack gap={2} px={2} pb={2}>
       <Stack mt={0.5}>
@@ -147,7 +152,7 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
           <IconButton
             variant="outlined"
             onClick={() => {
-              setCuurentPage(data?.first);
+              setCuurentPage(firstPage);
             }}
             disabled={curentPage <= 1 || fetchingInitialPosts}
           >
@@ -156,7 +161,7 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
           <IconButton
             variant="outlined"
             onClick={() => {
-              setCuurentPage(data?.prev);
+              setCuurentPage(prevPage);
             }}
             disabled={curentPage <= 1 || fetchingInitialPosts}
           >
@@ -167,18 +172,18 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
           <IconButton
             variant="outlined"
             onClick={() => {
-              setCuurentPage(data?.next);
+              setCuurentPage(nextPage);
             }}
-            disabled={fetchingInitialPosts || curentPage >= data?.last}
+            disabled={fetchingInitialPosts || curentPage >= lastPage}
           >
             <KeyboardArrowRightIcon />
           </IconButton>
           <IconButton
             variant="outlined"
             onClick={() => {
-              setCuurentPage(data?.last);
+              setCuurentPage(lastPage);
             }}
-            disabled={fetchingInitialPosts || curentPage >= data?.last}
+            disabled={fetchingInitialPosts || curentPage >= lastPage}
           >
             <KeyboardDoubleArrowRightIcon />
           </IconButton>
