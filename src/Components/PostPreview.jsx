@@ -382,7 +382,7 @@ function PostPreview({
               <LinkIcon />
               <TextGlitchEffect
                 text={formattedResource}
-                speed={20}
+                speed={40}
                 letterCase="lowercase"
                 className="resourceLink"
                 type="alphanumeric"
