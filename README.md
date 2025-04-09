@@ -32,6 +32,7 @@ if (Resource === legit) ? upvote : downvote
 2) How epic JSON server is
 3) You can make a shitty DB out of Vercel cache (And it worked WOOO IT FEELS SO GOOD)!
 4) MUI doesn't let u do OLED black as body BG (You need to tell it how ```!important``` it is)
+5) for some messed up reason, iOS (as far as I can tell only iOS) scales your website to make font be 16px. In result destroying every formating. Need to put a meta tag on top to stop that. 
 ---
 Yes. Sauce is inspired from the 6 digit sauce. 
 ---

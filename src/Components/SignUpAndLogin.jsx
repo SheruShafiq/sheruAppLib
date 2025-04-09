@@ -77,7 +77,7 @@ function SignUpAndLogin({
       );
     }
   };
-
+  const isDesktop = window.innerWidth > 768;
   return (
     <Dialog
       open={isOpen}
@@ -87,6 +87,9 @@ function SignUpAndLogin({
           maxWidth: "500px",
           width: "100%",
           minWidth: "280px",
+        },
+        "& .MuiDialog-container": {
+          alignItems: isDesktop ? "center" : "flex-start",
         },
       }}
       slotProps={{
