@@ -372,7 +372,6 @@ function PostPreview({
               gap={1}
               width={"fit-content"}
               px={1}
-              maxWidth={"50%"}
               flexDirection={"row"}
               sx={{
                 backgroundColor: "#ffffff21",
