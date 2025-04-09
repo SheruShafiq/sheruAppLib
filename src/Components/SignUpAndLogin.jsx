@@ -84,7 +84,7 @@ function SignUpAndLogin({
       onClose={handleClose}
       sx={{
         "& .MuiDialog-paper": {
-          maxWidth: "40vw",
+          maxWidth: "500px",
           width: "100%",
           minWidth: "280px",
         },
