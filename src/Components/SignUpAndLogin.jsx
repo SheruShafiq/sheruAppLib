@@ -10,6 +10,7 @@ import { useState } from "react";
 import { loginUser, signUpUser } from "../APICalls";
 import { useGlitch } from "react-powerglitch";
 import { TextGlitchEffect } from "./TextGlitchEffect";
+import { enqueueSnackbar } from "notistack";
 
 function SignUpAndLogin({
   isOpen,
@@ -50,18 +51,28 @@ function SignUpAndLogin({
           handleClose();
         },
         (error) => {
-          alert(error.message);
+          enqueueSnackbar(error.message, {
+            variant: "error",
+          });
         }
       );
     } else {
       signUpUser(
         { username, password, displayName },
         (user) => {
-          alert("Signup successful! Please log in.");
-          setMode("login");
+          setUserData(user);
+          enqueueSnackbar("Account created successfully", {
+            variant: "success",
+          });
+          setUserID(user.id);
+          setIsLoggedIn(true);
+          document.cookie = `userID=${user.id}; path=/;`;
+          setOpen(false);
         },
         (error) => {
-          alert(error.message);
+          enqueueSnackbar(error.message, {
+            variant: "error",
+          });
         }
       );
     }

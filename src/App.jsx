@@ -73,7 +73,7 @@ function App() {
       <CssBaseline />
       <SnackbarProvider
         maxSnack={3}
-        autoHideDuration={2000}
+        autoHideDuration={3000}
         ref={notistackRef}
         Components={{
           error: (props) => <CustomSnackbar {...props} severity="error" />,

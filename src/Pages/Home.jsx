@@ -39,7 +39,7 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
   );
   const isNoPosts = posts.length === 0;
   return (
-    <Stack gap={2} px={2} py={2}>
+    <Stack gap={2} px={2} pb={2}>
       <Stack mt={0.5}>
         <Header
           isLoggedIn={isLoggedIn}
