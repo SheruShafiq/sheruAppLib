@@ -42,6 +42,7 @@ function App() {
       .find((row) => row.startsWith("userID="))
       ?.split("=")[1]
   );
+
   const notistackRef = createRef();
   const [userData, setUserData] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(() => {

@@ -1,42 +1,54 @@
 import React, { useEffect, useState } from "react";
-import { Stack, Divider } from "@mui/material";
-import { fetchPosts } from "../APICalls";
+import { Stack, Divider, IconButton } from "@mui/material";
+import { fetchPostsPaginated } from "../APICalls";
 import { useSnackbar } from "notistack";
 import PostPreview from "../Components/PostPreview";
 import Header from "../Components/Header";
 import CreatePostDialogue from "../Components/CreatePostDialogue";
 import PostPreviewSkeletonLoader from "../SkeletonLoaders/PostPreviewSkeletonLoader";
 import Fade from "@mui/material/Fade";
-import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 
 function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
-  const [fetchingInitialPosts, setFetchingPosts] = useState(true);
-  const [posts, setPosts] = useState([]);
-  const { enqueueSnackbar } = useSnackbar();
-  const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
-  const fetchPostsHandeled = () => {
-    fetchPosts(
-      (posts) => {
-        setPosts(posts);
-        setFetchingPosts(false);
-      },
-      (error) => {
-        enqueueSnackbar(error.message, { variant: "error" });
-        setFetchingPosts(false);
-      }
-    );
-  };
-  useEffect(() => {
-    fetchPostsHandeled();
-  }, []);
-
   const currentDisplayHeight = window.innerHeight;
   const headerHeight = 65;
   const postPreviewHeight = 225;
-  const safeExtraHeight = 50;
   const maxPostPreviews = Math.floor(
-    (currentDisplayHeight - headerHeight - safeExtraHeight) / postPreviewHeight
+    (currentDisplayHeight - headerHeight) / postPreviewHeight
   );
+  const [fetchingInitialPosts, setFetchingPosts] = useState(true);
+  const [curentPage, setCuurentPage] = useState(1);
+  const [posts, setPosts] = useState([]);
+  const { enqueueSnackbar } = useSnackbar();
+  const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
+  const [data, setData] = useState(null);
+
+  const fetchPostsHandeled = (page, maxPostPreviews) => {
+    setFetchingPosts(true);
+    setTimeout(() => {
+      fetchPostsPaginated(
+        (posts) => {
+          setPosts(posts?.data);
+          setData(posts);
+          setFetchingPosts(false);
+        },
+        (error) => {
+          enqueueSnackbar(error.message, { variant: "error" });
+          setFetchingPosts(false);
+        },
+        page,
+        maxPostPreviews
+      );
+    }, 1000); // 1 second delay
+  };
+  useEffect(() => {
+    fetchPostsHandeled(curentPage, maxPostPreviews);
+  }, [curentPage]);
+
   const isNoPosts = posts.length === 0;
   return (
     <Stack gap={2} px={2} pb={2}>
@@ -79,38 +91,36 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
               display: fetchingInitialPosts ? "none" : "flex",
             }}
           >
-            {Object.keys(posts)
-              .reverse()
-              .map((key) => (
-                <PostPreview
-                  isPostAuthoredByCurrentUser={userData?.posts
-                    ?.map(Number)
-                    .includes(Number(posts[key].id))}
-                  isLoggedIn={isLoggedIn}
-                  fetchPosts={fetchPostsHandeled}
-                  title={posts[key].title}
-                  resource={posts[key].resource}
-                  description={posts[key].description}
-                  upvotes={posts[key].upvotes}
-                  downvotes={posts[key].downvotes}
-                  reports={posts[key].reports}
-                  category={posts[key].category}
-                  commentsCount={posts[key].comments.length}
-                  key={key}
-                  id={posts[key].id}
-                  deteCreated={posts[key].dateCreated}
-                  upvotedByCurrentUser={userData?.likedPosts
-                    ?.map(Number)
-                    .includes(Number(posts[key].id))}
-                  downvotedByCurrentUser={userData?.dislikedPosts
-                    ?.map(Number)
-                    .includes(Number(posts[key].id))}
-                  reportedByCurrentUser={userData?.reportedPosts
-                    ?.map(Number)
-                    .includes(Number(posts[key].id))}
-                  userData={userData}
-                />
-              ))}
+            {Object.keys(posts).map((key) => (
+              <PostPreview
+                isPostAuthoredByCurrentUser={userData?.posts
+                  ?.map(Number)
+                  .includes(Number(posts[key].id))}
+                isLoggedIn={isLoggedIn}
+                fetchPosts={fetchPostsHandeled}
+                title={posts[key].title}
+                resource={posts[key].resource}
+                description={posts[key].description}
+                upvotes={posts[key].upvotes}
+                downvotes={posts[key].downvotes}
+                reports={posts[key].reports}
+                category={posts[key].category}
+                commentsCount={posts[key].comments.length}
+                key={key}
+                id={posts[key].id}
+                deteCreated={posts[key].dateCreated}
+                upvotedByCurrentUser={userData?.likedPosts
+                  ?.map(Number)
+                  .includes(Number(posts[key].id))}
+                downvotedByCurrentUser={userData?.dislikedPosts
+                  ?.map(Number)
+                  .includes(Number(posts[key].id))}
+                reportedByCurrentUser={userData?.reportedPosts
+                  ?.map(Number)
+                  .includes(Number(posts[key].id))}
+                userData={userData}
+              />
+            ))}
           </Stack>
         </Fade>
         {isNoPosts && !fetchingInitialPosts && (
@@ -124,6 +134,55 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
             <h2>No posts available</h2>
           </Stack>
         )}
+      </Stack>
+      <Stack
+        width={"100%"}
+        height={"100%"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        gap={2}
+        flexDirection={"row"}
+      >
+        <Stack flexDirection={"row"}>
+          <IconButton
+            variant="outlined"
+            onClick={() => {
+              setCuurentPage(data?.first);
+            }}
+            disabled={curentPage <= 1 || fetchingInitialPosts}
+          >
+            <KeyboardDoubleArrowLeftIcon />
+          </IconButton>
+          <IconButton
+            variant="outlined"
+            onClick={() => {
+              setCuurentPage(data?.prev);
+            }}
+            disabled={curentPage <= 1 || fetchingInitialPosts}
+          >
+            <KeyboardArrowLeftIcon />
+          </IconButton>
+        </Stack>
+        <Stack flexDirection={"row"}>
+          <IconButton
+            variant="outlined"
+            onClick={() => {
+              setCuurentPage(data?.next);
+            }}
+            disabled={fetchingInitialPosts || curentPage >= data?.last}
+          >
+            <KeyboardArrowRightIcon />
+          </IconButton>
+          <IconButton
+            variant="outlined"
+            onClick={() => {
+              setCuurentPage(data?.last);
+            }}
+            disabled={fetchingInitialPosts || curentPage >= data?.last}
+          >
+            <KeyboardDoubleArrowRightIcon />
+          </IconButton>
+        </Stack>
       </Stack>
     </Stack>
   );

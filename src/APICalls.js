@@ -15,6 +15,24 @@ async function fetchPosts(
     }
 }
 
+async function fetchPostsPaginated(
+    onSuccess,
+    onError,
+    page,
+    maxPostPreviews
+) {
+    try {
+        const response = await fetch(`${APIURL}/posts?_sort=id,-views&_page=${page}&_per_page=${maxPostPreviews}`);
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        onSuccess(data);
+    } catch (error) {
+        onError(error);
+    }
+}
+
 async function fetchPostById(id, onSuccess, onError) {
     try {
         const response = await fetch(`${APIURL}/posts/${id}`);
@@ -353,4 +371,5 @@ export {
     loginUser,
     signUpUser,
     updateUser,
+    fetchPostsPaginated
 };
