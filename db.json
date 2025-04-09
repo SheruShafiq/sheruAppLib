@@ -652,6 +652,36 @@
       "dateModified": "2025-04-09T11:58:42.152Z",
       "dateDeleted": "",
       "id": "bJVn8yS"
+    },
+    {
+      "title": "Test123",
+      "resource": "https://github.com/typicode/json-server/tree/v0",
+      "author": "hd-oL8Y",
+      "description": "asdasd",
+      "category": "news",
+      "upvotes": 0,
+      "downvotes": 0,
+      "reports": 0,
+      "comments": [],
+      "dateCreated": "2025-04-09T12:14:06.907Z",
+      "dateModified": "2025-04-09T12:14:06.907Z",
+      "dateDeleted": "",
+      "id": "W8kRIDq"
+    },
+    {
+      "title": "test123",
+      "resource": "https://github.com/typicode/json-server/tree/v0",
+      "author": "hd-oL8Y",
+      "description": "asdasdad",
+      "category": "music",
+      "upvotes": 0,
+      "downvotes": 0,
+      "reports": 0,
+      "comments": [],
+      "dateCreated": "2025-04-09T12:15:52.673Z",
+      "dateModified": "2025-04-09T12:15:52.673Z",
+      "dateDeleted": "",
+      "id": "ys3YkJA"
     }
   ],
   "users": [
@@ -957,10 +987,12 @@
       "reportedPosts": [],
       "comments": [],
       "posts": [
-        "bJVn8yS"
+        "bJVn8yS",
+        "W8kRIDq",
+        "ys3YkJA"
       ],
       "dateCreated": "2025-04-09T11:58:30.017Z",
-      "dateModified": "2025-04-09T11:58:42.161Z",
+      "dateModified": "2025-04-09T12:15:52.683Z",
       "dateDeleted": "",
       "id": "hd-oL8Y"
     }

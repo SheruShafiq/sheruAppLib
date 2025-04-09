@@ -51,10 +51,12 @@ function CreatePostDialogue({ isOpen, setOpen, onPostCreated, userData }) {
           updateUser(
             userID,
             { ...userData, posts: [...userData.posts, data.id] },
-            onPostCreated(),
-            enqueueSnackbar("Post created successfully!", {
-              variant: "success",
-            }),
+            () => {
+              onPostCreated();
+              enqueueSnackbar("Post created successfully!", {
+                variant: "success",
+              });
+            },
             (error) => {
               enqueueSnackbar(error.message, { variant: "error" });
             }
