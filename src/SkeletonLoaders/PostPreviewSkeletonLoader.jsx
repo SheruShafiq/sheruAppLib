@@ -11,7 +11,11 @@ function PostPreviewSkeletonLoader() {
       <Stack gap={1}>
         <Skeleton variant="text" width="50%" />
         <Stack gap={1}>
-          <Skeleton variant="rounded" width="100%" height={100} />
+          <Skeleton
+            variant="rounded"
+            width="100%"
+            height={Math.floor(Math.random() * (100 - 20 + 1))}
+          />
           <Stack direction="row" spacing={2}>
             <Skeleton variant="rounded" width={40} height={30} />
             <Skeleton variant="rounded" width={40} height={30} />
