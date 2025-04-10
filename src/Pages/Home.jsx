@@ -12,8 +12,10 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
+import { useParams } from "react-router-dom";
 
 function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
+  const { pageNumber } = useParams();
   const currentDisplayHeight = window.innerHeight;
   const headerHeight = 65;
   const postPreviewHeight = 225;
@@ -21,7 +23,9 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
     (currentDisplayHeight - headerHeight) / postPreviewHeight
   );
   const [fetchingInitialPosts, setFetchingPosts] = useState(true);
-  const [curentPage, setCuurentPage] = useState(1);
+  const [curentPage, setCuurentPage] = useState(
+    pageNumber ? Number(pageNumber) : 1
+  );
   const [posts, setPosts] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
@@ -154,6 +158,7 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
             variant="outlined"
             onClick={() => {
               setCuurentPage(firstPage);
+              window.history.pushState(null, "", `/${firstPage}`);
             }}
             disabled={curentPage === firstPage || fetchingInitialPosts}
           >
@@ -163,6 +168,7 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
             variant="outlined"
             onClick={() => {
               setCuurentPage(prevPage);
+              window.history.pushState(null, "", `/${prevPage}`);
             }}
             disabled={curentPage === firstPage || fetchingInitialPosts}
           >
@@ -174,6 +180,7 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
             variant="outlined"
             onClick={() => {
               setCuurentPage(nextPage);
+              window.history.pushState(null, "", `/${nextPage}`);
             }}
             disabled={fetchingInitialPosts || curentPage === lastPage}
           >
@@ -183,6 +190,7 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
             variant="outlined"
             onClick={() => {
               setCuurentPage(lastPage);
+              window.history.pushState(null, "", `/${lastPage}`);
             }}
             disabled={fetchingInitialPosts || curentPage === lastPage}
           >

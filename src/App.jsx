@@ -99,7 +99,7 @@ function App() {
         />
         <Routes>
           <Route
-            path="/"
+            path="/:pageNumber?"
             element={
               <Home
                 setIsLoggedIn={setIsLoggedIn}
