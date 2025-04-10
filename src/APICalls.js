@@ -310,19 +310,20 @@ async function createUser(user, onSuccess, onError) {
     }
 }
 
-async function loginUser({ username, password }, onSuccess, onError) {
+async function loginUser({ username, password }, onSuccess, onError, calledBy) {
     try {
         // JSON Server supports filtering via query parameters
         const response = await fetch(`${APIURL}/users?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
 
         const data = await response.json();
-        if (data.length > 0) {
-            onSuccess(data[0]);
+        const userDetails = data.users[0];
+        if (Object.entries(userDetails).length > 0) {
+            onSuccess(userDetails);
         } else {
             throw new Error("Invalid credentials");
         }
     } catch (error) {
-        onError(error);
+        onError(`Error code: ${error.message} at ${calledBy}.`);
     }
 }
 

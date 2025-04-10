@@ -51,10 +51,11 @@ function SignUpAndLogin({
           handleClose();
         },
         (error) => {
-          enqueueSnackbar(error.message, {
+          enqueueSnackbar(error, {
             variant: "error",
           });
-        }
+        },
+        "SignUpAndLogin.jsx in handleSubmit"
       );
     } else {
       signUpUser(

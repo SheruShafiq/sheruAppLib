@@ -68,7 +68,6 @@ function App() {
       getUserData(userID);
     }
   }, [userID]);
-
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
