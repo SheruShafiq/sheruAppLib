@@ -53,6 +53,7 @@ Yes. Sauce is inspired from the 6 digit sauce.
 14) An effecienter way of handeling comments chain, where a comments chain is created inside the post as well to save API calls amount.
 15) Add credits in the footer
 16) Get giphy to prod
+17) MUSIC
    
 ---
 
