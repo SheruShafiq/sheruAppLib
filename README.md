@@ -60,7 +60,8 @@ Yes. Sauce is inspired from the 6 digit sauce.
 - Frontend Server: 
 ``` npm run dev ```
 - Backend Server:
-``` npx json-server db.json ```
+<del>``` npx json-server db.json ```</del>
+```node server.cjs```
 - Vercel Prod URL
 ```https://sauce-weld.vercel.app/```
 
