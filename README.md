@@ -48,13 +48,20 @@ Yes. Sauce is inspired from the 6 digit sauce.
 9) <del>Make API URLs dynamic from .env to make it easy to deploy</del>
 10) Sorting functionality on Home
 11) Search functionality on Home
+12) A user screen that shows all of user's posts
+13) implementing categorisation
+14) An effecienter way of handeling comments chain, where a comments chain is created inside the post as well to save API calls amount.
+15) Add credits in the footer
+16) Get giphy to prod
+17) MUSIC
    
 ---
 
 - Frontend Server: 
 ``` npm run dev ```
 - Backend Server:
-``` npx json-server db.json ```
+<del>``` npx json-server db.json ```</del>
+```node server.cjs```
 - Vercel Prod URL
 ```https://sauce-weld.vercel.app/```
 
