@@ -155,7 +155,7 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
             onClick={() => {
               setCuurentPage(firstPage);
             }}
-            disabled={curentPage <= firstPage || fetchingInitialPosts}
+            disabled={curentPage === firstPage || fetchingInitialPosts}
           >
             <KeyboardDoubleArrowLeftIcon />
           </IconButton>
@@ -164,7 +164,7 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
             onClick={() => {
               setCuurentPage(prevPage);
             }}
-            disabled={curentPage <= firstPage || fetchingInitialPosts}
+            disabled={curentPage === firstPage || fetchingInitialPosts}
           >
             <KeyboardArrowLeftIcon />
           </IconButton>
@@ -175,7 +175,7 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
             onClick={() => {
               setCuurentPage(nextPage);
             }}
-            disabled={fetchingInitialPosts || curentPage <= lastPage}
+            disabled={fetchingInitialPosts || curentPage === lastPage}
           >
             <KeyboardArrowRightIcon />
           </IconButton>
@@ -184,7 +184,7 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
             onClick={() => {
               setCuurentPage(lastPage);
             }}
-            disabled={fetchingInitialPosts || curentPage >= lastPage}
+            disabled={fetchingInitialPosts || curentPage === lastPage}
           >
             <KeyboardDoubleArrowRightIcon />
           </IconButton>
