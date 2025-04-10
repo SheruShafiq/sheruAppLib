@@ -51,10 +51,10 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
 
   const isNoPosts = posts.length === 0;
 
-  const firstPage = metaData?.first?.match(/_page=(\d+)/)?.[1];
+  const firstPage = Number(metaData?.first?.match(/_page=(\d+)/)?.[1] || 1);
   const prevPage = metaData?.prev?.match(/_page=(\d+)/)?.[1];
   const nextPage = metaData?.next?.match(/_page=(\d+)/)?.[1];
-  const lastPage = metaData?.last?.match(/_page=(\d+)/)?.[1];
+  const lastPage = Number(metaData?.last?.match(/_page=(\d+)/)?.[1] || 1);
   return (
     <Stack gap={2} px={2} pb={2}>
       <Stack>
