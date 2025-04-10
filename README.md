@@ -54,6 +54,7 @@ Yes. Sauce is inspired from the 6 digit sauce.
 15) Add credits in the footer
 16) Get giphy to prod
 17) MUSIC
+18) URL(ise) the paginated home
    
 ---
 
