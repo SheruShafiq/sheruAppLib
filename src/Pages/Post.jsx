@@ -75,7 +75,9 @@ https://api.tenor.com/v1/random?key=${tenorAPIKey}&q=cyberpunk&limit=1`
             });
             data.displayName = user.displayName;
             // Fetch random gif for comment
-            data.imageURL = await fetchImage();
+            // data.imageURL = await fetchImage();
+            data.imageURL = ""; //TODO: temporary till I figure out GIPHY API
+
             if (data.replies && data.replies.length) {
               const nestedReplies = await Promise.all(
                 data.replies.map((replyId) => fetchCommentChain(replyId))

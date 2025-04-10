@@ -5,9 +5,7 @@ async function fetchPosts(
 ) {
     try {
         const response = await fetch(`${APIURL}/posts`);
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+
         const data = await response.json();
         onSuccess(data);
     } catch (error) {
@@ -23,9 +21,7 @@ async function fetchPostsPaginated(
 ) {
     try {
         const response = await fetch(`${APIURL}/posts?_sort=dateCreated&_order=desc&_page=${page}&_limit=${maxPostPreviews}`);
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+
         const data = await response.json();
         onSuccess(data);
     } catch (error) {
@@ -36,9 +32,7 @@ async function fetchPostsPaginated(
 async function fetchPostById(id, onSuccess, onError) {
     try {
         const response = await fetch(`${APIURL}/posts/${id}`);
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+
         const data = await response.json();
         onSuccess(data);
     } catch (error) {
@@ -64,9 +58,7 @@ async function postPost(
             },
             body: JSON.stringify(post),
         });
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+
         const data = await response.json();
         onSuccess(data);
     } catch (error) {
@@ -89,9 +81,7 @@ async function updatePost(
             },
             body: JSON.stringify(post),
         });
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+
         const data = await response.json();
         onSuccess(data);
     } catch (error) {
@@ -111,9 +101,7 @@ async function deletePost(
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ dateDeleted: now, dateModified: now }),
         });
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+
         const data = await response.json();
         onSuccess(data);
     } catch (error) {
@@ -129,7 +117,7 @@ async function upVotePost(id, currentUpvotes, onSuccess, onError) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ upvotes: newUpvotes, dateModified: now }),
         });
-        if (!response.ok) throw new Error("Network response was not ok");
+
         const data = await response.json();
         onSuccess(data);
     } catch (error) {
@@ -146,7 +134,7 @@ async function downVotePost(id, currentDownvotes, onSuccess, onError) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ downvotes: newDownvotes, dateModified: now }),
         });
-        if (!response.ok) throw new Error("Network response was not ok");
+
         const data = await response.json();
         onSuccess(data);
     } catch (error) {
@@ -163,7 +151,7 @@ async function reportPost(id, currentReports, onSuccess, onError) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ reports: newReports, dateModified: now }),
         });
-        if (!response.ok) throw new Error("Network response was not ok");
+
         const data = await response.json();
         onSuccess(data);
     } catch (error) {
@@ -181,7 +169,7 @@ async function undoUpVotePost(id, currentUpvotes, onSuccess, onError) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ upvotes: newUpvotes, dateModified: now }),
         });
-        if (!response.ok) throw new Error("Network response was not ok");
+
         const data = await response.json();
         onSuccess(data);
     } catch (error) {
@@ -198,7 +186,7 @@ async function undoDownVotePost(id, currentDownvotes, onSuccess, onError) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ downvotes: newDownvotes, dateModified: now }),
         });
-        if (!response.ok) throw new Error("Network response was not ok");
+
         const data = await response.json();
         onSuccess(data);
     } catch (error) {
@@ -215,7 +203,7 @@ async function undoReportPost(id, currentReports, onSuccess, onError) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ reports: newReports, dateModified: now }),
         });
-        if (!response.ok) throw new Error("Network response was not ok");
+
         const data = await response.json();
         onSuccess(data);
     } catch (error) {
@@ -231,7 +219,7 @@ async function addComment(postId, comment, onSuccess, onError) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(newComment),
         });
-        if (!response.ok) throw new Error("Network response was not ok");
+
         const data = await response.json();
         onSuccess(data);
     } catch (error) {
@@ -244,8 +232,7 @@ async function deleteComment(commentId, onSuccess, onError) {
         const response = await fetch(`${APIURL}/comments/${commentId}`, {
             method: "DELETE",
         });
-        if (!response.ok) throw new Error("Network response was not ok");
-        onSuccess();
+        onSuccess(response);
     } catch (error) {
         onError(error);
     }
@@ -258,7 +245,7 @@ async function editComment(commentId, comment, onSuccess, onError) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(comment),
         });
-        if (!response.ok) throw new Error("Network response was not ok");
+
         const data = await response.json();
         onSuccess(data);
     } catch (error) {
@@ -269,7 +256,7 @@ async function editComment(commentId, comment, onSuccess, onError) {
 async function fetchUsers(onSuccess, onError) {
     try {
         const response = await fetch(`${APIURL}/users`);
-        if (!response.ok) throw new Error("Network response was not ok");
+
         const data = await response.json();
         onSuccess(data);
     } catch (error) {
@@ -280,7 +267,7 @@ async function fetchUsers(onSuccess, onError) {
 async function fetchUserById(id, onSuccess, onError) {
     try {
         const response = await fetch(`${APIURL}/users/${id}`);
-        if (!response.ok) throw new Error("Network response was not ok");
+
         const data = await response.json();
         onSuccess(data);
     } catch (error) {
@@ -305,7 +292,7 @@ async function createUser(user, onSuccess, onError) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(user),
         });
-        if (!response.ok) throw new Error("Network response was not ok");
+
         const data = await response.json();
         onSuccess(data);
     } catch (error) {
@@ -317,7 +304,7 @@ async function loginUser({ username, password }, onSuccess, onError) {
     try {
         // JSON Server supports filtering via query parameters
         const response = await fetch(`${APIURL}/users?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
-        if (!response.ok) throw new Error("Network response was not ok");
+
         const data = await response.json();
         if (data.length > 0) {
             onSuccess(data[0]);
@@ -351,7 +338,7 @@ async function signUpUser({ username, password, displayName }, onSuccess, onErro
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(user),
         });
-        if (!response.ok) throw new Error("Network response was not ok");
+
         const data = await response.json();
         onSuccess(data);
     } catch (error) {
@@ -367,7 +354,7 @@ async function updateUser(id, user, onSuccess, onError) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(user),
         });
-        if (!response.ok) throw new Error("Network response was not ok");
+
         const data = await response.json();
         onSuccess(data);
     } catch (error) {
@@ -378,7 +365,7 @@ async function updateUser(id, user, onSuccess, onError) {
 async function getCommentByID(commentId, onSuccess, onError) {
     try {
         const response = await fetch(`${APIURL}/comments/${commentId}`);
-        if (!response.ok) throw new Error("Network response was not ok");
+
         const data = await response.json();
         onSuccess(data);
     } catch (error) {

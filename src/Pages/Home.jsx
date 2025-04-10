@@ -33,21 +33,19 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
 
   const fetchPostsHandeled = (page, maxPostPreviews) => {
     setFetchingPosts(true);
-    setTimeout(() => {
-      fetchPostsPaginated(
-        (posts) => {
-          setPosts(posts?.posts);
-          setmetaData(posts?.metadata);
-          setFetchingPosts(false);
-        },
-        (error) => {
-          enqueueSnackbar(error.message, { variant: "error" });
-          setFetchingPosts(false);
-        },
-        page,
-        maxPostPreviews
-      );
-    }, 1000); // 1 second delay
+    fetchPostsPaginated(
+      (posts) => {
+        setPosts(posts?.posts);
+        setmetaData(posts?.metadata);
+        setFetchingPosts(false);
+      },
+      (error) => {
+        enqueueSnackbar(error.message, { variant: "error" });
+        setFetchingPosts(false);
+      },
+      page,
+      maxPostPreviews
+    );
   };
   useEffect(() => {
     fetchPostsHandeled(curentPage, maxPostPreviews);
