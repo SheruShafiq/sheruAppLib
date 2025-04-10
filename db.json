@@ -10,11 +10,7 @@
       "downvotes": 10,
       "reports": "11",
       "category": "tv-shows",
-      "comments": [
-        1,
-        3,
-        4
-      ],
+      "comments": [1, 3, 4],
       "dateCreated": "2025-04-07T10:15:23.345Z",
       "dateModified": "2025-04-07T18:02:55.152Z",
       "dateDeleted": ""
@@ -29,10 +25,7 @@
       "downvotes": 5,
       "reports": 2,
       "category": "tv-shows",
-      "comments": [
-        5,
-        6
-      ],
+      "comments": [5, 6],
       "dateCreated": "2023-06-07T14:45:00.001Z",
       "dateModified": "2025-04-07T12:57:35.844Z",
       "dateDeleted": ""
@@ -47,9 +40,7 @@
       "downvotes": 10,
       "reports": 4,
       "category": "movies",
-      "comments": [
-        7
-      ],
+      "comments": [7],
       "dateCreated": "2023-05-15T10:30:00.000Z",
       "dateModified": "2023-06-20T11:45:00.000Z",
       "dateDeleted": ""
@@ -109,10 +100,7 @@
       "downvotes": 8,
       "reports": 0,
       "category": "movies",
-      "comments": [
-        8,
-        9
-      ],
+      "comments": [8, 9],
       "dateCreated": "2023-04-25T06:30:00.000Z",
       "dateModified": "2023-05-30T07:45:00.000Z",
       "dateDeleted": ""
@@ -127,9 +115,7 @@
       "downvotes": 67,
       "reports": 15,
       "category": "movies",
-      "comments": [
-        10
-      ],
+      "comments": [10],
       "dateCreated": "2024-03-10T05:15:00.000Z",
       "dateModified": "2025-04-07T12:58:55.110Z",
       "dateDeleted": ""
@@ -159,10 +145,7 @@
       "downvotes": 22,
       "reports": 9,
       "category": "movies",
-      "comments": [
-        11,
-        12
-      ],
+      "comments": [11, 12],
       "dateCreated": "2023-01-15T03:45:00.000Z",
       "dateModified": "2025-04-09T11:14:14.872Z",
       "dateDeleted": ""
@@ -177,9 +160,7 @@
       "downvotes": 3,
       "reports": 1,
       "category": "movies",
-      "comments": [
-        13
-      ],
+      "comments": [13],
       "dateCreated": "2023-03-05T02:30:00.000Z",
       "dateModified": "2025-04-07T12:55:17.925Z",
       "dateDeleted": ""
@@ -224,9 +205,7 @@
       "downvotes": 7,
       "reports": 2,
       "category": "anime",
-      "comments": [
-        14
-      ],
+      "comments": [14],
       "dateCreated": "2023-04-01T06:00:00.000Z",
       "dateModified": "2023-05-05T07:15:00.000Z",
       "dateDeleted": ""
@@ -256,9 +235,7 @@
       "downvotes": 4,
       "reports": 0,
       "category": "anime",
-      "comments": [
-        15
-      ],
+      "comments": [15],
       "dateCreated": "2023-02-15T04:30:00.000Z",
       "dateModified": "2023-03-20T05:45:00.000Z",
       "dateDeleted": ""
@@ -303,7 +280,7 @@
       "downvotes": 23,
       "reports": 10,
       "category": "movies",
-      "comments": [1,2,3,4,5],
+      "comments": [1, 2, 3, 4, 5],
       "dateCreated": "2023-01-01T00:00:00.000Z",
       "dateModified": "2023-02-05T01:15:00.000Z",
       "dateDeleted": ""
@@ -690,33 +667,11 @@
       "username": "Sheru",
       "password": "123",
       "displayName": "Stewie Griffin",
-      "posts": [
-        1,
-        "5632",
-        "a798",
-        "0881"
-      ],
-      "likedPosts": [
-        1,
-        2,
-        3,
-        "5632",
-        "5632"
-      ],
-      "dislikedPosts": [
-        4,
-        "a798",
-        "5632"
-      ],
-      "reportedPosts": [
-        5,
-        "5632"
-      ],
-      "comments": [
-        1,
-        2,
-        3
-      ],
+      "posts": [1, "5632", "a798", "0881"],
+      "likedPosts": [1, 2, 3, "5632", "5632"],
+      "dislikedPosts": [4, "a798", "5632"],
+      "reportedPosts": [5, "5632"],
+      "comments": [1, 2, 3],
       "dateCreated": "2023-05-12T10:15:30.000Z",
       "dateModified": "2023-06-10T12:20:30.000Z",
       "dateDeleted": ""
@@ -727,16 +682,10 @@
       "password": "abc123",
       "displayName": "CineTracker",
       "posts": [],
-      "likedPosts": [
-        3,
-        4,
-        6
-      ],
+      "likedPosts": [3, 4, 6],
       "dislikedPosts": [],
       "reportedPosts": [],
-      "comments": [
-        5
-      ],
+      "comments": [5],
       "dateCreated": "2023-04-20T09:00:00.000Z",
       "dateModified": "2023-05-25T10:15:00.000Z",
       "dateDeleted": ""
@@ -747,20 +696,10 @@
       "password": "pass456",
       "displayName": "Torrent Tactician",
       "posts": [],
-      "likedPosts": [
-        2,
-        5
-      ],
-      "dislikedPosts": [
-        1
-      ],
-      "reportedPosts": [
-        1
-      ],
-      "comments": [
-        6,
-        7
-      ],
+      "likedPosts": [2, 5],
+      "dislikedPosts": [1],
+      "reportedPosts": [1],
+      "comments": [6, 7],
       "dateCreated": "2023-03-15T08:30:00.000Z",
       "dateModified": "2023-04-20T09:45:00.000Z",
       "dateDeleted": ""
@@ -771,17 +710,10 @@
       "password": "animeLover",
       "displayName": "Weeaboo Jones",
       "posts": [],
-      "likedPosts": [
-        14,
-        15,
-        16
-      ],
+      "likedPosts": [14, 15, 16],
       "dislikedPosts": [],
       "reportedPosts": [],
-      "comments": [
-        14,
-        15
-      ],
+      "comments": [14, 15],
       "dateCreated": "2023-02-10T07:15:00.000Z",
       "dateModified": "2023-03-15T08:30:00.000Z",
       "dateDeleted": ""
@@ -792,22 +724,10 @@
       "password": "seekandfind",
       "displayName": "VOD Vigilante",
       "posts": [],
-      "likedPosts": [
-        7,
-        9,
-        10
-      ],
-      "dislikedPosts": [
-        8
-      ],
-      "reportedPosts": [
-        8
-      ],
-      "comments": [
-        8,
-        9,
-        10
-      ],
+      "likedPosts": [7, 9, 10],
+      "dislikedPosts": [8],
+      "reportedPosts": [8],
+      "comments": [8, 9, 10],
       "dateCreated": "2023-01-05T06:00:00.000Z",
       "dateModified": "2023-02-10T07:15:00.000Z",
       "dateDeleted": ""
@@ -818,11 +738,7 @@
       "password": "couchpotato",
       "displayName": "Screen Addict",
       "posts": [],
-      "likedPosts": [
-        21,
-        22,
-        23
-      ],
+      "likedPosts": [21, 22, 23],
       "dislikedPosts": [],
       "reportedPosts": [],
       "comments": [],
@@ -836,10 +752,7 @@
       "password": "arthouse",
       "displayName": "Cinema Snob",
       "posts": [],
-      "likedPosts": [
-        24,
-        25
-      ],
+      "likedPosts": [24, 25],
       "dislikedPosts": [],
       "reportedPosts": [],
       "comments": [],
@@ -853,10 +766,7 @@
       "password": "animation",
       "displayName": "Toon Townie",
       "posts": [],
-      "likedPosts": [
-        26,
-        27
-      ],
+      "likedPosts": [26, 27],
       "dislikedPosts": [],
       "reportedPosts": [],
       "comments": [],
@@ -870,10 +780,7 @@
       "password": "hayaomiyazaki",
       "displayName": "Spirited Awaier",
       "posts": [],
-      "likedPosts": [
-        28,
-        29
-      ],
+      "likedPosts": [28, 29],
       "dislikedPosts": [],
       "reportedPosts": [],
       "comments": [],
@@ -887,9 +794,7 @@
       "password": "elementary",
       "displayName": "Sherlockian",
       "posts": [],
-      "likedPosts": [
-        30
-      ],
+      "likedPosts": [30],
       "dislikedPosts": [],
       "reportedPosts": [],
       "comments": [],
@@ -960,9 +865,7 @@
       "username": "lmaoXD",
       "password": "123",
       "displayName": "asdasd",
-      "likedPosts": [
-        "10"
-      ],
+      "likedPosts": ["10"],
       "dislikedPosts": [],
       "reportedPosts": [],
       "comments": [],
@@ -986,11 +889,7 @@
       "dislikedPosts": [],
       "reportedPosts": [],
       "comments": [],
-      "posts": [
-        "bJVn8yS",
-        "W8kRIDq",
-        "ys3YkJA"
-      ],
+      "posts": ["bJVn8yS", "W8kRIDq", "ys3YkJA"],
       "dateCreated": "2025-04-09T11:58:30.017Z",
       "dateModified": "2025-04-09T12:15:52.683Z",
       "dateDeleted": "",
@@ -1002,9 +901,9 @@
       "id": "1",
       "userID": 1,
       "text": "Worked great, thanks! Subtitles were auto-generated though.",
-      "replies": [
-        2
-      ],
+      "likes": 0,
+      "dislikes": 0,
+      "replies": [2, 5, 7],
       "dateCreated": "2023-04-22T07:30:00.000Z",
       "dateModified": "2023-04-23T08:30:00.000Z",
       "dateDeleted": ""
@@ -1013,7 +912,9 @@
       "id": "2",
       "userID": 3,
       "text": "Yeah I noticed that too, they were a bit off in timing.",
-      "replies": [],
+      "likes": 0,
+      "dislikes": 0,
+      "replies": [8],
       "dateCreated": "2023-03-10T06:15:00.000Z",
       "dateModified": "2023-04-15T07:30:00.000Z",
       "dateDeleted": ""
@@ -1022,6 +923,8 @@
       "id": "3",
       "userID": 1,
       "text": "Nice find! I added this to my watchlist.",
+      "likes": 0,
+      "dislikes": 0,
       "replies": [],
       "dateCreated": "2023-02-05T05:00:00.000Z",
       "dateModified": "2023-03-10T06:15:00.000Z",
@@ -1031,6 +934,8 @@
       "id": "4",
       "userID": 1,
       "text": "Episode got removed now. Anyone have a mirror?",
+      "likes": 0,
+      "dislikes": 0,
       "replies": [],
       "dateCreated": "2023-01-01T03:45:00.000Z",
       "dateModified": "2023-02-05T05:00:00.000Z",
@@ -1040,7 +945,9 @@
       "id": "5",
       "userID": 2,
       "text": "Confirmed! Archive version still works as of today. Thx for the tip.",
-      "replies": [6,7],
+      "likes": 0,
+      "dislikes": 0,
+      "replies": [6, 7],
       "dateCreated": "2023-04-15T06:00:00.000Z",
       "dateModified": "2023-05-20T07:15:00.000Z",
       "dateDeleted": ""
@@ -1049,6 +956,8 @@
       "id": "6",
       "userID": 3,
       "text": "Audio's slightly desynced, but still better than nothing.",
+      "likes": 0,
+      "dislikes": 0,
       "replies": [8],
       "dateCreated": "2023-03-30T05:30:00.000Z",
       "dateModified": "2023-05-05T06:45:00.000Z",
@@ -1058,6 +967,8 @@
       "id": "7",
       "userID": 3,
       "text": "OK.ru always works but be ready to click through sketchy ads.",
+      "likes": 0,
+      "dislikes": 0,
       "replies": [],
       "dateCreated": "2023-02-20T04:00:00.000Z",
       "dateModified": "2023-03-25T05:15:00.000Z",
@@ -1067,6 +978,8 @@
       "id": "8",
       "userID": 5,
       "text": "Thanks for the Vimeo find! Quality is excellent.",
+      "likes": 0,
+      "dislikes": 0,
       "replies": [],
       "dateCreated": "2023-01-10T02:00:00.000Z",
       "dateModified": "2023-02-15T03:15:00.000Z",
@@ -1076,6 +989,8 @@
       "id": "9",
       "userID": 5,
       "text": "Downloading now, hope it doesn't disappear!",
+      "likes": 0,
+      "dislikes": 0,
       "replies": [],
       "dateCreated": "2023-03-05T01:15:00.000Z",
       "dateModified": "2023-04-10T02:30:00.000Z",
@@ -1085,6 +1000,8 @@
       "id": "10",
       "userID": 5,
       "text": "Cam rip is awful, but I'm desperate!",
+      "likes": 0,
+      "dislikes": 0,
       "replies": [],
       "dateCreated": "2023-04-01T06:00:00.000Z",
       "dateModified": "2023-05-05T07:15:00.000Z",
@@ -1094,9 +1011,9 @@
       "id": "11",
       "userID": 5,
       "text": "This YouTube version is sped up a bit, makes it kinda funny.",
-      "replies": [
-        12
-      ],
+      "likes": 0,
+      "dislikes": 0,
+      "replies": [12],
       "dateCreated": "2023-02-25T04:45:00.000Z",
       "dateModified": "2023-04-01T06:00:00.000Z",
       "dateDeleted": ""
@@ -1105,6 +1022,8 @@
       "id": "12",
       "userID": 5,
       "text": "Yeah, it's like watching a parody version.",
+      "likes": 0,
+      "dislikes": 0,
       "replies": [],
       "dateCreated": "2023-01-20T03:30:00.000Z",
       "dateModified": "2023-02-25T04:45:00.000Z",
@@ -1114,6 +1033,8 @@
       "id": "13",
       "userID": 5,
       "text": "Thanks! Downloading now",
+      "likes": 0,
+      "dislikes": 0,
       "replies": [],
       "dateCreated": "2023-03-15T05:00:00.000Z",
       "dateModified": "2023-04-20T06:15:00.000Z",
@@ -1123,6 +1044,8 @@
       "id": "14",
       "userID": 4,
       "text": "Finally caught up with AoT! Thanks!",
+      "likes": 0,
+      "dislikes": 0,
       "replies": [],
       "dateCreated": "2023-02-10T01:15:00.000Z",
       "dateModified": "2023-03-15T02:30:00.000Z",
@@ -1132,6 +1055,8 @@
       "id": "15",
       "userID": 4,
       "text": "One Piece never disappoints!",
+      "likes": 0,
+      "dislikes": 0,
       "replies": [],
       "dateCreated": "2023-03-17T11:45:00.000Z",
       "dateModified": "2023-03-18T12:45:00.000Z",

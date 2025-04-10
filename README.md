@@ -55,6 +55,7 @@ Yes. Sauce is inspired from the 6 digit sauce.
 16) Get giphy to prod
 17) MUSIC
 18) URL(ise) the paginated home
+19) Comments don't have like and dilike options yet, not even in data structure
    
 ---
 

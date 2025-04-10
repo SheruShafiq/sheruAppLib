@@ -62,38 +62,32 @@ https://api.tenor.com/v1/random?key=${tenorAPIKey}&q=cyberpunk&limit=1`
       });
     }
   }
-  // New recursive function to fetch a comment, its entire reply chain, and attach user display name.
+  // Modify fetchCommentChain function for infinite nested replies
   const fetchCommentChain = async (commentId) => {
-    return new Promise((resolve, reject) => {
+    // Fetch comment data
+    const data = await new Promise((resolve, reject) => {
       getCommentByID(
         commentId,
-        async (data) => {
-          try {
-            // Fetch user display name based on userID.
-            const user = await new Promise((resolveUser, rejectUser) => {
-              fetchUserById(data.userID, resolveUser, rejectUser);
-            });
-            data.displayName = user.displayName;
-            // Fetch random gif for comment
-            // data.imageURL = await fetchImage();
-            data.imageURL = ""; //TODO: temporary till I figure out GIPHY API
-
-            if (data.replies && data.replies.length) {
-              const nestedReplies = await Promise.all(
-                data.replies.map((replyId) => fetchCommentChain(replyId))
-              );
-              data.replies = nestedReplies;
-            } else {
-              data.replies = [];
-            }
-            resolve(data);
-          } catch (err) {
-            reject(err);
-          }
-        },
+        (data) => resolve(data),
         (error) => reject(error)
       );
     });
+    // Fetch user display name
+    const user = await new Promise((resolve, reject) => {
+      fetchUserById(data.userID, resolve, reject);
+    });
+    data.displayName = user.displayName;
+    // Fetch random gif for comment (temporarily empty)
+    data.imageURL = ""; // TODO: temporary till I figure out GIPHY API
+    // Recursive call: fetch the entire chain of replies if any
+    if (data.replies && data.replies.length) {
+      data.replies = await Promise.all(
+        data.replies.map((replyId) => fetchCommentChain(replyId))
+      );
+    } else {
+      data.replies = [];
+    }
+    return data;
   };
 
   const fetchParentComments = async () => {
@@ -195,33 +189,33 @@ https://api.tenor.com/v1/random?key=${tenorAPIKey}&q=cyberpunk&limit=1`
             <PostPreviewSkeletonLoader pageVariant={true} />
           </Stack>
         </Fade>
-      </Stack>
 
-      <Divider
-        sx={{
-          borderColor: "white",
-        }}
-      />
-      <Stack mt={2} gap={2}>
-        <TextGlitchEffect
-          text={"Comments"}
-          speed={60}
-          letterCase="lowercase"
-          className="postPageCommentsTitle"
-          type="alphanumeric"
+        <Divider
+          sx={{
+            borderColor: "white",
+          }}
         />
-        {parentComments &&
-          parentComments.length > 0 &&
-          parentComments.map((comment, index) => (
-            <CommentBlock
-              key={index}
-              dateCreated={comment?.dateCreated}
-              userName={comment?.displayName}
-              commentContents={comment?.text}
-              replies={comment?.replies}
-              imageURL={comment?.imageURL}
-            />
-          ))}
+        <Stack mt={2} gap={2}>
+          <TextGlitchEffect
+            text={"Comments"}
+            speed={60}
+            letterCase="lowercase"
+            className="postPageCommentsTitle"
+            type="alphanumeric"
+          />
+          {parentComments &&
+            parentComments.length > 0 &&
+            parentComments.map((comment, index) => (
+              <CommentBlock
+                key={index}
+                dateCreated={comment?.dateCreated}
+                userName={comment?.displayName}
+                commentContents={comment?.text}
+                replies={comment?.replies}
+                imageURL={comment?.imageURL}
+              />
+            ))}
+        </Stack>
       </Stack>
     </Stack>
   );

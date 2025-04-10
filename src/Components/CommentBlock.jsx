@@ -1,18 +1,34 @@
 import { Stack, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Chip from "@mui/material/Chip";
 import Avatar from "@mui/material/Avatar";
+
 function CommentBlock({
   dateCreated,
   userName,
   commentContents,
   replies,
   imageURL,
+  amIaReply, // can be kept for any other style if needed
+  depth = 0,
 }) {
   const [imageUrl, setImageUrl] = useState(imageURL);
   return (
-    <Stack>
-      <Stack gap={1} width="100%" pt={1}>
+    <Stack
+      sx={{
+        borderLeft: depth > 0 ? "1px solid white" : "none",
+      }}
+      ml={2}
+    >
+      <Stack
+        gap={1}
+        width="100%"
+        pt={2}
+        pl={depth * 1}
+        sx={{
+          borderBottom: "1px solid white",
+        }}
+      >
         <Stack direction="row" alignItems="center" gap={1}>
           <Avatar
             sx={{
@@ -32,7 +48,7 @@ function CommentBlock({
         <p>{commentContents}</p>
       </Stack>
       {replies && replies.length > 0 && (
-        <Stack pl={2}>
+        <Stack>
           {replies.map((reply) => (
             <CommentBlock
               key={reply.id}
@@ -41,6 +57,8 @@ function CommentBlock({
               commentContents={reply?.text}
               replies={reply?.replies}
               imageURL={reply?.imageURL}
+              amIaReply={true}
+              depth={depth + 1} // increment depth for nested replies
             />
           ))}
         </Stack>
