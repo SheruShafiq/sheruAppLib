@@ -211,9 +211,19 @@ async function undoReportPost(id, currentReports, onSuccess, onError) {
     }
 }
 
-async function addComment(postId, comment, onSuccess, onError) {
+async function addComment(userID, comment, onSuccess, onError) {
+    const now = new Date().toISOString();
     try {
-        const newComment = { ...comment, postId };
+        const newComment = {
+            userID: userID,
+            text: comment,
+            likes: 0,
+            dislikes: 0,
+            replies: [],
+            dateCreated: now,
+            dateModified: now,
+            dateDeleted: ""
+        };
         const response = await fetch(`${APIURL}/comments`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -373,6 +383,49 @@ async function getCommentByID(commentId, onSuccess, onError) {
     }
 }
 
+// Refactored helper to update comment likes and user's likedComments
+async function updateCommentAndUserLike(commentId, userId, like = true, onSuccess, onError) {
+    try {
+        let res = await fetch(`${APIURL}/comments/${commentId}`);
+        let comment = await res.json();
+        const newLikes = like ? comment.likes + 1 : (comment.likes > 0 ? comment.likes - 1 : 0);
+        res = await fetch(`${APIURL}/comments/${commentId}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ likes: newLikes })
+        });
+        const updatedComment = await res.json();
+        res = await fetch(`${APIURL}/users/${userId}`);
+        let user = await res.json();
+        if (like) {
+            if (!user.likedComments.includes(commentId)) {
+                user.likedComments.push(commentId);
+            }
+        } else {
+            user.likedComments = user.likedComments.filter(id => id !== commentId);
+        }
+        res = await fetch(`${APIURL}/users/${userId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(user)
+        });
+        const updatedUser = await res.json();
+        onSuccess({ comment: updatedComment, user: updatedUser });
+    } catch (error) {
+        onError(error);
+    }
+}
+
+// Refactored likeComment function using the helper
+async function likeComment(commentId, userId, onSuccess, onError) {
+    updateCommentAndUserLike(commentId, userId, true, onSuccess, onError);
+}
+
+// Refactored undoLikeComment function using the helper
+async function undoLikeComment(commentId, userId, onSuccess, onError) {
+    updateCommentAndUserLike(commentId, userId, false, onSuccess, onError);
+}
+
 export {
     fetchPosts,
     fetchPostById,
@@ -396,5 +449,7 @@ export {
     signUpUser,
     updateUser,
     fetchPostsPaginated,
-    getCommentByID
+    getCommentByID,
+    likeComment,      // newly added
+    undoLikeComment   // newly added
 };

@@ -1,7 +1,11 @@
-import { Stack, Typography } from "@mui/material";
+import { IconButton, Stack, Typography } from "@mui/material";
 import React, { useState } from "react";
 import Chip from "@mui/material/Chip";
 import Avatar from "@mui/material/Avatar";
+import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
+import { likeComment, undoLikeComment, getCommentByID } from "../APICalls";
+import { useSnackbar } from "notistack";
+import { useGlitch } from "react-powerglitch";
 
 function CommentBlock({
   dateCreated,
@@ -11,8 +15,27 @@ function CommentBlock({
   imageURL,
   amIaReply, // can be kept for any other style if needed
   depth = 0,
+  likes,
+  userData,
+  likedByCurrentUser,
+  commentID,
 }) {
   const [imageUrl, setImageUrl] = useState(imageURL);
+  const enqueueSnackbar = useSnackbar();
+  const [liked, setLiked] = useState(likedByCurrentUser);
+  const [likesCount, setLikesCount] = useState(likes);
+  const glitch = useGlitch({
+    timing: {
+      iterations: 1,
+      easing: "ease-in-out",
+      duration: 1000,
+    },
+    glitchTimeSpan: {
+      start: 0,
+      end: 0.5,
+    },
+    playMode: "click",
+  });
   return (
     <Stack
       sx={{
@@ -23,7 +46,7 @@ function CommentBlock({
       <Stack
         gap={1}
         width="100%"
-        pt={2}
+        py={1}
         pl={depth * 1}
         sx={{
           borderBottom: "1px solid white",
@@ -44,8 +67,85 @@ function CommentBlock({
             label={new Date(dateCreated).toLocaleDateString()}
             variant="outlined"
           />
+          <IconButton
+            ref={glitch.ref}
+            size="small"
+            sx={{
+              width: "fit-content",
+            }}
+            onClick={() => {
+              if (!liked) {
+                likeComment(
+                  commentID,
+                  userData?.id,
+                  () => {
+                    setLiked(true);
+                    getCommentByID(
+                      commentID,
+                      (comment) => {
+                        setLikesCount(comment.likes);
+                      },
+                      (error) => {
+                        enqueueSnackbar(error.message, {
+                          variant: "error",
+                        });
+                      }
+                    );
+                  },
+                  (error) => {
+                    enqueueSnackbar(error.message, {
+                      variant: "error",
+                    });
+                  }
+                );
+              } else {
+                undoLikeComment(
+                  commentID,
+                  userData?.id,
+                  () => {
+                    setLiked(false);
+                    getCommentByID(
+                      commentID,
+                      (comment) => {
+                        setLikesCount(comment.likes);
+                      },
+                      (error) => {
+                        enqueueSnackbar(error.message, {
+                          variant: "error",
+                        });
+                      }
+                    );
+                  },
+                  (error) => {
+                    enqueueSnackbar(error.message, {
+                      variant: "error",
+                    });
+                  }
+                );
+              }
+            }}
+          >
+            <FavoriteOutlinedIcon
+              sx={{
+                fontSize: 16,
+                mr: 0.5,
+              }}
+              color={liked ? "error" : "primary"}
+            />
+            <Typography
+              fontSize={16}
+              sx={{
+                color: "white",
+              }}
+              fontWeight={600}
+            >
+              {likesCount}
+            </Typography>
+          </IconButton>
         </Stack>
-        <p>{commentContents}</p>
+        <Stack>
+          <Typography>{commentContents}</Typography>
+        </Stack>
       </Stack>
       {replies && replies.length > 0 && (
         <Stack>
@@ -58,7 +158,13 @@ function CommentBlock({
               replies={reply?.replies}
               imageURL={reply?.imageURL}
               amIaReply={true}
-              depth={depth + 1} // increment depth for nested replies
+              depth={depth + 1}
+              likes={reply?.likes}
+              userData={userData}
+              likedByCurrentUser={userData?.likedComments
+                ?.map(Number)
+                .includes(Number(reply?.id))}
+              commentID={reply?.id}
             />
           ))}
         </Stack>

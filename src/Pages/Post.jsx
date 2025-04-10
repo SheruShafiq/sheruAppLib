@@ -1,6 +1,13 @@
 import { Alert, Typography, Box, Stack, Switch } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import { fetchPostById, getCommentByID, fetchUserById } from "../APICalls";
+import {
+  fetchPostById,
+  getCommentByID,
+  fetchUserById,
+  updateUser,
+  addComment,
+  updatePost,
+} from "../APICalls";
 import { useParams } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import PostPreview from "../Components/PostPreview";
@@ -11,18 +18,35 @@ import PostPreviewSkeletonLoader from "../SkeletonLoaders/PostPreviewSkeletonLoa
 import Fade from "@mui/material/Fade";
 import CommentBlock from "../Components/CommentBlock";
 import { TextGlitchEffect } from "../Components/TextGlitchEffect";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import SendIcon from "@mui/icons-material/Send";
+import { useGlitch } from "react-powerglitch";
 const gipyAPIKey = import.meta.env.REACT_APP_GIPHY_API_KEY;
 const tenorAPIKey = import.meta.env.REACT_APP_TENOR_API_KEY;
 
 function Post({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
+  const [newComment, setNewComment] = useState("");
   const [parentComments, setParentComments] = useState([]);
   const [relevantCommentIDs, setRelevantCommentIDs] = useState([]);
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isCommenting, setIsCommenting] = useState(false);
   const { id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
-
+  const glitch = useGlitch({
+    timing: {
+      iterations: 1,
+      easing: "ease-in-out",
+      duration: 1000,
+    },
+    glitchTimeSpan: {
+      start: 0,
+      end: 0.5,
+    },
+    playMode: "click",
+  });
   useEffect(() => {
     fetchPostById(
       id,
@@ -84,6 +108,7 @@ https://api.tenor.com/v1/random?key=${tenorAPIKey}&q=cyberpunk&limit=1`
       data.replies = await Promise.all(
         data.replies.map((replyId) => fetchCommentChain(replyId))
       );
+      setIsCommenting(false);
     } else {
       data.replies = [];
     }
@@ -122,7 +147,7 @@ https://api.tenor.com/v1/random?key=${tenorAPIKey}&q=cyberpunk&limit=1`
       }
     );
   };
-
+  const now = new Date().toISOString();
   return (
     <Stack px={2} width={"100%"}>
       <Header
@@ -196,23 +221,136 @@ https://api.tenor.com/v1/random?key=${tenorAPIKey}&q=cyberpunk&limit=1`
           }}
         />
         <Stack mt={2} gap={2}>
-          <TextGlitchEffect
-            text={"Comments"}
-            speed={60}
-            letterCase="lowercase"
-            className="postPageCommentsTitle"
-            type="alphanumeric"
-          />
+          <Stack>
+            <TextGlitchEffect
+              text={"Comments"}
+              speed={60}
+              letterCase="lowercase"
+              className="postPageCommentsTitle"
+              type="alphanumeric"
+            />
+            <Stack gap={1}>
+              <TextField
+                disabled={!isLoggedIn || isCommenting}
+                id="newComment"
+                placeholder={
+                  isLoggedIn ? "Add new comment" : "Login to comment"
+                }
+                multiline
+                maxRows={4}
+                variant="standard"
+                onBlur={(e) => {
+                  setNewComment(e.target.value);
+                }}
+              />
+              <Button
+                loading={isCommenting || loading}
+                color="info"
+                variant="outlined"
+                size="small"
+                ref={glitch.ref}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsCommenting(true);
+                  addComment(
+                    userData?.id,
+                    newComment,
+
+                    (comment) => {
+                      setRelevantCommentIDs((prev) => [...prev, comment.id]);
+                      setNewComment("");
+                      fetchParentComments();
+                      updateUser(
+                        userData?.id,
+                        {
+                          id: userData?.id,
+                          username: userData?.username,
+                          password: userData?.password,
+                          displayName: userData?.displayName,
+                          posts: [...(userData?.posts || []), post?.id],
+                          likedPosts: [...(userData?.likedPosts || [])],
+                          dislikedPosts: [...(userData?.dislikedPosts || [])],
+                          reportedPosts: [...(userData?.reportedPosts || [])],
+                          comments: [
+                            ...(userData?.likedComments || []),
+                            comment.id,
+                          ],
+                          dateCreated: userData?.dateCreated,
+                          dateModified: now,
+                          dateDeleted: "",
+                        },
+                        () => {
+                          updatePost(
+                            id,
+                            {
+                              id: post?.id,
+                              title: post?.title,
+                              resource: post?.resource,
+                              author: userData?.id,
+                              description: post?.description,
+                              upvotes: post?.upvotes,
+                              downvotes: post?.downvotes,
+                              reports: post?.reports,
+                              category: post?.category,
+                              comments: [...(post?.comments || []), comment.id],
+                              dateCreated: post?.dateCreated,
+                              dateModified: now,
+                              dateDeleted: "",
+                            },
+                            () => {
+                              enqueueSnackbar("Comment added successfully", {
+                                variant: "success",
+                              });
+                            },
+                            (error) => {
+                              enqueueSnackbar(error.message, {
+                                variant: "error",
+                              });
+                            }
+                          );
+                        },
+                        (error) => {
+                          enqueueSnackbar(error.message, {
+                            variant: "error",
+                          });
+                        }
+                      );
+                    },
+                    (error) => {
+                      enqueueSnackbar(error.message, {
+                        variant: "error",
+                      });
+                    }
+                  );
+                }}
+              >
+                <TextGlitchEffect
+                  text={"Send"}
+                  speed={60}
+                  letterCase="lowercase"
+                  className="createCommentButton"
+                  type="alphanumeric"
+                />
+              </Button>
+            </Stack>
+          </Stack>
           {parentComments &&
             parentComments.length > 0 &&
             parentComments.map((comment, index) => (
               <CommentBlock
                 key={index}
+                commentID={comment?.id}
                 dateCreated={comment?.dateCreated}
                 userName={comment?.displayName}
                 commentContents={comment?.text}
                 replies={comment?.replies}
                 imageURL={comment?.imageURL}
+                likes={comment?.likes}
+                isLoggedIn={isLoggedIn}
+                userData={userData}
+                likedByCurrentUser={userData?.likedComments
+                  ?.map(Number)
+                  .includes(Number(comment?.id))}
               />
             ))}
         </Stack>
