@@ -13,6 +13,7 @@ import {
   fetchPostsPaginatedProps,
   errorProps,
   createUserProps,
+  loginUserProps,
 } from "../dataTypeDefinitions.ts";
 const now = new Date().toISOString();
 function createSafePost(post: Partial<Post>): Post {
@@ -177,7 +178,12 @@ async function createUser({
   }
 }
 
-async function loginUser({ username, password }, onSuccess, onError) {
+async function loginUser({
+  username,
+  password,
+  onSuccess,
+  onError,
+}: loginUserProps) {
   try {
     const response = await fetch(
       `${APIURL}/users?username=${encodeURIComponent(
@@ -186,8 +192,10 @@ async function loginUser({ username, password }, onSuccess, onError) {
     );
 
     const data = await response.json();
-    if (data.length > 0) {
-      onSuccess(data[0]);
+    const user: User = data.users;
+
+    if (Object.values(user).length > 0) {
+      onSuccess(user[0]);
     } else {
       throw new Error("Invalid credentials");
     }

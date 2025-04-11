@@ -11,7 +11,7 @@ import { loginUser, createUser } from "../APICalls";
 import { useGlitch } from "react-powerglitch";
 import { TextGlitchEffect } from "./TextGlitchEffect";
 import { enqueueSnackbar } from "notistack";
-import { errorProps } from "../../dataTypeDefinitions";
+import { errorProps, loginUserProps, User } from "../../dataTypeDefinitions";
 
 function SignUpAndLogin({
   isOpen,
@@ -42,27 +42,33 @@ function SignUpAndLogin({
   const handleSubmit = (event) => {
     event.preventDefault();
     if (mode === "login") {
-      loginUser(
-        { username, password },
-        (user) => {
+      loginUser({
+        username,
+        password,
+        onSuccess: (user: User) => {
           document.cookie = `userID=${user.id}; path=/;`;
           setUserID(user.id);
           setUserData(user);
           setIsLoggedIn(true);
           handleClose();
         },
-        (error) => {
-          enqueueSnackbar(error.message, {
-            variant: "error",
-          });
-        }
-      );
+        onError: (error: any) => {
+          const err: errorProps = {
+            id: "user login error",
+            userFreindlyMessage: "Failed to login, try again later.",
+            errorMessage:
+              error instanceof Error ? error.message : "Unknown error",
+            error: error instanceof Error ? error : new Error("Unknown error"),
+          };
+          enqueueSnackbar({ variant: "error", ...err });
+        },
+      });
     } else {
       createUser({
         username,
         password,
         displayName,
-        onSuccess: (user) => {
+        onSuccess: (user: User) => {
           setUserData(user);
           enqueueSnackbar("Account created successfully", {
             variant: "success",
@@ -72,7 +78,7 @@ function SignUpAndLogin({
           document.cookie = `userID=${user.id}; path=/;`;
           setOpen(false);
         },
-        onError: (error) => {
+        onError: (error: any) => {
           const err: errorProps = {
             id: "creating user error",
             userFreindlyMessage:

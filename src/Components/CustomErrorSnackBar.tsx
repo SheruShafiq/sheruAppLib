@@ -64,7 +64,7 @@ const CustomErrorSnackBar = forwardRef<HTMLDivElement, errorProps>(
             alignItems: "center",
             border: "1px solid #ffffff1f",
             width: expanded ? "500px" : "410px",
-            transition: "width 0.5s ease",
+            transition: "width 1s ease-in-out",
             overflow: "hidden",
           }}
         >
@@ -74,8 +74,16 @@ const CustomErrorSnackBar = forwardRef<HTMLDivElement, errorProps>(
             alignItems="center"
             justifyContent={"space-between"}
             pb={expanded ? 1 : 0}
+            minWidth={342}
           >
-            <Typography>{userFreindlyMessage}</Typography>
+            <Typography
+              display={"block"}
+              maxWidth={342}
+              textOverflow={"ellipsis"}
+              overflow={"hidden"}
+            >
+              {userFreindlyMessage}
+            </Typography>
             <Stack direction="row" alignItems="center">
               <IconButton
                 aria-label="Show more"
