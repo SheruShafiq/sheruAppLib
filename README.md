@@ -56,6 +56,8 @@ Yes. Sauce is inspired from the 6 digit sauce.
 17) MUSIC
 18) URL(ise) the paginated home
 19) Comments don't have like and dilike options yet, not even in data structure
+20) The error snackbar needs to have dev details that can be opened optionally.
+21) Move to typescript (API res body(s) are a nightmare right now withou t types habing no idea what the hell to pass on and what to expect.)
    
 ---
 
