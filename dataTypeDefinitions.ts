@@ -133,7 +133,7 @@ export type createUserProps = {
 export type PatchUserProps = {
   userID: string;
   field: keyof User;
-  newValue: string;
+  newValue: string[];
   onSuccess: (user: User) => void;
   onError: (error: any) => void;
 };

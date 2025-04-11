@@ -135,6 +135,7 @@ function App() {
                 userData={userData}
                 setOpen={setLogInDialogue}
                 isLoggedIn={isLoggedIn}
+                refreshUserData={getUserData}
               />
             }
           />

@@ -1,5 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Typography, Box, Button, Link, Chip, Stack } from "@mui/material";
+import {
+  Typography,
+  Box,
+  Button,
+  Link,
+  Chip,
+  Stack,
+  CircularProgress,
+} from "@mui/material";
 import InsertEmotionIcon from "@mui/icons-material/InsertEmoticon";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 import MessageOutlinedIcon from "@mui/icons-material/MessageOutlined";
@@ -7,8 +15,7 @@ import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import LinkIcon from "@mui/icons-material/Link";
 import { useSnackbar } from "notistack";
 import { TextGlitchEffect } from "./TextGlitchEffect";
-import { patchVotePost, patchUndoVotePost } from "../APICalls";
-import { patchUser } from "../APICalls";
+import { patchVotePost, patchUndoVotePost, patchUser } from "../APICalls";
 import { errorProps, Post, User, VoteField } from "../../dataTypeDefinitions";
 
 interface PostPreviewProps {
@@ -32,6 +39,8 @@ interface PostPreviewProps {
   userData: User;
 }
 
+type LoadingAction = "upvote" | "downvote" | "report" | null;
+
 const PostPreview: React.FC<PostPreviewProps> = ({
   id,
   title,
@@ -54,14 +63,21 @@ const PostPreview: React.FC<PostPreviewProps> = ({
 }) => {
   const { enqueueSnackbar } = useSnackbar();
 
-  // Flags to control local state
-  const [isVoting, setIsVoting] = useState(false);
+  // Local voting state
+  const [loadingAction, setLoadingAction] = useState<LoadingAction>(null);
   const [voteStatus, setVoteStatus] = useState<"up" | "down" | "none">("none");
   const [reported, setReported] = useState(false);
 
+  // Local vote counts so that subsequent API calls have an updated number.
+  const [localUpvotes, setLocalUpvotes] = useState(upvotes);
+  const [localDownvotes, setLocalDownvotes] = useState(downvotes);
+  const [localReports, setLocalReports] = useState(reports);
+
+  // Reference for description overflow calculation
   const descRef = useRef<HTMLDivElement>(null);
   const [isOverflow, setIsOverflow] = useState(false);
 
+  // When the description changes, update overflow state.
   useEffect(() => {
     if (descRef.current) {
       setIsOverflow(
@@ -70,16 +86,27 @@ const PostPreview: React.FC<PostPreviewProps> = ({
     }
   }, [description]);
 
-  // Synchronize local vote status with props.
+  // Sync local vote status and local counts when parent props change.
   useEffect(() => {
-    console.log(upvotedByCurrentUser, downvotedByCurrentUser);
     if (upvotedByCurrentUser) setVoteStatus("up");
     else if (downvotedByCurrentUser) setVoteStatus("down");
     else setVoteStatus("none");
-    setReported(reportedByCurrentUser);
-  }, [upvotedByCurrentUser, downvotedByCurrentUser, reportedByCurrentUser]);
 
-  // Format date in Reddit style.
+    setReported(reportedByCurrentUser);
+    // Also update our local vote count states on new props.
+    setLocalUpvotes(upvotes);
+    setLocalDownvotes(downvotes);
+    setLocalReports(reports);
+  }, [
+    upvotedByCurrentUser,
+    downvotedByCurrentUser,
+    reportedByCurrentUser,
+    upvotes,
+    downvotes,
+    reports,
+  ]);
+
+  // Format date in a Reddit-style string.
   const formatDateRedditStyle = (date: Date): string => {
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
@@ -113,64 +140,56 @@ const PostPreview: React.FC<PostPreviewProps> = ({
   const formattedResource =
     resource && resource.length > 20 ? `${resource.slice(0, 20)}...` : resource;
 
-  // A helper that wraps a Promise to help with async/await if needed.
-  const wrapApiCall = async <T,>(
-    fn: (...args: any[]) => Promise<T>,
-    ...args: any[]
-  ): Promise<T> => {
-    return await fn(...args);
-  };
-
   /*
-    Voting logic (using PATCH calls):
-      - If the user clicks "upvote" when already upvoted, we call patchUndoVotePost on "upvotes".
-      - If switching from downvote to upvote, first undo the downvote, then apply the upvote.
-      - Similar logic applies for downvotes.
-      - For reporting, we do the equivalent.
-    No optimistic UI updates occur; we only refresh the UI (via fetchPosts) once all API calls complete.
+    Voting logic using PATCH calls:
+    - For upvote and downvote, if the user clicks on the same vote they already made, we undo it.
+    - If they switch (for instance from downvote to upvote) we first undo the previous vote then apply the new vote.
+    - After a successful API call, we update the local voteStatus and local vote count (using the returned new value)
+      so that subsequent calls use the updated counts.
+    - Also, we update the user votes using patchUser.
+    - Once done, we call fetchPosts() to re-sync with the backend.
   */
   const handleVote = async (type: "upvote" | "downvote" | "report") => {
     if (!isLoggedIn) {
       enqueueSnackbar("Please log in to vote", { variant: "info" });
       return;
     }
-    if (isVoting) return;
-    setIsVoting(true);
+    if (loadingAction) return; // prevent multiple simultaneous actions
+    setLoadingAction(type);
 
     try {
       if (type === "upvote") {
         if (voteStatus === "up") {
           // Undo upvote.
-          await wrapApiCall(patchUndoVotePost, id, "upvotes", upvotes);
-          const updatedUser: User = {
-            ...userData,
-            upvotedPosts: userData.upvotedPosts.filter(
-              (pid: string) => pid !== id
-            ),
-          };
-          await wrapApiCall(patchUser, {
-            userID: userData.id,
+          const response = await patchUndoVotePost(id, "upvotes", localUpvotes);
+          setLocalUpvotes(response.upvotes);
+          setVoteStatus("none");
+
+          await patchUser({
+            userID: userData.id!,
             field: "upvotedPosts",
-            newValue: updatedUser.upvotedPosts,
+            newValue: userData.upvotedPosts.filter((pid: string) => pid !== id),
             onSuccess: () => {},
             onError: (err: any) => {
               throw err;
             },
           });
         } else {
-          // If currently downvoted, undo the downvote.
+          // If switching from downvote, undo it first.
           if (voteStatus === "down") {
-            await wrapApiCall(patchUndoVotePost, id, "downvotes", downvotes);
-            const updatedUser: User = {
-              ...userData,
-              downVotedPosts: userData.downVotedPosts.filter(
-                (pid: string) => pid !== id
-              ),
-            };
-            await wrapApiCall(patchUser, {
-              userID: userData.id,
+            const undoResponse = await patchUndoVotePost(
+              id,
+              "downvotes",
+              localDownvotes
+            );
+            setLocalDownvotes(undoResponse.downvotes);
+            const updatedUser = userData.downVotedPosts.filter(
+              (pid: string) => pid !== id
+            );
+            await patchUser({
+              userID: userData.id!,
               field: "downVotedPosts",
-              newValue: updatedUser.downVotedPosts,
+              newValue: updatedUser,
               onSuccess: () => {},
               onError: (err: any) => {
                 throw err;
@@ -178,15 +197,15 @@ const PostPreview: React.FC<PostPreviewProps> = ({
             });
           }
           // Apply upvote.
-          await wrapApiCall(patchVotePost, id, "upvotes", upvotes, 1);
-          const updatedUser: User = {
-            ...userData,
-            upvotedPosts: [...userData.upvotedPosts, id],
-          };
-          await wrapApiCall(patchUser, {
-            userID: userData.id,
+          const response = await patchVotePost(id, "upvotes", localUpvotes, 1);
+          setLocalUpvotes(response.upvotes);
+          setVoteStatus("up");
+          const updatedUser = [...userData.upvotedPosts, id];
+
+          await patchUser({
+            userID: userData.id!,
             field: "upvotedPosts",
-            newValue: updatedUser.upvotedPosts,
+            newValue: updatedUser,
             onSuccess: () => {},
             onError: (err: any) => {
               throw err;
@@ -196,36 +215,42 @@ const PostPreview: React.FC<PostPreviewProps> = ({
       } else if (type === "downvote") {
         if (voteStatus === "down") {
           // Undo downvote.
-          await wrapApiCall(patchUndoVotePost, id, "downvotes", downvotes);
-          const updatedUser: User = {
-            ...userData,
-            downVotedPosts: userData.downVotedPosts.filter(
-              (pid: string) => pid !== id
-            ),
-          };
-          await wrapApiCall(patchUser, {
-            userID: userData.id,
+          const response = await patchUndoVotePost(
+            id,
+            "downvotes",
+            localDownvotes
+          );
+          setLocalDownvotes(response.downvotes);
+          setVoteStatus("none");
+          const updatedUser = userData.downVotedPosts.filter(
+            (pid: string) => pid !== id
+          );
+
+          await patchUser({
+            userID: userData.id!,
             field: "downVotedPosts",
-            newValue: updatedUser.downVotedPosts,
+            newValue: updatedUser,
             onSuccess: () => {},
             onError: (err: any) => {
               throw err;
             },
           });
         } else {
-          // If currently upvoted, undo the upvote.
+          // If switching from upvote, undo it first.
           if (voteStatus === "up") {
-            await wrapApiCall(patchUndoVotePost, id, "upvotes", upvotes);
-            const updatedUser: User = {
-              ...userData,
-              upvotedPosts: userData.upvotedPosts.filter(
-                (pid: string) => pid !== id
-              ),
-            };
-            await wrapApiCall(patchUser, {
-              userID: userData.id,
+            const undoResponse = await patchUndoVotePost(
+              id,
+              "upvotes",
+              localUpvotes
+            );
+            setLocalUpvotes(undoResponse.upvotes);
+            const updatedUser = userData.upvotedPosts.filter(
+              (pid: string) => pid !== id
+            );
+            await patchUser({
+              userID: userData.id!,
               field: "upvotedPosts",
-              newValue: updatedUser.upvotedPosts,
+              newValue: updatedUser,
               onSuccess: () => {},
               onError: (err: any) => {
                 throw err;
@@ -233,13 +258,19 @@ const PostPreview: React.FC<PostPreviewProps> = ({
             });
           }
           // Apply downvote.
-          await wrapApiCall(patchVotePost, id, "downvotes", downvotes, 1);
-          const updatedUser: User = {
-            ...userData,
+          const response = await patchVotePost(
+            id,
+            "downvotes",
+            localDownvotes,
+            1
+          );
+          setLocalDownvotes(response.downvotes);
+          setVoteStatus("down");
+          const updatedUser = {
             downVotedPosts: [...userData.downVotedPosts, id],
           };
-          await wrapApiCall(patchUser, {
-            userID: userData.id,
+          await patchUser({
+            userID: userData.id!,
             field: "downVotedPosts",
             newValue: updatedUser.downVotedPosts,
             onSuccess: () => {},
@@ -251,17 +282,16 @@ const PostPreview: React.FC<PostPreviewProps> = ({
       } else if (type === "report") {
         if (reported) {
           // Undo report.
-          await wrapApiCall(patchUndoVotePost, id, "reports", reports);
-          const updatedUser: User = {
-            ...userData,
-            reportedPosts: userData.reportedPosts.filter(
-              (pid: string) => pid !== id
-            ),
-          };
-          await wrapApiCall(patchUser, {
-            userID: userData.id,
+          const response = await patchUndoVotePost(id, "reports", localReports);
+          setLocalReports(response.reports);
+          setReported(false);
+          const updatedUser = userData.reportedPosts.filter(
+            (pid: string) => pid !== id
+          );
+          await patchUser({
+            userID: userData.id!,
             field: "reportedPosts",
-            newValue: updatedUser.reportedPosts,
+            newValue: updatedUser,
             onSuccess: () => {},
             onError: (err: any) => {
               throw err;
@@ -269,15 +299,14 @@ const PostPreview: React.FC<PostPreviewProps> = ({
           });
         } else {
           // Apply report.
-          await wrapApiCall(patchVotePost, id, "reports", reports, 1);
-          const updatedUser: User = {
-            ...userData,
-            reportedPosts: [...userData.reportedPosts, id],
-          };
-          await wrapApiCall(patchUser, {
-            userID: userData.id,
+          const response = await patchVotePost(id, "reports", localReports, 1);
+          setLocalReports(response.reports);
+          setReported(true);
+          const updatedUser = [...userData.reportedPosts, id];
+          await patchUser({
+            userID: userData.id!,
             field: "reportedPosts",
-            newValue: updatedUser.reportedPosts,
+            newValue: updatedUser,
             onSuccess: () => {},
             onError: (err: any) => {
               throw err;
@@ -286,8 +315,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
         }
       }
 
-      // After successfully updating votes/reports and user info,
-      // trigger a fetch to reload the post data (vote counts, etc.) from the backend.
+      // Once complete, fetch fresh post data.
       await fetchPosts();
     } catch (error: any) {
       const err: errorProps = {
@@ -298,7 +326,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
       };
       enqueueSnackbar({ variant: "error", ...err });
     } finally {
-      setIsVoting(false);
+      setLoadingAction(null);
     }
   };
 
@@ -375,34 +403,46 @@ const PostPreview: React.FC<PostPreviewProps> = ({
         </Stack>
         <Button
           onClick={() => handleVote("upvote")}
-          disabled={isVoting}
+          disabled={!!loadingAction}
           startIcon={
-            <InsertEmotionIcon
-              color={voteStatus === "up" ? "success" : "inherit"}
-            />
+            loadingAction === "upvote" ? (
+              <CircularProgress size={20} />
+            ) : (
+              <InsertEmotionIcon
+                color={voteStatus === "up" ? "success" : "inherit"}
+              />
+            )
           }
         >
-          {upvotes}
+          {localUpvotes}
         </Button>
         <Button
           onClick={() => handleVote("downvote")}
-          disabled={isVoting}
+          disabled={!!loadingAction}
           startIcon={
-            <SentimentVeryDissatisfiedIcon
-              color={voteStatus === "down" ? "error" : "inherit"}
-            />
+            loadingAction === "downvote" ? (
+              <CircularProgress size={20} />
+            ) : (
+              <SentimentVeryDissatisfiedIcon
+                color={voteStatus === "down" ? "error" : "inherit"}
+              />
+            )
           }
         >
-          {downvotes}
+          {localDownvotes}
         </Button>
         <Button
           onClick={() => handleVote("report")}
-          disabled={isVoting}
+          disabled={!!loadingAction}
           startIcon={
-            <ErrorOutlinedIcon color={reported ? "warning" : "inherit"} />
+            loadingAction === "report" ? (
+              <CircularProgress size={20} />
+            ) : (
+              <ErrorOutlinedIcon color={reported ? "warning" : "inherit"} />
+            )
           }
         >
-          {reports}
+          {localReports}
         </Button>
         <Button>{category}</Button>
         <Button startIcon={<MessageOutlinedIcon color="secondary" />}>

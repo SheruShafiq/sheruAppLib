@@ -191,7 +191,7 @@ export async function patchUser({
     const response = await fetch(`${APIURL}/users/${userID}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ [field]: newValue }),
+      body: JSON.stringify({ [field]: newValue }), // Updated here
     });
 
     if (!response.ok) {

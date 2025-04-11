@@ -20,7 +20,13 @@ import {
 } from "../../dataTypeDefinitions";
 import { errorProps } from "../../dataTypeDefinitions";
 
-function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
+function Home({
+  isLoggedIn,
+  userData,
+  setOpen,
+  setIsLoggedIn,
+  refreshUserData,
+}) {
   const { pageNumber } = useParams();
   const currentDisplayHeight = window.innerHeight;
   const headerHeight = 65;
@@ -87,6 +93,7 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
         enqueueSnackbar({ variant: "error", ...err });
       }
     );
+    refreshUserData(userData.id);
   }
   useEffect(() => {
     fetchPostsHandeled(curentPage, pageSize);
