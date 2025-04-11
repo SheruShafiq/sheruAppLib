@@ -13,7 +13,7 @@ const CustomSnackbar = React.forwardRef((props, ref) => {
         sx={{
           alignItems: "center",
           backgroundColor: "black",
-          border: "1px solid secondary.main",
+          border: "1px solid #ffffff1f",
         }}
         action={
           login && (

@@ -7,10 +7,11 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
-import { loginUser, signUpUser } from "../APICalls";
+import { loginUser, createUser } from "../APICalls";
 import { useGlitch } from "react-powerglitch";
 import { TextGlitchEffect } from "./TextGlitchEffect";
 import { enqueueSnackbar } from "notistack";
+import { errorProps } from "../../dataTypeDefinitions";
 
 function SignUpAndLogin({
   isOpen,
@@ -57,9 +58,11 @@ function SignUpAndLogin({
         }
       );
     } else {
-      signUpUser(
-        { username, password, displayName },
-        (user) => {
+      createUser({
+        username,
+        password,
+        displayName,
+        onSuccess: (user) => {
           setUserData(user);
           enqueueSnackbar("Account created successfully", {
             variant: "success",
@@ -69,12 +72,18 @@ function SignUpAndLogin({
           document.cookie = `userID=${user.id}; path=/;`;
           setOpen(false);
         },
-        (error) => {
-          enqueueSnackbar(error.message, {
-            variant: "error",
-          });
-        }
-      );
+        onError: (error) => {
+          const err: errorProps = {
+            id: "creating user error",
+            userFreindlyMessage:
+              "Failed to create an account, try again later.",
+            errorMessage:
+              error instanceof Error ? error.message : "Unknown error",
+            error: error instanceof Error ? error : new Error("Unknown error"),
+          };
+          enqueueSnackbar({ variant: "error", ...err });
+        },
+      });
     }
   };
   const isDesktop = window.innerWidth > 768;

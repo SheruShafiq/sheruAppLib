@@ -90,6 +90,33 @@ function App() {
               }}
             />
           ),
+          success: (props) => (
+            <CustomSnackbar
+              {...props}
+              severity="success"
+              handleLogin={() => {
+                setLogInDialogue(true);
+              }}
+            />
+          ),
+          warning: (props) => (
+            <CustomSnackbar
+              {...props}
+              severity="warning"
+              handleLogin={() => {
+                setLogInDialogue(true);
+              }}
+            />
+          ),
+          info: (props) => (
+            <CustomSnackbar
+              {...props}
+              severity="info"
+              handleLogin={() => {
+                setLogInDialogue(true);
+              }}
+            />
+          ),
         }}
       >
         <SignUpAndLogin

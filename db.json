@@ -4,13 +4,15 @@
       "id": "1",
       "title": "Updated Title",
       "resource": "https://www.dailymotion.com/video/x7xyz12",
-      "author": 1,
+      "authorID": 1,
       "description": "Found this episode on Dailymotion after it was removed from Hulu in my region (Germany). There's one unskippable ad at the start, but if you use uBlock Origin, it skips the mid-rolls. Also recommend setting quality manually to 720p, auto mode keeps lagging.",
       "upvotes": 0,
       "downvotes": 0,
       "reports": 0,
       "category": 1,
-      "comments": [1],
+      "comments": [
+        1
+      ],
       "dateCreated": "2025-04-07T10:15:23.345Z",
       "dateModified": "2025-04-07T18:02:55.152Z",
       "dateDeleted": ""
@@ -22,35 +24,87 @@
       "username": "Sheru",
       "password": "123",
       "displayName": "Stewie Griffin",
-      "posts": ["1"],
-      "likedPosts": ["1"],
-      "dislikedPosts": ["1"],
-      "reportedPosts": ["1"],
-      "comments": ["1"],
+      "posts": [
+        "1"
+      ],
+      "likedPosts": [
+        "1"
+      ],
+      "dislikedPosts": [
+        "1"
+      ],
+      "reportedPosts": [
+        "1"
+      ],
+      "comments": [
+        "1"
+      ],
       "dateCreated": "2023-05-12T10:15:30.000Z",
       "dateModified": "2023-06-10T12:20:30.000Z",
       "dateDeleted": "",
-      "likedComments": ["1"],
-      "duslikedComments": ["1"]
+      "likedComments": [
+        "1"
+      ],
+      "duslikedComments": [
+        "1"
+      ]
+    },
+    {
+      "username": "dev",
+      "password": "123",
+      "displayName": "DEVELOPER",
+      "posts": [],
+      "upvotedPosts": [],
+      "downVotedPosts": [],
+      "reportedPosts": [],
+      "comments": [],
+      "dateCreated": "2025-04-11T19:30:54.520Z",
+      "dateModified": "2025-04-11T19:30:54.520Z",
+      "dateDeleted": "",
+      "likedComments": [],
+      "dislikedComments": [],
+      "id": 2
+    },
+    {
+      "username": "dev2",
+      "password": "123",
+      "displayName": "test",
+      "posts": [],
+      "upvotedPosts": [],
+      "downVotedPosts": [],
+      "reportedPosts": [],
+      "comments": [],
+      "dateCreated": "2025-04-11T19:41:56.037Z",
+      "dateModified": "2025-04-11T19:41:56.037Z",
+      "dateDeleted": "",
+      "likedComments": [],
+      "dislikedComments": [],
+      "id": 3
     }
   ],
   "comments": [
     {
       "id": "1",
-      "userID": "1",
+      "authorID": "1",
       "text": "Worked great, thanks! Subtitles were auto-generated though.",
       "likes": 0,
       "dislikes": 0,
-      "replies": ["2"],
+      "replies": [
+        "2"
+      ],
       "dateCreated": "2023-04-22T07:30:00.000Z",
       "dateModified": "2023-04-23T08:30:00.000Z",
       "dateDeleted": "",
-      "likedBy": ["1"],
-      "dislikedBy": ["1"]
+      "likedBy": [
+        "1"
+      ],
+      "dislikedBy": [
+        "1"
+      ]
     },
     {
       "id": "2",
-      "userID": "1",
+      "authorID": "1",
       "text": "This is my cool reply.",
       "likes": 0,
       "dislikes": 0,
@@ -58,15 +112,21 @@
       "dateCreated": "2023-04-22T07:30:00.000Z",
       "dateModified": "2023-04-23T08:30:00.000Z",
       "dateDeleted": "",
-      "likedBy": ["1"],
-      "dislikedBy": ["1"]
+      "likedBy": [
+        "1"
+      ],
+      "dislikedBy": [
+        "1"
+      ]
     }
   ],
   "categories": [
     {
       "id": "1",
       "name": "Movies",
-      "posts": ["1"],
+      "posts": [
+        "1"
+      ],
       "dateCreated": "2023-05-12T10:15:30.000Z",
       "dateModified": "2023-06-10T12:20:30.000Z",
       "dateDeleted": ""
@@ -92,7 +152,7 @@
     {
       "id": "1",
       "postID": "1",
-      "userID": "1",
+      "authorID": "1",
       "reason": "Inappropriate content",
       "dateCreated": "2023-05-12T10:15:30.000Z",
       "dateModified": "",
@@ -106,14 +166,14 @@
       "comments": [
         {
           "id": "1",
-          "userID": "1",
+          "authorID": "1",
           "text": "Worked great, thanks! Subtitles were auto-generated though.",
           "likes": 0,
           "dislikes": 0,
           "replies": [
             {
               "id": "2",
-              "userID": "1",
+              "authorID": "1",
               "text": "This is my cool reply.",
               "likes": 0,
               "dislikes": 0,
@@ -121,15 +181,23 @@
               "dateCreated": "2023-04-22T07:30:00.000Z",
               "dateModified": "2023-04-23T08:30:00.000Z",
               "dateDeleted": "",
-              "likedBy": ["1"],
-              "dislikedBy": ["1"]
+              "likedBy": [
+                "1"
+              ],
+              "dislikedBy": [
+                "1"
+              ]
             }
           ],
           "dateCreated": "2023-04-22T07:30:00.000Z",
           "dateModified": "2023-04-23T08:30:00.000Z",
           "dateDeleted": "",
-          "likedBy": ["1"],
-          "dislikedBy": ["1"]
+          "likedBy": [
+            "1"
+          ],
+          "dislikedBy": [
+            "1"
+          ]
         }
       ]
     }

@@ -119,6 +119,15 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
               display: fetchingInitialPosts ? "none" : "flex",
             }}
           >
+            {/* <Button
+              onClick={() => {
+                enqueueSnackbar("Account created successfully", {
+                  variant: "success",
+                });
+              }}
+            >
+             Testing button
+            </Button> */}
             {Object.keys(posts).map((key) => (
               <PostPreview
                 pageVariant={false}

@@ -2,7 +2,7 @@
 const APIURL = import.meta.env.VITE_BACKEND_URL;
 import {
   Post,
-  user,
+  User,
   Comment,
   Category,
   Report,
@@ -12,7 +12,28 @@ import {
   fetchPostsProps,
   fetchPostsPaginatedProps,
   errorProps,
+  createUserProps,
 } from "../dataTypeDefinitions.ts";
+const now = new Date().toISOString();
+function createSafePost(post: Partial<Post>): Post {
+  return {
+    title: post.title ?? "",
+    resource: post.resource ?? "",
+    authorID: post.authorID ?? "",
+    description: post.description ?? "",
+    category: post.category ?? 0,
+    upvotes: post.upvotes ?? 0,
+    downvotes: post.downvotes ?? 0,
+    reports: post.reports ?? 0,
+    reportIDs: post.reportIDs ?? [],
+    comments: post.comments ?? [],
+    dateCreated: post.dateCreated ?? now,
+    dateModified: now,
+    dateDeleted: post.dateDeleted ?? "",
+    cachedCommentsChainID: post.cachedCommentsChainID ?? "",
+    cachedReportsChainID: post.cachedReportsChainID ?? "",
+  };
+}
 
 async function fetchPosts({ onSuccess, onError }: fetchPostsProps) {
   try {
@@ -56,41 +77,35 @@ async function fetchPostById({
   }
 }
 
-function createSafePost(post: Partial<Post>): Post {
-  const now = new Date().toISOString();
-  return {
-    title: post.title ?? "",
-    resource: post.resource ?? "",
-    author: post.author ?? "",
-    description: post.description ?? "",
-    category: post.category ?? 0,
-    upvotes: post.upvotes ?? 0,
-    downvotes: post.downvotes ?? 0,
-    reports: post.reports ?? 0,
-    reportIDs: post.reportIDs ?? [],
-    comments: post.comments ?? [],
-    dateCreated: post.dateCreated ?? now,
-    dateModified: now,
-    dateDeleted: post.dateDeleted ?? "",
-    cachedCommentsChainID: post.cachedCommentsChainID ?? "",
-    cachedReportsChainID: post.cachedReportsChainID ?? "",
-  };
-}
-
-async function createPost({ post, onSuccess, onError }: createPostProps) {
+async function createPost({
+  title,
+  resource,
+  authorID,
+  category,
+  description,
+  onSuccess,
+  onError,
+}: createPostProps) {
   try {
-    if (
-      !post.title ||
-      !post.resource ||
-      !post.author ||
-      !post.category ||
-      !post.description
-    ) {
+    if (!title || !resource || !authorID || !category || !description) {
       throw new Error(
-        "All required fields (title, resource, author, category, description) must be provided."
+        "All required fields (title, resource, category, description) must be provided."
       );
     }
-    const now = new Date().toISOString();
+    const post: Partial<Post> = {
+      title,
+      resource,
+      authorID,
+      category,
+      description,
+      upvotes: 0,
+      downvotes: 0,
+      reports: 0,
+      reportIDs: [],
+      comments: [],
+      cachedCommentsChainID: "",
+      cachedReportsChainID: "",
+    };
     post.dateCreated = post.dateCreated || now;
     post.dateModified = post.dateModified || now;
     post.dateDeleted = post.dateDeleted || "";
@@ -105,6 +120,77 @@ async function createPost({ post, onSuccess, onError }: createPostProps) {
 
     const data: Post = await response.json();
     onSuccess(data);
+  } catch (error) {
+    onError(error);
+  }
+}
+async function fetchUserById(id, onSuccess, onError) {
+  try {
+    const response = await fetch(`${APIURL}/users/${id}`);
+
+    const data = await response.json();
+    onSuccess(data);
+  } catch (error) {
+    onError(error);
+  }
+}
+
+async function createUser({
+  username,
+  password,
+  displayName,
+  onSuccess,
+  onError,
+}: createUserProps) {
+  try {
+    if (!username || !password || !displayName) {
+      throw new Error(
+        "All required fields (username, password, displayName) must be provided."
+      );
+    }
+
+    const user = {
+      username: username,
+      password: password,
+      displayName: displayName,
+      posts: [],
+      upvotedPosts: [],
+      downVotedPosts: [],
+      reportedPosts: [],
+      comments: [],
+      dateCreated: now,
+      dateModified: now,
+      dateDeleted: "",
+      likedComments: [],
+      dislikedComments: [],
+    } as User;
+
+    const response = await fetch(`${APIURL}/users`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(user),
+    });
+    const data: User = await response.json();
+    onSuccess(data);
+  } catch (error) {
+    onError(error);
+  }
+}
+
+async function loginUser({ username, password }, onSuccess, onError) {
+  try {
+    const response = await fetch(
+      `${APIURL}/users?username=${encodeURIComponent(
+        username
+      )}&password=${encodeURIComponent(password)}`
+    );
+
+    const data = await response.json();
+    if (data.length > 0) {
+      onSuccess(data[0]);
+    } else {
+      throw new Error("Invalid credentials");
+    }
   } catch (error) {
     onError(error);
   }
@@ -130,7 +216,7 @@ async function updatePost(id, post, onSuccess, onError) {
 async function deletePost(id, onSuccess, onError) {
   try {
     // Instead of physical deletion, mark the post as deleted
-    const now = new Date().toISOString();
+
     const response = await fetch(`${APIURL}/posts/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -146,7 +232,7 @@ async function deletePost(id, onSuccess, onError) {
 async function upVotePost(id, currentUpvotes, onSuccess, onError) {
   try {
     const newUpvotes = currentUpvotes + 1;
-    const now = new Date().toISOString();
+
     const response = await fetch(`${APIURL}/posts/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -163,7 +249,7 @@ async function upVotePost(id, currentUpvotes, onSuccess, onError) {
 async function downVotePost(id, currentDownvotes, onSuccess, onError) {
   try {
     const newDownvotes = currentDownvotes + 1;
-    const now = new Date().toISOString();
+
     const response = await fetch(`${APIURL}/posts/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -180,7 +266,7 @@ async function downVotePost(id, currentDownvotes, onSuccess, onError) {
 async function reportPost(id, currentReports, onSuccess, onError) {
   try {
     const newReports = currentReports + 1;
-    const now = new Date().toISOString();
+
     const response = await fetch(`${APIURL}/posts/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -197,7 +283,7 @@ async function reportPost(id, currentReports, onSuccess, onError) {
 async function undoUpVotePost(id, currentUpvotes, onSuccess, onError) {
   try {
     const newUpvotes = currentUpvotes - 1;
-    const now = new Date().toISOString();
+
     const response = await fetch(`${APIURL}/posts/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -214,7 +300,7 @@ async function undoUpVotePost(id, currentUpvotes, onSuccess, onError) {
 async function undoDownVotePost(id, currentDownvotes, onSuccess, onError) {
   try {
     const newDownvotes = currentDownvotes - 1;
-    const now = new Date().toISOString();
+
     const response = await fetch(`${APIURL}/posts/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -231,7 +317,7 @@ async function undoDownVotePost(id, currentDownvotes, onSuccess, onError) {
 async function undoReportPost(id, currentReports, onSuccess, onError) {
   try {
     const newReports = currentReports - 1;
-    const now = new Date().toISOString();
+
     const response = await fetch(`${APIURL}/posts/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -298,96 +384,6 @@ async function fetchUsers(onSuccess, onError) {
   }
 }
 
-async function fetchUserById(id, onSuccess, onError) {
-  try {
-    const response = await fetch(`${APIURL}/users/${id}`);
-
-    const data = await response.json();
-    onSuccess(data);
-  } catch (error) {
-    onError(error);
-  }
-}
-
-// New helper function to get user by ID (alias for fetchUserById)
-function getUserByID(userId, onSuccess, onError) {
-  fetchUserById(userId, onSuccess, onError);
-}
-
-async function createUser(user, onSuccess, onError) {
-  try {
-    const now = new Date().toISOString();
-    // Ensure required date fields are present
-    user.dateCreated = user.dateCreated || now;
-    user.dateModified = user.dateModified || now;
-    user.dateDeleted = user.dateDeleted || "";
-    const response = await fetch(`${APIURL}/users`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(user),
-    });
-
-    const data = await response.json();
-    onSuccess(data);
-  } catch (error) {
-    onError(error);
-  }
-}
-
-async function loginUser({ username, password }, onSuccess, onError) {
-  try {
-    // JSON Server supports filtering via query parameters
-    const response = await fetch(
-      `${APIURL}/users?username=${encodeURIComponent(
-        username
-      )}&password=${encodeURIComponent(password)}`
-    );
-
-    const data = await response.json();
-    if (data.length > 0) {
-      onSuccess(data[0]);
-    } else {
-      throw new Error("Invalid credentials");
-    }
-  } catch (error) {
-    onError(error);
-  }
-}
-
-async function signUpUser(
-  { username, password, displayName },
-  onSuccess,
-  onError
-) {
-  try {
-    const now = new Date().toISOString();
-    // Create a new user with all required fields
-    const user = {
-      username,
-      password,
-      displayName,
-      likedPosts: [],
-      dislikedPosts: [],
-      reportedPosts: [],
-      comments: [],
-      posts: [],
-      dateCreated: now,
-      dateModified: now,
-      dateDeleted: "",
-    };
-    const response = await fetch(`${APIURL}/users`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(user),
-    });
-
-    const data = await response.json();
-    onSuccess(data);
-  } catch (error) {
-    onError(error);
-  }
-}
-
 async function updateUser(id, user, onSuccess, onError) {
   try {
     user.dateModified = new Date().toISOString();
@@ -432,10 +428,8 @@ export {
   editComment,
   fetchUsers,
   fetchUserById,
-  getUserByID, // newly added
   createUser,
   loginUser,
-  signUpUser,
   updateUser,
   fetchPostsPaginated,
   getCommentByID,
