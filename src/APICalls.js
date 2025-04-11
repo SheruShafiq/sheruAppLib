@@ -373,6 +373,22 @@ async function getCommentByID(commentId, onSuccess, onError) {
     }
 }
 
+async function testPatchCall() {
+    try {
+        const response = await fetch(`${APIURL}/posts/1`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title: "Updated Title" }),
+        });
+
+        const data = await response.json();
+        console.log(data);
+    }
+    catch (error) {
+        console.error("Error:", error);
+    }
+}
+
 export {
     fetchPosts,
     fetchPostById,
@@ -396,5 +412,6 @@ export {
     signUpUser,
     updateUser,
     fetchPostsPaginated,
-    getCommentByID
+    getCommentByID,
+    testPatchCall
 };

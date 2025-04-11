@@ -58,6 +58,10 @@ Yes. Sauce is inspired from the 6 digit sauce.
 19) Comments don't have like and dilike options yet, not even in data structure
 20) The error snackbar needs to have dev details that can be opened optionally.
 21) Move to typescript (API res body(s) are a nightmare right now withou t types habing no idea what the hell to pass on and what to expect.)
+22) Lazy LOAD 
+23) look into service workers
+24) Giphy PROD
+25) Move to NextJS if it's a smoother backend and easy enough setup.
    
 ---
 
