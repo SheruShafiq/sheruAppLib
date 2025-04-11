@@ -9,7 +9,7 @@
       "upvotes": 1,
       "downvotes": 1,
       "reports": 0,
-      "category": 1,
+      "categoryID": 1,
       "comments": [
         1
       ],
@@ -26,13 +26,31 @@
       "upvotes": 1,
       "downvotes": 0,
       "reports": 0,
-      "category": 1,
+      "categoryID": 1,
       "comments": [
         1
       ],
       "dateCreated": "2025-04-07T10:15:23.345Z",
       "dateModified": "2025-04-11T22:45:14.445Z",
       "dateDeleted": ""
+    },
+    {
+      "title": "NewPost",
+      "resource": "https://himovies.sx/watch-tv/young-sheldon-39496.4862332",
+      "authorID": 2,
+      "description": "adasdaada",
+      "categoryID": "2",
+      "upvotes": 0,
+      "downvotes": 0,
+      "reports": 0,
+      "reportIDs": [],
+      "comments": [],
+      "dateCreated": "2025-04-11T23:20:12.319Z",
+      "dateModified": "2025-04-11T23:20:44.765Z",
+      "dateDeleted": "",
+      "cachedCommentsChainID": "",
+      "cachedReportsChainID": "",
+      "id": "6trp40C"
     }
   ],
   "users": [
@@ -70,7 +88,9 @@
       "username": "dev",
       "password": "123",
       "displayName": "DEVELOPER",
-      "posts": [],
+      "posts": [
+        "6trp40C"
+      ],
       "upvotedPosts": [],
       "downVotedPosts": [
         "1"

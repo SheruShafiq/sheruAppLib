@@ -24,7 +24,7 @@ function createSafePost(post: Partial<Post>): Post {
     resource: post.resource ?? "",
     authorID: post.authorID ?? "",
     description: post.description ?? "",
-    category: post.category ?? 0,
+    categoryID: post.categoryID ?? "",
     upvotes: post.upvotes ?? 0,
     downvotes: post.downvotes ?? 0,
     reports: post.reports ?? 0,
@@ -84,13 +84,13 @@ export async function createPost({
   title,
   resource,
   authorID,
-  category,
+  categoryID,
   description,
   onSuccess,
   onError,
 }: createPostProps) {
   try {
-    if (!title || !resource || !authorID || !category || !description) {
+    if (!title || !resource || !authorID || !categoryID || !description) {
       throw new Error(
         "All required fields (title, resource, category, description) must be provided."
       );
@@ -99,7 +99,7 @@ export async function createPost({
       title,
       resource,
       authorID,
-      category,
+      categoryID,
       description,
       upvotes: 0,
       downvotes: 0,

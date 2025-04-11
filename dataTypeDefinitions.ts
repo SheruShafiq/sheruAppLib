@@ -4,7 +4,7 @@ export type Post = {
   resource: string;
   authorID: string;
   description: string;
-  category: number;
+  categoryID: string;
   upvotes: number;
   downvotes: number;
   reports: number;
@@ -104,7 +104,7 @@ export type createPostProps = {
   title: string;
   resource: string;
   description: string;
-  category: number;
+  categoryID: string;
   authorID: string;
   onSuccess: (post: Post) => void;
   onError: (error: any) => void;

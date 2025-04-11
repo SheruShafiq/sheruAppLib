@@ -16,60 +16,75 @@ import { useState } from "react";
 import { createPost, patchUser } from "../APICalls";
 import { TextGlitchEffect } from "./TextGlitchEffect";
 import { useSnackbar } from "notistack";
+import { Category, errorProps } from "../../dataTypeDefinitions";
 
-function CreatePostDialogue({ isOpen, setOpen, onPostCreated, userData }) {
+function CreatePostDialogue({
+  isOpen,
+  setOpen,
+  onPostCreated,
+  userData,
+  categories,
+}) {
   const { enqueueSnackbar } = useSnackbar();
   const [title, setTitle] = useState("");
   const [resource, setResource] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
 
-  // Hardcoded categories for user to pick from
-  const categories = ["tv-shows", "movies", "music", "sports", "news"];
-
   const handleClose = () => {
     setOpen(false);
   };
-  const userID = userData?.id;
+  const userID: string = userData?.id;
   const handleSubmit = (event) => {
     event.preventDefault();
-    const newPost = {
+
+    createPost({
       title,
       resource,
-      author: userID,
+      authorID: userID,
+      categoryID: category,
       description,
-      category,
-      upvotes: 0,
-      downvotes: 0,
-      reports: 0,
-      comments: [],
-    };
-    createPost(
-      newPost,
-      (data) => {
+      onSuccess: (data) => {
         if (onPostCreated) {
-          patchUser(
-            userID,
-            { ...userData, posts: [...userData.posts, data.id] },
-            () => {
+          patchUser({
+            userID: userData.id!,
+            field: "posts",
+            newValue: [...userData.posts, data.id],
+            onSuccess: () => {
               onPostCreated();
               enqueueSnackbar("Post created successfully!", {
                 variant: "success",
               });
             },
-            (error) => {
-              enqueueSnackbar(error.message, { variant: "error" });
-            }
-          );
+            onError: (error) => {
+              const err: errorProps = {
+                id: "failed to add post to user",
+                userFreindlyMessage:
+                  "An error occurred while creating the post.",
+                errorMessage:
+                  error instanceof Error ? error.message : "Unknown error",
+                error:
+                  error instanceof Error ? error : new Error("Unknown error"),
+              };
+              enqueueSnackbar({ variant: "error", ...err });
+            },
+          });
         }
         handleClose();
       },
-      (error) => {
-        enqueueSnackbar(error.message, { variant: "error" });
-      }
-    );
-  };
 
+      onError: (error) => {
+        const err: errorProps = {
+          id: "failed to create post",
+          userFreindlyMessage: "An error occurred while creating the post.",
+          errorMessage:
+            error instanceof Error ? error.message : "Unknown error",
+          error: error instanceof Error ? error : new Error("Unknown error"),
+        };
+        enqueueSnackbar({ variant: "error", ...err });
+      },
+    });
+  };
   return (
     <Dialog
       open={isOpen}
@@ -94,7 +109,7 @@ function CreatePostDialogue({ isOpen, setOpen, onPostCreated, userData }) {
             text="Create Post"
             speed={40}
             letterCase="lowercase"
-            includeSpecialChars
+            className={"createPostTitle"}
           />
         </div>
       </DialogTitle>
@@ -142,9 +157,9 @@ function CreatePostDialogue({ isOpen, setOpen, onPostCreated, userData }) {
             onChange={(e) => setCategory(e.target.value)}
             label="Category"
           >
-            {categories.map((cat) => (
-              <MenuItem key={cat} value={cat}>
-                {cat}
+            {categories.map((cat: Category) => (
+              <MenuItem key={cat.id} value={cat.id}>
+                {cat.name}
               </MenuItem>
             ))}
           </Select>
@@ -160,7 +175,7 @@ function CreatePostDialogue({ isOpen, setOpen, onPostCreated, userData }) {
             text="Create"
             speed={40}
             letterCase="lowercase"
-            includeSpecialChars
+            className={"createPostButton"}
           />
         </Button>
       </DialogActions>

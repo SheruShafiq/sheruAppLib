@@ -120,7 +120,7 @@ const CustomErrorSnackBar = forwardRef<HTMLDivElement, errorProps>(
                           whiteSpace: "pre-wrap",
                         }}
                       >
-                        {error.message}
+                        {`${error.message}: ${id}`}
                       </Typography>
                       {lines.length > 1 && (
                         <Stack

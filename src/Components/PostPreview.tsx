@@ -34,11 +34,12 @@ interface PostPreviewProps {
   id: string;
   title: string;
   resource: string;
+  categories: Category[];
   description: string;
   upvotes: number;
   downvotes: number;
   reports: number;
-  category: number | string;
+  categoryID: number | string;
   commentsCount: number;
   fetchPosts: () => Promise<void> | void;
   isLoggedIn: boolean;
@@ -56,12 +57,13 @@ type LoadingAction = "upvote" | "downvote" | "report" | null;
 const PostPreview: React.FC<PostPreviewProps> = ({
   id,
   title,
+  categories,
   resource,
   description,
   upvotes,
   downvotes,
   reports,
-  category,
+  categoryID,
   commentsCount,
   fetchPosts,
   isLoggedIn,
@@ -82,7 +84,6 @@ const PostPreview: React.FC<PostPreviewProps> = ({
   const [localUpvotes, setLocalUpvotes] = useState(upvotes);
   const [localDownvotes, setLocalDownvotes] = useState(downvotes);
   const [localReports, setLocalReports] = useState(reports);
-  const [categories, setCategories] = useState<Category[]>([]);
 
   const descRef = useRef<HTMLDivElement>(null);
   const [isOverflow, setIsOverflow] = useState(false);
@@ -113,23 +114,6 @@ const PostPreview: React.FC<PostPreviewProps> = ({
     downvotes,
     reports,
   ]);
-  useEffect(() => {
-    fetchCategories(
-      (categories) => {
-        setCategories(categories);
-      },
-      (error) => {
-        const err: errorProps = {
-          id: "fetching Categories Error",
-          userFreindlyMessage: "An error occurred while fetching categories.",
-          errorMessage:
-            error instanceof Error ? error.message : "Unknown error",
-          error: error instanceof Error ? error : new Error("Unknown error"),
-        };
-        enqueueSnackbar({ variant: "error", ...err });
-      }
-    );
-  }, []);
 
   const formatDateRedditStyle = (date: Date): string => {
     const now = new Date();
@@ -460,7 +444,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
         >
           {localReports}
         </Button>
-        <Button>{categories[category]?.name}</Button>
+        <Button>{categories[categoryID]?.name}</Button>
         <Button startIcon={<MessageOutlinedIcon color="secondary" />}>
           {commentsCount}
         </Button>

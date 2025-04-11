@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Stack, Divider, IconButton } from "@mui/material";
-import { fetchPostsPaginated, getPostByID } from "../APICalls";
+import { fetchCategories, fetchPostsPaginated, getPostByID } from "../APICalls";
 import { useSnackbar } from "notistack";
 import PostPreview from "../Components/PostPreview";
 import Header from "../Components/Header";
@@ -17,6 +17,7 @@ import {
   fetchPostsPaginatedProps,
   Post,
   paginatedPostsMetaDataType,
+  Category,
 } from "../../dataTypeDefinitions";
 import { errorProps } from "../../dataTypeDefinitions";
 
@@ -40,6 +41,8 @@ function Home({
   );
   const [posts, setPosts] = useState<Post[]>([]);
   const { enqueueSnackbar } = useSnackbar();
+  const [categories, setCategories] = useState<Category[]>([]);
+
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
   const [metaData, setmetaData] = useState<paginatedPostsMetaDataType | null>(
     null
@@ -97,6 +100,21 @@ function Home({
   }
   useEffect(() => {
     fetchPostsHandeled(curentPage, pageSize);
+    fetchCategories(
+      (categories) => {
+        setCategories(categories);
+      },
+      (error) => {
+        const err: errorProps = {
+          id: "fetching Categories Error",
+          userFreindlyMessage: "An error occurred while fetching categories.",
+          errorMessage:
+            error instanceof Error ? error.message : "Unknown error",
+          error: error instanceof Error ? error : new Error("Unknown error"),
+        };
+        enqueueSnackbar({ variant: "error", ...err });
+      }
+    );
   }, [curentPage]);
 
   const isNoPosts = posts.length === 0;
@@ -122,6 +140,7 @@ function Home({
         />
       </Stack>
       <CreatePostDialogue
+        categories={categories}
         isOpen={isCreatePostModalOpen}
         setOpen={setIsCreatePostModalOpen}
         onPostCreated={fetchPostsHandeled}
@@ -146,17 +165,9 @@ function Home({
               display: fetchingInitialPosts ? "none" : "flex",
             }}
           >
-            {/* <Button
-              onClick={() => {
-                enqueueSnackbar("Account created successfully", {
-                  variant: "success",
-                });
-              }}
-            >
-             Testing button
-            </Button> */}
             {Object.keys(posts).map((key) => (
               <PostPreview
+                categories={categories}
                 pageVariant={false}
                 isPostAuthoredByCurrentUser={userData?.posts
                   ?.map(Number)
@@ -171,7 +182,7 @@ function Home({
                 upvotes={posts[key].upvotes}
                 downvotes={posts[key].downvotes}
                 reports={posts[key].reports}
-                category={posts[key].category}
+                categoryID={posts[key].categoryID}
                 commentsCount={posts[key].comments.length}
                 key={key}
                 id={posts[key].id}
