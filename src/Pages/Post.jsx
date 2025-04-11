@@ -13,7 +13,6 @@ import CommentBlock from "../Components/CommentBlock";
 import { TextGlitchEffect } from "../Components/TextGlitchEffect";
 const gipyAPIKey = import.meta.env.REACT_APP_GIPHY_API_KEY;
 const tenorAPIKey = import.meta.env.REACT_APP_TENOR_API_KEY;
-import { testPatchCall } from "../APICalls";
 
 function Post({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
   const [parentComments, setParentComments] = useState([]);

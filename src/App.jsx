@@ -11,6 +11,7 @@ import SignUpAndLogin from "./Components/SignUpAndLogin";
 import { fetchUserById } from "./APICalls";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import CustomErrorSnackBar from "./Components/CustomErrorSnackBar";
 
 const darkTheme = createTheme({
   palette: {
@@ -77,7 +78,7 @@ function App() {
         autoHideDuration={3000}
         ref={notistackRef}
         Components={{
-          error: (props) => <CustomSnackbar {...props} severity="error" />,
+          error: (props) => <CustomErrorSnackBar {...props} />,
           login: (props) => (
             <CustomSnackbar
               {...props}

@@ -98,6 +98,17 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
               display: fetchingInitialPosts ? "none" : "flex",
             }}
           >
+            <Button
+              onClick={() => {
+                enqueueSnackbar("This is a test message", {
+                  userFreindlyMessage: "Something has gone horrible wrong",
+                  error: new Error("Test error"),
+                  variant: "error",
+                });
+              }}
+            >
+              Test Snackbar
+            </Button>
             {Object.keys(posts).map((key) => (
               <PostPreview
                 pageVariant={false}
