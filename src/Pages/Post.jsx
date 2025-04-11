@@ -167,10 +167,10 @@ https://api.tenor.com/v1/random?key=${tenorAPIKey}&q=cyberpunk&limit=1`
               commentsCount={post?.comments.length}
               id={post?.id}
               deteCreated={post?.dateCreated}
-              upvotedByCurrentUser={userData?.likedPosts
+              upvotedByCurrentUser={userData?.upvotedPosts
                 ?.map(Number)
                 .includes(Number(post?.id))}
-              downvotedByCurrentUser={userData?.dislikedPosts
+              downvotedByCurrentUser={userData?.downVotedPosts
                 ?.map(Number)
                 .includes(Number(post?.id))}
               reportedByCurrentUser={userData?.reportedPosts

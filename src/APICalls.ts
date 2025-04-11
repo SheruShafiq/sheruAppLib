@@ -14,6 +14,8 @@ import {
   errorProps,
   createUserProps,
   loginUserProps,
+  VoteField,
+  PatchUserProps,
 } from "../dataTypeDefinitions.ts";
 const now = new Date().toISOString();
 function createSafePost(post: Partial<Post>): Post {
@@ -36,7 +38,7 @@ function createSafePost(post: Partial<Post>): Post {
   };
 }
 
-async function fetchPosts({ onSuccess, onError }: fetchPostsProps) {
+export async function fetchPosts({ onSuccess, onError }: fetchPostsProps) {
   try {
     const response = await fetch(`${APIURL}/posts`);
     const data = await response.json();
@@ -47,7 +49,7 @@ async function fetchPosts({ onSuccess, onError }: fetchPostsProps) {
   }
 }
 
-async function fetchPostsPaginated({
+export async function fetchPostsPaginated({
   onSuccess,
   onError,
   page,
@@ -64,7 +66,7 @@ async function fetchPostsPaginated({
   }
 }
 
-async function fetchPostById({
+export async function fetchPostById({
   id,
   onSuccess,
   onError,
@@ -78,7 +80,7 @@ async function fetchPostById({
   }
 }
 
-async function createPost({
+export async function createPost({
   title,
   resource,
   authorID,
@@ -125,7 +127,7 @@ async function createPost({
     onError(error);
   }
 }
-async function fetchUserById(id, onSuccess, onError) {
+export async function fetchUserById(id, onSuccess, onError) {
   try {
     const response = await fetch(`${APIURL}/users/${id}`);
 
@@ -136,7 +138,7 @@ async function fetchUserById(id, onSuccess, onError) {
   }
 }
 
-async function createUser({
+export async function createUser({
   username,
   password,
   displayName,
@@ -178,7 +180,32 @@ async function createUser({
   }
 }
 
-async function loginUser({
+export async function patchUser({
+  userID,
+  field,
+  newValue,
+  onSuccess,
+  onError,
+}: PatchUserProps) {
+  try {
+    const response = await fetch(`${APIURL}/users/${userID}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ [field]: newValue }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update user");
+    }
+
+    const data = await response.json();
+    onSuccess(data);
+  } catch (error) {
+    onError(error);
+  }
+}
+
+export async function loginUser({
   username,
   password,
   onSuccess,
@@ -204,142 +231,61 @@ async function loginUser({
   }
 }
 
-async function updatePost(id, post, onSuccess, onError) {
-  try {
-    post.dateModified = new Date().toISOString();
-    const response = await fetch(`${APIURL}/posts/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(post),
-    });
-
-    const data = await response.json();
-    onSuccess(data);
-  } catch (error) {
-    onError(error);
-  }
-}
-async function deletePost(id, onSuccess, onError) {
-  try {
-    // Instead of physical deletion, mark the post as deleted
-
-    const response = await fetch(`${APIURL}/posts/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ dateDeleted: now, dateModified: now }),
-    });
-
-    const data = await response.json();
-    onSuccess(data);
-  } catch (error) {
-    onError(error);
-  }
-}
-async function upVotePost(id, currentUpvotes, onSuccess, onError) {
-  try {
-    const newUpvotes = currentUpvotes + 1;
-
-    const response = await fetch(`${APIURL}/posts/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ upvotes: newUpvotes, dateModified: now }),
-    });
-
-    const data = await response.json();
-    onSuccess(data);
-  } catch (error) {
-    onError(error);
-  }
+/**
+ * Reverses a vote change by decrementing the specified field.
+ * @param id - The post ID.
+ * @param field - Which field to update.
+ * @param currentValue - The current value for that field.
+ */
+export async function patchUndoVotePost(
+  id: string,
+  field: VoteField,
+  currentValue: number
+): Promise<any> {
+  const newValue = currentValue - 1;
+  const now = new Date().toISOString();
+  const response = await fetch(`${APIURL}/posts/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ [field]: newValue, dateModified: now }),
+  });
+  return response.json();
 }
 
-async function downVotePost(id, currentDownvotes, onSuccess, onError) {
+export async function patchVotePost(
+  id: string,
+  field: VoteField,
+  currentValue: number,
+  increment: number = 1
+): Promise<any> {
+  const newValue = currentValue + increment;
+  const now = new Date().toISOString();
+  const response = await fetch(`${APIURL}/posts/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ [field]: newValue, dateModified: now }),
+  });
+  return response.json();
+}
+
+export async function getPostByID(
+  id: string,
+  onSuccess: (post: Post) => void,
+  onError: (error: any) => void
+) {
   try {
-    const newDownvotes = currentDownvotes + 1;
-
-    const response = await fetch(`${APIURL}/posts/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ downvotes: newDownvotes, dateModified: now }),
-    });
-
-    const data = await response.json();
+    const response = await fetch(`${APIURL}/posts/${id}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch post");
+    }
+    const data: Post = await response.json();
     onSuccess(data);
   } catch (error) {
     onError(error);
   }
 }
 
-async function reportPost(id, currentReports, onSuccess, onError) {
-  try {
-    const newReports = currentReports + 1;
-
-    const response = await fetch(`${APIURL}/posts/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ reports: newReports, dateModified: now }),
-    });
-
-    const data = await response.json();
-    onSuccess(data);
-  } catch (error) {
-    onError(error);
-  }
-}
-
-async function undoUpVotePost(id, currentUpvotes, onSuccess, onError) {
-  try {
-    const newUpvotes = currentUpvotes - 1;
-
-    const response = await fetch(`${APIURL}/posts/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ upvotes: newUpvotes, dateModified: now }),
-    });
-
-    const data = await response.json();
-    onSuccess(data);
-  } catch (error) {
-    onError(error);
-  }
-}
-
-async function undoDownVotePost(id, currentDownvotes, onSuccess, onError) {
-  try {
-    const newDownvotes = currentDownvotes - 1;
-
-    const response = await fetch(`${APIURL}/posts/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ downvotes: newDownvotes, dateModified: now }),
-    });
-
-    const data = await response.json();
-    onSuccess(data);
-  } catch (error) {
-    onError(error);
-  }
-}
-
-async function undoReportPost(id, currentReports, onSuccess, onError) {
-  try {
-    const newReports = currentReports - 1;
-
-    const response = await fetch(`${APIURL}/posts/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ reports: newReports, dateModified: now }),
-    });
-
-    const data = await response.json();
-    onSuccess(data);
-  } catch (error) {
-    onError(error);
-  }
-}
-
-async function addComment(postId, comment, onSuccess, onError) {
+export async function addComment(postId, comment, onSuccess, onError) {
   try {
     const newComment = { ...comment, postId };
     const response = await fetch(`${APIURL}/comments`, {
@@ -355,7 +301,7 @@ async function addComment(postId, comment, onSuccess, onError) {
   }
 }
 
-async function deleteComment(commentId, onSuccess, onError) {
+export async function deleteComment(commentId, onSuccess, onError) {
   try {
     const response = await fetch(`${APIURL}/comments/${commentId}`, {
       method: "DELETE",
@@ -366,7 +312,7 @@ async function deleteComment(commentId, onSuccess, onError) {
   }
 }
 
-async function editComment(commentId, comment, onSuccess, onError) {
+export async function editComment(commentId, comment, onSuccess, onError) {
   try {
     const response = await fetch(`${APIURL}/comments/${commentId}`, {
       method: "PUT",
@@ -381,7 +327,7 @@ async function editComment(commentId, comment, onSuccess, onError) {
   }
 }
 
-async function fetchUsers(onSuccess, onError) {
+export async function fetchUsers(onSuccess, onError) {
   try {
     const response = await fetch(`${APIURL}/users`);
 
@@ -392,7 +338,7 @@ async function fetchUsers(onSuccess, onError) {
   }
 }
 
-async function updateUser(id, user, onSuccess, onError) {
+export async function updateUser(id, user, onSuccess, onError) {
   try {
     user.dateModified = new Date().toISOString();
     const response = await fetch(`${APIURL}/users/${id}`, {
@@ -408,7 +354,7 @@ async function updateUser(id, user, onSuccess, onError) {
   }
 }
 
-async function getCommentByID(commentId, onSuccess, onError) {
+export async function getCommentByID(commentId, onSuccess, onError) {
   try {
     const response = await fetch(`${APIURL}/comments/${commentId}`);
 
@@ -418,27 +364,3 @@ async function getCommentByID(commentId, onSuccess, onError) {
     onError(error);
   }
 }
-
-export {
-  fetchPosts,
-  fetchPostById,
-  createPost,
-  updatePost,
-  deletePost,
-  upVotePost,
-  downVotePost,
-  reportPost,
-  undoUpVotePost,
-  undoDownVotePost,
-  undoReportPost,
-  addComment,
-  deleteComment,
-  editComment,
-  fetchUsers,
-  fetchUserById,
-  createUser,
-  loginUser,
-  updateUser,
-  fetchPostsPaginated,
-  getCommentByID,
-};

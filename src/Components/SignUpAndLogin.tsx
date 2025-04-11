@@ -119,7 +119,7 @@ function SignUpAndLogin({
           text={mode === "login" ? "Login" : "Signup"}
           speed={40}
           letterCase="lowercase"
-          includeSpecialChars
+          className={"loginModalTitle"}
         />
       </DialogTitle>
       <DialogContent
@@ -234,7 +234,7 @@ function SignUpAndLogin({
             text={mode === "login" ? "Login" : "Signup"}
             speed={40}
             letterCase="lowercase"
-            includeSpecialChars
+            className={"loginButtonText"}
           />
         </Button>
       </DialogActions>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Stack, Divider, IconButton } from "@mui/material";
-import { fetchPostsPaginated } from "../APICalls";
+import { fetchPostsPaginated, getPostByID } from "../APICalls";
 import { useSnackbar } from "notistack";
 import PostPreview from "../Components/PostPreview";
 import Header from "../Components/Header";
@@ -39,7 +39,7 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
     null
   );
 
-  const fetchPostsHandeled = (page: number, pageSize: number) => {
+  const fetchPostsHandeled = (page?: number, pageSize?: number) => {
     setFetchingPosts(true);
     fetchPostsPaginated({
       onSuccess: (data) => {
@@ -68,6 +68,26 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
     } as fetchPostsPaginatedProps);
   };
 
+  function refreshPostById(id: string) {
+    getPostByID(
+      id,
+      (post) => {
+        setPosts((prevPosts) =>
+          prevPosts.map((p) => (p.id === post.id ? post : p))
+        );
+      },
+      (error) => {
+        const err: errorProps = {
+          id: "fetching Post Error",
+          userFreindlyMessage: "An error occurred while fetching posts.",
+          errorMessage:
+            error instanceof Error ? error.message : "Unknown error",
+          error: error instanceof Error ? error : new Error("Unknown error"),
+        };
+        enqueueSnackbar({ variant: "error", ...err });
+      }
+    );
+  }
   useEffect(() => {
     fetchPostsHandeled(curentPage, pageSize);
   }, [curentPage]);
@@ -135,7 +155,9 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
                   ?.map(Number)
                   .includes(Number(posts[key].id))}
                 isLoggedIn={isLoggedIn}
-                fetchPosts={fetchPostsHandeled}
+                fetchPosts={() => {
+                  refreshPostById(posts[key].id);
+                }}
                 title={posts[key].title}
                 resource={posts[key].resource}
                 description={posts[key].description}
@@ -146,11 +168,11 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
                 commentsCount={posts[key].comments.length}
                 key={key}
                 id={posts[key].id}
-                deteCreated={posts[key].dateCreated}
-                upvotedByCurrentUser={userData?.likedPosts
+                dateCreated={posts[key].dateCreated}
+                upvotedByCurrentUser={userData?.upvotedPosts
                   ?.map(Number)
                   .includes(Number(posts[key].id))}
-                downvotedByCurrentUser={userData?.dislikedPosts
+                downvotedByCurrentUser={userData?.downVotedPosts
                   ?.map(Number)
                   .includes(Number(posts[key].id))}
                 reportedByCurrentUser={userData?.reportedPosts

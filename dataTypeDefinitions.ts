@@ -122,11 +122,18 @@ export type paginatedPostsMetaDataType = {
   next: string;
   last: string;
 };
-
+export type VoteField = "upvotes" | "downvotes" | "reports";
 export type createUserProps = {
   username: string;
   password: string;
   displayName: string;
+  onSuccess: (user: User) => void;
+  onError: (error: any) => void;
+};
+export type PatchUserProps = {
+  userID: string;
+  field: keyof User;
+  newValue: string;
   onSuccess: (user: User) => void;
   onError: (error: any) => void;
 };
