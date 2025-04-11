@@ -7,6 +7,23 @@
       "authorID": 1,
       "description": "Found this episode on Dailymotion after it was removed from Hulu in my region (Germany). There's one unskippable ad at the start, but if you use uBlock Origin, it skips the mid-rolls. Also recommend setting quality manually to 720p, auto mode keeps lagging.",
       "upvotes": 1,
+      "downvotes": 1,
+      "reports": 0,
+      "category": 1,
+      "comments": [
+        1
+      ],
+      "dateCreated": "2025-04-07T10:15:23.345Z",
+      "dateModified": "2025-04-11T22:45:14.796Z",
+      "dateDeleted": ""
+    },
+    {
+      "id": "2",
+      "title": "Updated Title",
+      "resource": "https://www.dailymotion.com/video/x7xyz12",
+      "authorID": 1,
+      "description": "Found this episode on Dailymotion after it was removed from Hulu in my region (Germany). There's one unskippable ad at the start, but if you use uBlock Origin, it skips the mid-rolls. Also recommend setting quality manually to 720p, auto mode keeps lagging.",
+      "upvotes": 1,
       "downvotes": 0,
       "reports": 0,
       "category": 1,
@@ -14,7 +31,7 @@
         1
       ],
       "dateCreated": "2025-04-07T10:15:23.345Z",
-      "dateModified": "2025-04-11T22:08:30.723Z",
+      "dateModified": "2025-04-11T22:45:14.445Z",
       "dateDeleted": ""
     }
   ],
@@ -55,7 +72,9 @@
       "displayName": "DEVELOPER",
       "posts": [],
       "upvotedPosts": [],
-      "downVotedPosts": [],
+      "downVotedPosts": [
+        "1"
+      ],
       "reportedPosts": [],
       "comments": [],
       "dateCreated": "2025-04-11T19:30:54.520Z",

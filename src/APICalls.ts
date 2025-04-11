@@ -285,6 +285,23 @@ export async function getPostByID(
   }
 }
 
+export async function fetchCategories(
+  onSuccess: (categories: Category[]) => void,
+  onError: (error: any) => void
+) {
+  try {
+    const response = await fetch(`${APIURL}/categories`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch categories");
+    }
+    const data = await response.json();
+    const categories = data.categories;
+    onSuccess(categories);
+  } catch (error) {
+    onError(error);
+  }
+}
+
 export async function addComment(postId, comment, onSuccess, onError) {
   try {
     const newComment = { ...comment, postId };

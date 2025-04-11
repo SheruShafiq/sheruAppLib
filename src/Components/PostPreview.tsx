@@ -15,8 +15,20 @@ import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import LinkIcon from "@mui/icons-material/Link";
 import { useSnackbar } from "notistack";
 import { TextGlitchEffect } from "./TextGlitchEffect";
-import { patchVotePost, patchUndoVotePost, patchUser } from "../APICalls";
-import { errorProps, Post, User, VoteField } from "../../dataTypeDefinitions";
+import {
+  patchVotePost,
+  patchUndoVotePost,
+  patchUser,
+  fetchCategories,
+} from "../APICalls";
+import {
+  Category,
+  errorProps,
+  Post,
+  User,
+  VoteField,
+} from "../../dataTypeDefinitions";
+import { error } from "console";
 
 interface PostPreviewProps {
   id: string;
@@ -63,21 +75,18 @@ const PostPreview: React.FC<PostPreviewProps> = ({
 }) => {
   const { enqueueSnackbar } = useSnackbar();
 
-  // Local voting state
   const [loadingAction, setLoadingAction] = useState<LoadingAction>(null);
   const [voteStatus, setVoteStatus] = useState<"up" | "down" | "none">("none");
   const [reported, setReported] = useState(false);
 
-  // Local vote counts so that subsequent API calls have an updated number.
   const [localUpvotes, setLocalUpvotes] = useState(upvotes);
   const [localDownvotes, setLocalDownvotes] = useState(downvotes);
   const [localReports, setLocalReports] = useState(reports);
+  const [categories, setCategories] = useState<Category[]>([]);
 
-  // Reference for description overflow calculation
   const descRef = useRef<HTMLDivElement>(null);
   const [isOverflow, setIsOverflow] = useState(false);
 
-  // When the description changes, update overflow state.
   useEffect(() => {
     if (descRef.current) {
       setIsOverflow(
@@ -86,14 +95,13 @@ const PostPreview: React.FC<PostPreviewProps> = ({
     }
   }, [description]);
 
-  // Sync local vote status and local counts when parent props change.
   useEffect(() => {
     if (upvotedByCurrentUser) setVoteStatus("up");
     else if (downvotedByCurrentUser) setVoteStatus("down");
     else setVoteStatus("none");
 
     setReported(reportedByCurrentUser);
-    // Also update our local vote count states on new props.
+
     setLocalUpvotes(upvotes);
     setLocalDownvotes(downvotes);
     setLocalReports(reports);
@@ -105,8 +113,24 @@ const PostPreview: React.FC<PostPreviewProps> = ({
     downvotes,
     reports,
   ]);
+  useEffect(() => {
+    fetchCategories(
+      (categories) => {
+        setCategories(categories);
+      },
+      (error) => {
+        const err: errorProps = {
+          id: "fetching Categories Error",
+          userFreindlyMessage: "An error occurred while fetching categories.",
+          errorMessage:
+            error instanceof Error ? error.message : "Unknown error",
+          error: error instanceof Error ? error : new Error("Unknown error"),
+        };
+        enqueueSnackbar({ variant: "error", ...err });
+      }
+    );
+  }, []);
 
-  // Format date in a Reddit-style string.
   const formatDateRedditStyle = (date: Date): string => {
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
@@ -154,13 +178,11 @@ const PostPreview: React.FC<PostPreviewProps> = ({
       enqueueSnackbar("Please log in to vote", { variant: "info" });
       return;
     }
-    if (loadingAction) return; // prevent multiple simultaneous actions
+    if (loadingAction) return;
     setLoadingAction(type);
-
     try {
       if (type === "upvote") {
         if (voteStatus === "up") {
-          // Undo upvote.
           const response = await patchUndoVotePost(id, "upvotes", localUpvotes);
           setLocalUpvotes(response.upvotes);
           setVoteStatus("none");
@@ -175,7 +197,6 @@ const PostPreview: React.FC<PostPreviewProps> = ({
             },
           });
         } else {
-          // If switching from downvote, undo it first.
           if (voteStatus === "down") {
             const undoResponse = await patchUndoVotePost(
               id,
@@ -196,7 +217,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
               },
             });
           }
-          // Apply upvote.
+
           const response = await patchVotePost(id, "upvotes", localUpvotes, 1);
           setLocalUpvotes(response.upvotes);
           setVoteStatus("up");
@@ -214,7 +235,6 @@ const PostPreview: React.FC<PostPreviewProps> = ({
         }
       } else if (type === "downvote") {
         if (voteStatus === "down") {
-          // Undo downvote.
           const response = await patchUndoVotePost(
             id,
             "downvotes",
@@ -236,7 +256,6 @@ const PostPreview: React.FC<PostPreviewProps> = ({
             },
           });
         } else {
-          // If switching from upvote, undo it first.
           if (voteStatus === "up") {
             const undoResponse = await patchUndoVotePost(
               id,
@@ -257,7 +276,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
               },
             });
           }
-          // Apply downvote.
+
           const response = await patchVotePost(
             id,
             "downvotes",
@@ -281,7 +300,6 @@ const PostPreview: React.FC<PostPreviewProps> = ({
         }
       } else if (type === "report") {
         if (reported) {
-          // Undo report.
           const response = await patchUndoVotePost(id, "reports", localReports);
           setLocalReports(response.reports);
           setReported(false);
@@ -298,7 +316,6 @@ const PostPreview: React.FC<PostPreviewProps> = ({
             },
           });
         } else {
-          // Apply report.
           const response = await patchVotePost(id, "reports", localReports, 1);
           setLocalReports(response.reports);
           setReported(true);
@@ -315,7 +332,6 @@ const PostPreview: React.FC<PostPreviewProps> = ({
         }
       }
 
-      // Once complete, fetch fresh post data.
       await fetchPosts();
     } catch (error: any) {
       const err: errorProps = {
@@ -444,7 +460,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
         >
           {localReports}
         </Button>
-        <Button>{category}</Button>
+        <Button>{categories[category]?.name}</Button>
         <Button startIcon={<MessageOutlinedIcon color="secondary" />}>
           {commentsCount}
         </Button>
