@@ -74,6 +74,7 @@ function App() {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <SnackbarProvider
+        disableWindowBlurListener={true}
         maxSnack={3}
         autoHideDuration={3000}
         ref={notistackRef}

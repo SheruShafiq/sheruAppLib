@@ -13,42 +13,63 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import { useParams } from "react-router-dom";
+import {
+  fetchPostsPaginatedProps,
+  Post,
+  paginatedPostsMetaDataType,
+} from "../../dataTypeDefinitions";
+import { errorProps } from "../../dataTypeDefinitions";
 
 function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
   const { pageNumber } = useParams();
   const currentDisplayHeight = window.innerHeight;
   const headerHeight = 65;
   const postPreviewHeight = 225;
-  const maxPostPreviews = Math.floor(
+  const pageSize = Math.floor(
     (currentDisplayHeight - headerHeight) / postPreviewHeight
   );
   const [fetchingInitialPosts, setFetchingPosts] = useState(true);
   const [curentPage, setCuurentPage] = useState(
     pageNumber ? Number(pageNumber) : 1
   );
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const { enqueueSnackbar } = useSnackbar();
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
-  const [metaData, setmetaData] = useState(null);
+  const [metaData, setmetaData] = useState<paginatedPostsMetaDataType | null>(
+    null
+  );
 
-  const fetchPostsHandeled = (page, maxPostPreviews) => {
+  const fetchPostsHandeled = (page: number, pageSize: number) => {
     setFetchingPosts(true);
-    fetchPostsPaginated(
-      (posts) => {
-        setPosts(posts?.posts);
-        setmetaData(posts?.metadata);
+    fetchPostsPaginated({
+      onSuccess: (data) => {
+        setPosts(data?.posts);
+        setmetaData({
+          first: data?.metadata?.first || "",
+          prev: data?.metadata?.prev || "",
+          next: data?.metadata?.next || "",
+          last: data?.metadata?.last || "",
+        });
         setFetchingPosts(false);
       },
-      (error) => {
-        enqueueSnackbar(error.message, { variant: "error" });
+      onError: (error: errorProps) => {
+        const err: errorProps = {
+          id: "fetching Paginated Posts Error",
+          userFreindlyMessage: "An error occurred while fetching posts.",
+          errorMessage:
+            error instanceof Error ? error.message : "Unknown error",
+          error: error instanceof Error ? error : new Error("Unknown error"),
+        };
+        enqueueSnackbar({ variant: "error", ...err });
         setFetchingPosts(false);
       },
       page,
-      maxPostPreviews
-    );
+      pageSize,
+    } as fetchPostsPaginatedProps);
   };
+
   useEffect(() => {
-    fetchPostsHandeled(curentPage, maxPostPreviews);
+    fetchPostsHandeled(curentPage, pageSize);
   }, [curentPage]);
 
   const isNoPosts = posts.length === 0;
@@ -86,8 +107,8 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
             width={"100%"}
             display={fetchingInitialPosts ? "flex" : "none"}
           >
-            {[...Array(maxPostPreviews)].map((_, index) => (
-              <PostPreviewSkeletonLoader key={index} />
+            {[...Array(pageSize)].map((_, index) => (
+              <PostPreviewSkeletonLoader key={index} pageVariant={false} />
             ))}
           </Stack>
         </Fade>
@@ -98,17 +119,6 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
               display: fetchingInitialPosts ? "none" : "flex",
             }}
           >
-            <Button
-              onClick={() => {
-                enqueueSnackbar("This is a test message", {
-                  userFreindlyMessage: "Something has gone horrible wrong",
-                  error: new Error("Test error"),
-                  variant: "error",
-                });
-              }}
-            >
-              Test Snackbar
-            </Button>
             {Object.keys(posts).map((key) => (
               <PostPreview
                 pageVariant={false}
@@ -164,7 +174,6 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
       >
         <Stack flexDirection={"row"}>
           <IconButton
-            variant="outlined"
             onClick={() => {
               setCuurentPage(firstPage);
               window.history.pushState(null, "", `/${firstPage}`);
@@ -174,9 +183,8 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
             <KeyboardDoubleArrowLeftIcon />
           </IconButton>
           <IconButton
-            variant="outlined"
             onClick={() => {
-              setCuurentPage(prevPage);
+              setCuurentPage(prevPage ? Number(prevPage) : curentPage);
               window.history.pushState(null, "", `/${prevPage}`);
             }}
             disabled={curentPage === firstPage || fetchingInitialPosts}
@@ -186,9 +194,8 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
         </Stack>
         <Stack flexDirection={"row"}>
           <IconButton
-            variant="outlined"
             onClick={() => {
-              setCuurentPage(nextPage);
+              setCuurentPage(nextPage ? Number(nextPage) : curentPage);
               window.history.pushState(null, "", `/${nextPage}`);
             }}
             disabled={fetchingInitialPosts || curentPage === lastPage}
@@ -196,7 +203,6 @@ function Home({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
             <KeyboardArrowRightIcon />
           </IconButton>
           <IconButton
-            variant="outlined"
             onClick={() => {
               setCuurentPage(lastPage);
               window.history.pushState(null, "", `/${lastPage}`);
