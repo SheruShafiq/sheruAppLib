@@ -1,27 +1,34 @@
-const APIURL = import.meta.env.VITE_BACKEND_URL; // updated for Vite
-async function fetchPosts(
-    onSuccess,
-    onError,
-) {
+/// <reference types="vite/client" />
+const APIURL = import.meta.env.VITE_BACKEND_URL;
+import {
+    Post,
+    user,
+    Comment,
+    Category,
+    Report,
+    cachedCommentsChainID,
+    createPostProps,
+    standardFetchByIDProps,
+    fetchPostsProps,
+    fetchPostsPaginatedProps
+} from "../dataTypeDefinitions.ts";
+
+async function fetchPosts({ onSuccess, onError }: fetchPostsProps) {
     try {
         const response = await fetch(`${APIURL}/posts`);
-
         const data = await response.json();
-        onSuccess(data);
+        const posts: Post[] = data.posts;
+        onSuccess(posts);
     } catch (error) {
-        onError(error);
+        onError(error); // need to implement proper error props
     }
 }
 
-async function fetchPostsPaginated(
-    onSuccess,
-    onError,
-    page,
-    maxPostPreviews
-) {
+async function fetchPostsPaginated({ onSuccess, onError, page, pageSize }: fetchPostsPaginatedProps) {
     try {
-        const response = await fetch(`${APIURL}/posts?_sort=dateCreated&_order=desc&_page=${page}&_limit=${maxPostPreviews}`);
-
+        const response = await fetch(
+            `${APIURL}/posts?_sort=dateCreated&_order=desc&_page=${page}&_limit=${pageSize}`
+        );
         const data = await response.json();
         onSuccess(data);
     } catch (error) {
@@ -29,28 +36,49 @@ async function fetchPostsPaginated(
     }
 }
 
-async function fetchPostById(id, onSuccess, onError) {
+async function fetchPostById({ id, onSuccess, onError }: standardFetchByIDProps) {
     try {
         const response = await fetch(`${APIURL}/posts/${id}`);
-
-        const data = await response.json();
+        const data: Post = await response.json();
         onSuccess(data);
     } catch (error) {
         onError(error);
     }
 }
 
-async function postPost(
-    post,
-    onSuccess,
-    onError,
-) {
+async function createPost({ post, onSuccess, onError }: createPostProps) {
     try {
-        // Ensure new date fields are set
+        if (post.title === undefined || post.title === "") {
+            throw new Error("Cannot create post without a title");
+        }
+        if (post.resource === undefined || post.resource === "") {
+            throw new Error("Cannot create post without a resource");
+        }
+        if (post.author === undefined || post.author === "") {
+            throw new Error("Cannot create post without Author ID");
+        }
+        if (post.category === undefined || post.category === 0) {
+            throw new Error("Cannot create post without a category");
+        }
+        if (post.description === undefined || post.description === "") {
+            throw new Error("Cannot create post without a description");
+        }
         const now = new Date().toISOString();
+        post.title = post.title || "";
+        post.resource = post.resource || "";
+        post.author = post.author || "";
+        post.description = post.description || "";
+        post.category = post.category || 0;
+        post.upvotes = post.upvotes || 0;
+        post.downvotes = post.downvotes || 0;
+        post.reports = post.reports || 0;
+        post.reportIDs = post.reportIDs || [];
+        post.comments = post.comments || [];
         post.dateCreated = post.dateCreated || now;
         post.dateModified = now;
         post.dateDeleted = post.dateDeleted || "";
+        post.cachedCommentsChainID = post.cachedCommentsChainID || "";
+        post.cachedReportsChainID = post.cachedReportsChainID || "";
         const response = await fetch(`${APIURL}/posts`, {
             method: "POST",
             headers: {
@@ -59,18 +87,13 @@ async function postPost(
             body: JSON.stringify(post),
         });
 
-        const data = await response.json();
+        const data: Post = await response.json();
         onSuccess(data);
     } catch (error) {
         onError(error);
     }
 }
-async function updatePost(
-    id,
-    post,
-    onSuccess,
-    onError,
-) {
+async function updatePost(id, post, onSuccess, onError) {
     try {
         // Update dateModified field
         post.dateModified = new Date().toISOString();
@@ -88,11 +111,7 @@ async function updatePost(
         onError(error);
     }
 }
-async function deletePost(
-    id,
-    onSuccess,
-    onError,
-) {
+async function deletePost(id, onSuccess, onError) {
     try {
         // Instead of physical deletion, mark the post as deleted
         const now = new Date().toISOString();
@@ -158,7 +177,6 @@ async function reportPost(id, currentReports, onSuccess, onError) {
         onError(error);
     }
 }
-
 
 async function undoUpVotePost(id, currentUpvotes, onSuccess, onError) {
     try {
@@ -303,7 +321,11 @@ async function createUser(user, onSuccess, onError) {
 async function loginUser({ username, password }, onSuccess, onError) {
     try {
         // JSON Server supports filtering via query parameters
-        const response = await fetch(`${APIURL}/users?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
+        const response = await fetch(
+            `${APIURL}/users?username=${encodeURIComponent(
+                username
+            )}&password=${encodeURIComponent(password)}`
+        );
 
         const data = await response.json();
         if (data.length > 0) {
@@ -316,7 +338,11 @@ async function loginUser({ username, password }, onSuccess, onError) {
     }
 }
 
-async function signUpUser({ username, password, displayName }, onSuccess, onError) {
+async function signUpUser(
+    { username, password, displayName },
+    onSuccess,
+    onError
+) {
     try {
         const now = new Date().toISOString();
         // Create a new user with all required fields
@@ -331,7 +357,7 @@ async function signUpUser({ username, password, displayName }, onSuccess, onErro
             posts: [],
             dateCreated: now,
             dateModified: now,
-            dateDeleted: ""
+            dateDeleted: "",
         };
         const response = await fetch(`${APIURL}/users`, {
             method: "POST",
@@ -373,12 +399,10 @@ async function getCommentByID(commentId, onSuccess, onError) {
     }
 }
 
-
-
 export {
     fetchPosts,
     fetchPostById,
-    postPost,
+    createPost,
     updatePost,
     deletePost,
     upVotePost,

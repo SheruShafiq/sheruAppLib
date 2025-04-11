@@ -13,7 +13,7 @@ import {
   FormControl,
 } from "@mui/material";
 import { useState } from "react";
-import { postPost, updateUser } from "../APICalls";
+import { createPost, updateUser } from "../APICalls";
 import { TextGlitchEffect } from "./TextGlitchEffect";
 import { useSnackbar } from "notistack";
 
@@ -44,7 +44,7 @@ function CreatePostDialogue({ isOpen, setOpen, onPostCreated, userData }) {
       reports: 0,
       comments: [],
     };
-    postPost(
+    createPost(
       newPost,
       (data) => {
         if (onPostCreated) {

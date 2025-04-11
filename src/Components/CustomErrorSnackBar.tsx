@@ -11,16 +11,12 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Stack from "@mui/material/Stack";
 import Chip from "@mui/material/Chip";
 import React from "react";
+import {errorProps} from "../../dataTypeDefinitions";
 
 
-export type ReportCompleteProps = {
-  id: string;
-  userFreindlyMessage: string;
-  errorMessage: string;
-  error: Error;
-};
 
-const CustomErrorSnackBar = forwardRef<HTMLDivElement, ReportCompleteProps>(({ id, ...props }, ref) => {
+
+const CustomErrorSnackBar = forwardRef<HTMLDivElement, errorProps>(({ id, ...props }, ref) => {
   const { userFreindlyMessage, error } = props;
   const { closeSnackbar } = useSnackbar();
   const [expanded, setExpanded] = useState(false);
