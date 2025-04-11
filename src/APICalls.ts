@@ -52,13 +52,7 @@ async function fetchPostById({
     const data: Post = await response.json();
     onSuccess(data);
   } catch (error) {
-    const err: errorProps = {
-      id: "fetching Paginated Posts Error",
-      userFreindlyMessage: "An error occurred while fetching posts.",
-      errorMessage: error instanceof Error ? error.message : "Unknown error",
-      error: error instanceof Error ? error : new Error("Unknown error"),
-    };
-    onError(err);
+    onError(error);
   }
 }
 
@@ -112,19 +106,12 @@ async function createPost({ post, onSuccess, onError }: createPostProps) {
     const data: Post = await response.json();
     onSuccess(data);
   } catch (error) {
-    const err: errorProps = {
-      id: "createPostError",
-      userFreindlyMessage: "An error occurred while creating the post.",
-      errorMessage: error instanceof Error ? error.message : "Unknown error",
-      error: error instanceof Error ? error : new Error("Unknown error"),
-    };
-    onError(err);
+    onError(error);
   }
 }
 
 async function updatePost(id, post, onSuccess, onError) {
   try {
-    // Update dateModified field
     post.dateModified = new Date().toISOString();
     const response = await fetch(`${APIURL}/posts/${id}`, {
       method: "PUT",

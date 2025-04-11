@@ -453,6 +453,8 @@ function PostPreview({
         >
           {reports}
         </Button>
+        {/* TODO: Need to fetch categories and pass em down here to convert the category
+        integer to whatever the actual category string is supposed to be */}
         <Button>{category}</Button>
         <Button startIcon={<MessageOutlinedIcon color="secondary" />}>
           {commentsCount}

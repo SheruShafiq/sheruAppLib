@@ -1,15 +1,12 @@
 import { useState, forwardRef, useCallback } from "react";
 import { useSnackbar, SnackbarContent } from "notistack";
 import Collapse from "@mui/material/Collapse";
-import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
-import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Stack from "@mui/material/Stack";
-import Chip from "@mui/material/Chip";
 import React from "react";
 import { errorProps } from "../../dataTypeDefinitions";
 
@@ -27,16 +24,14 @@ const CustomErrorSnackBar = forwardRef<HTMLDivElement, errorProps>(
       closeSnackbar(id);
     }, [id, closeSnackbar]);
 
-    // Highlight helper for stack trace lines
     const highlightLine = (line) => {
-      // Matches lines like: "at functionName (fileName:line:column)"
       const regex = /at\s+([^\s]+)\s+\(([^)]+)\)/;
       const match = line.match(regex);
       if (match) {
         const prefix = line.substring(0, match.index);
         const functionName = match[1];
         const fileInfo = match[2];
-        // Updated: split fileInfo on any occurrence of "src"
+
         const parts = fileInfo.split(/(src\/[^:\s\?]+)/);
         const highlightedFileInfo = parts.map((part, i) =>
           /src\/[^:\s\?]+/.test(part) ? (
@@ -68,7 +63,7 @@ const CustomErrorSnackBar = forwardRef<HTMLDivElement, errorProps>(
           sx={{
             alignItems: "center",
             border: "1px solid #ffffff1f",
-            width: expanded ? "500px" : "410px", // dynamic width based on expanded state
+            width: expanded ? "500px" : "410px",
             transition: "width 0.5s ease",
             overflow: "hidden",
           }}
