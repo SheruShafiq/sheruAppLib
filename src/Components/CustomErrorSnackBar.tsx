@@ -34,13 +34,26 @@ const CustomErrorSnackBar = forwardRef<HTMLDivElement, errorProps>(
       const match = line.match(regex);
       if (match) {
         const prefix = line.substring(0, match.index);
+        const functionName = match[1];
+        const fileInfo = match[2];
+        // Updated: split fileInfo on any occurrence of "src"
+        const parts = fileInfo.split(/(src\/[^:\s\?]+)/);
+        const highlightedFileInfo = parts.map((part, i) =>
+          /src\/[^:\s\?]+/.test(part) ? (
+            <span key={i} style={{ color: "#35c2ff", fontWeight: "900" }}>
+              {part}
+            </span>
+          ) : (
+            part
+          )
+        );
         return (
           <>
             {prefix}at{" "}
-            <span style={{ color: "secondary.main", fontWeight: "bold" }}>
-              {match[1]}
+            <span style={{ color: "#dcdc97", fontWeight: "900" }}>
+              {functionName}
             </span>{" "}
-            (<span style={{ color: "grey" }}>{match[2]}</span>)
+            (<>{highlightedFileInfo}</>)
           </>
         );
       }
