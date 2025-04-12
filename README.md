@@ -75,6 +75,9 @@ Product properties
 24. Giphy PROD
 25. Move to NextJS if it's a smoother backend and easy enough setup.
 
+TODO: For some reason there's a weird temporary empty array for like a second after mutation
+TODO: Still not too hyped abt the comments solution
+
 ---
 
 - Frontend Server:
