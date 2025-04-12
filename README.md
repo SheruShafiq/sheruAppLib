@@ -42,10 +42,11 @@ Product properties
 3. You can make a shitty DB out of Vercel cache (And it worked WOOO IT FEELS SO GOOD)!
 4. MUI doesn't let u do OLED black as body BG (You need to tell it how `!important` it is)
 5. for some messed up reason, iOS (as far as I can tell only iOS) scales your website to make font be 16px. In result destroying every formating. Need to put a meta tag on top to stop that.
+6. GitHUB is an excellent file storage system API, it's free, rate limit of 1K and its fast and easy. So db.json is going there.
+7. Render also doesnt persists for free (bitch), so github api it is.
 
 ---
 
-## Yes. Sauce is inspired from the 6 digit sauce.
 
 ## Make shift JIRA Board:
 
@@ -70,14 +71,16 @@ Product properties
 19. Comments don't have like and dilike options yet, not even in data structure
 20. The error snackbar needs to have dev details that can be opened optionally.
 21. Move to typescript (API res body(s) are a nightmare right now withou t types habing no idea what the hell to pass on and what to expect.)
-22. Lazy LOAD
-23. look into service workers
-24. Giphy PROD
-25. Move to NextJS if it's a smoother backend and easy enough setup.
+22. <del> For some reason there's a weird temporary empty array for like a second after mutation</del>
+23. Lazy LOAD
+24. look into service workers
+25. Giphy PROD
+26. Move to NextJS if it's a smoother backend and easy enough setup.
+27. TODO: Need to check for overflows on things like posts, comments, resource description etc on giga long texts. Breaks sometimes on mobile it seems.
+28. TODO: Still not too hyped abt the comments solution
 
-<del> For some reason there's a weird temporary empty array for like a second after mutation</del>
-TODO: Need to check for overflows on things like posts, comments, resource description etc on giga long texts. Breaks sometimes on mobile it seems.
-TODO: Still not too hyped abt the comments solution
+
+
 
 ---
 
@@ -89,17 +92,22 @@ TODO: Still not too hyped abt the comments solution
 - Backend Server:
   `node index.cjs`
   - ENV variables:
-    - GITHUB_SYNC
+    - GITHUB_SYNC (true | false)
     - GITHUB_TOKEN
 - Vercel Prod URL
   <a href="https://sauce-weld.vercel.app/">https://sauce-weld.vercel.app/</a>
 - Render Backend Prod URL
   <a href="https://saucebackend.onrender.com/">https://saucebackend.onrender.com/</a>
 
+
+---
+
+>Notes of insanity (A log of shit I did, and lost life years overw )
 After multiple hours of scrootny and discovery, I have come to the conclusion, that the problem is in
 my function and not the makeshift cache backend in vercel cuz it's also breaking in onRender.
 All be it, onRender does feel a bit more reliable as far as reliablity goes.
 Need to look into as to why the likes array of user isn't being updated properly.
-EACT_APP_API_URL`).
 
-Happy coding!
+
+
+#### Yes. Sauce is inspired from the 6 digit sauce.
