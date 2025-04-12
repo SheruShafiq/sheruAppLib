@@ -47,7 +47,9 @@ function PostPage({
   }
 
   useEffect(() => {
-    refreshUserData(userData.id!);
+    if (userData?.id) {
+      refreshUserData(userData.id!);
+    }
     fetchCurrentPostData(id!);
   }, [id]);
   function refreshData(id: string) {
