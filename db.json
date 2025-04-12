@@ -1,58 +1,108 @@
 {
   "posts": [
     {
+      "id": 1,
       "title": "Test",
       "resource": "http://localhost:5173/",
       "authorID": 1,
-      "description": "http://localhost:5173/http://localhost:5173/http://localhost:5173/http://localhost:5173/http://localhost:5173/",
+      "description": "Sample description for a test post.",
       "categoryID": "1",
-      "upvotes": 0,
-      "downvotes": 0,
+      "upvotes": 7,
+      "downvotes": 6,
       "reports": 0,
       "reportIDs": [],
-      "comments": [],
+      "comments": [
+        1
+      ],
       "dateCreated": "2025-04-12T00:59:02.068Z",
-      "dateModified": "2025-04-12T00:59:02.068Z",
+      "dateModified": "2025-04-12T03:06:37.631Z",
       "dateDeleted": "",
       "cachedCommentsChainID": "1",
-      "cachedReportsChainID": "",
-      "id": 1
+      "cachedReportsChainID": ""
     },
     {
-      "title": "http://localhost:5173/",
-      "resource": "http://localhost:5173/http://localhost:5173/http://localhost:5173/http://localhost:5173/",
+      "title": "fghfgh",
+      "resource": "https://chatgpt.com/g/g-p-67f9cfd0f1a48191a8ca01aaba0e8b8c-sauce-a-reddit-like-application-built-in-react/project",
       "authorID": 1,
-      "description": "http://localhost:5173/http://localhost:5173/http://localhost:5173/http://localhost:5173/http://localhost:5173/",
-      "categoryID": "1",
+      "description": "fghfghfgh",
+      "categoryID": "3",
       "upvotes": 0,
       "downvotes": 0,
       "reports": 0,
       "reportIDs": [],
       "comments": [],
-      "dateCreated": "2025-04-12T01:00:17.065Z",
-      "dateModified": "2025-04-12T01:00:17.065Z",
+      "dateCreated": "2025-04-12T03:06:21.476Z",
+      "dateModified": "2025-04-12T03:06:21.476Z",
       "dateDeleted": "",
       "cachedCommentsChainID": "",
       "cachedReportsChainID": "",
       "id": 2
+    },
+    {
+      "title": "sadasd",
+      "resource": "http://localhost:5173/",
+      "authorID": 1,
+      "description": "asdasd",
+      "categoryID": "1",
+      "upvotes": 0,
+      "downvotes": 0,
+      "reports": 0,
+      "reportIDs": [],
+      "comments": [],
+      "dateCreated": "2025-04-12T03:10:39.402Z",
+      "dateModified": "2025-04-12T03:10:39.402Z",
+      "dateDeleted": "",
+      "cachedCommentsChainID": "",
+      "cachedReportsChainID": "",
+      "id": 3
+    },
+    {
+      "title": "sdfsdfdsf",
+      "resource": "https://www.linkedin.com/in/hanskrukkert/?original_referer=https%3A%2F%2Fwww%2Egoogle%2Ecom%2F&originalSubdomain=nl",
+      "authorID": 1,
+      "description": "cxvbcxvb",
+      "categoryID": "2",
+      "upvotes": 0,
+      "downvotes": 0,
+      "reports": 0,
+      "reportIDs": [],
+      "comments": [],
+      "dateCreated": "2025-04-12T03:15:21.795Z",
+      "dateModified": "2025-04-12T03:15:21.795Z",
+      "dateDeleted": "",
+      "cachedCommentsChainID": "",
+      "cachedReportsChainID": "",
+      "id": 4
     }
   ],
   "users": [
     {
+      "id": 1,
       "username": "dev",
       "password": "123",
       "displayName": "DEV",
-      "posts": [1, 2],
+      "posts": [
+        1,
+        2,
+        3,
+        4
+      ],
       "upvotedPosts": [],
-      "downVotedPosts": [],
+      "downVotedPosts": [
+        1,
+        1
+      ],
       "reportedPosts": [],
-      "comments": [],
+      "comments": [
+        1,
+        "JsTWADK",
+        "9InEnWf"
+      ],
       "dateCreated": "2025-04-12T00:59:02.068Z",
       "dateModified": "2025-04-12T00:59:02.068Z",
       "dateDeleted": "",
       "likedComments": [],
-      "dislikedComments": [],
-      "id": 1
+      "dislikedComments": []
     }
   ],
   "comments": [
@@ -60,14 +110,18 @@
       "id": "1",
       "authorID": "1",
       "text": "Worked great, thanks! Subtitles were auto-generated though.",
-      "likes": 0,
+      "likes": 1,
       "dislikes": 0,
-      "replies": ["2"],
+      "replies": [
+        "2"
+      ],
       "dateCreated": "2023-04-22T07:30:00.000Z",
       "dateModified": "2023-04-23T08:30:00.000Z",
       "dateDeleted": "",
-      "likedBy": ["1"],
-      "dislikedBy": ["1"]
+      "likedBy": [
+        "1"
+      ],
+      "dislikedBy": []
     },
     {
       "id": "2",
@@ -79,15 +133,53 @@
       "dateCreated": "2023-04-22T07:30:00.000Z",
       "dateModified": "2023-04-23T08:30:00.000Z",
       "dateDeleted": "",
-      "likedBy": ["1"],
-      "dislikedBy": ["1"]
+      "likedBy": [],
+      "dislikedBy": []
+    },
+    {
+      "authorID": 1,
+      "text": "dsdczcz",
+      "likes": 0,
+      "dislikes": 0,
+      "replies": [],
+      "dateCreated": "2025-04-12T02:59:53.621Z",
+      "dateModified": "2025-04-12T02:59:53.621Z",
+      "likedBy": [],
+      "dislikedBy": [],
+      "id": "JsTWADK"
+    },
+    {
+      "authorID": 1,
+      "text": "drbhfghbhfgb",
+      "likes": 0,
+      "dislikes": 0,
+      "replies": [],
+      "dateCreated": "2025-04-12T02:59:59.406Z",
+      "dateModified": "2025-04-12T02:59:59.406Z",
+      "likedBy": [],
+      "dislikedBy": [],
+      "id": "leJEQT5"
+    },
+    {
+      "authorID": 1,
+      "text": "dgegdf",
+      "likes": 0,
+      "dislikes": 0,
+      "replies": [],
+      "dateCreated": "2025-04-12T03:00:04.467Z",
+      "dateModified": "2025-04-12T03:00:04.467Z",
+      "likedBy": [],
+      "dislikedBy": [],
+      "id": "9InEnWf"
     }
   ],
   "categories": [
     {
       "id": "1",
       "name": "Movies",
-      "posts": ["1"],
+      "posts": [
+        "1"
+      ],
       "dateCreated": "2023-05-12T10:15:30.000Z",
       "dateModified": "2023-06-10T12:20:30.000Z",
       "dateDeleted": ""
@@ -109,17 +201,7 @@
       "dateDeleted": ""
     }
   ],
-  "reports": [
-    {
-      "id": "1",
-      "postID": "1",
-      "authorID": "1",
-      "reason": "Inappropriate content",
-      "dateCreated": "2023-05-12T10:15:30.000Z",
-      "dateModified": "",
-      "dateDeleted": ""
-    }
-  ],
+  "reports": [],
   "cachedCommentsChains": [
     {
       "id": "1",
@@ -129,7 +211,7 @@
           "id": "1",
           "authorID": "1",
           "text": "Worked great, thanks! Subtitles were auto-generated though.",
-          "likes": 0,
+          "likes": 1,
           "dislikes": 0,
           "replies": [
             {
@@ -142,15 +224,19 @@
               "dateCreated": "2023-04-22T07:30:00.000Z",
               "dateModified": "2023-04-23T08:30:00.000Z",
               "dateDeleted": "",
-              "likedBy": ["1"],
-              "dislikedBy": ["1"]
+              "likedBy": [
+                "1"
+              ],
+              "dislikedBy": []
             }
           ],
           "dateCreated": "2023-04-22T07:30:00.000Z",
           "dateModified": "2023-04-23T08:30:00.000Z",
           "dateDeleted": "",
-          "likedBy": ["1"],
-          "dislikedBy": ["1"]
+          "likedBy": [
+            "1"
+          ],
+          "dislikedBy": []
         }
       ]
     }

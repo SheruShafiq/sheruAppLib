@@ -135,7 +135,6 @@ const PostPreview: React.FC<PostPreviewProps> = ({
   const formattedDate = formatDateRedditStyle(new Date(dateCreated));
   const formattedResource =
     resource && resource.length > 20 ? `${resource.slice(0, 20)}...` : resource;
-
   /*
     Voting logic using PATCH calls:
     - For upvote and downvote, if the user clicks on the same vote they already made, we undo it.
@@ -432,7 +431,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
         >
           {localReports}
         </Button>
-        <Button>{categories[categoryID]?.name}</Button>
+        <Button>{categories[Number(categoryID) - 1]?.name}</Button>
         <Button startIcon={<MessageOutlinedIcon color="secondary" />}>
           {commentsCount}
         </Button>

@@ -77,6 +77,9 @@ function App() {
     if (userID) {
       getUserData(userID);
     }
+  }, [userID]);
+
+  useEffect(() => {
     fetchCategories(
       (categories) => {
         setCategories(categories);
@@ -92,7 +95,7 @@ function App() {
         enqueueSnackbar({ variant: "error", ...err });
       }
     );
-  }, [userID]);
+  }, []);
 
   return (
     <ThemeProvider theme={darkTheme}>
