@@ -89,17 +89,11 @@ function CreatePostDialogue({
       },
     });
   };
+
   return (
     <Dialog
       open={isOpen}
       onClose={handleClose}
-      sx={{
-        "& .MuiDialog-paper": {
-          maxWidth: "40vw",
-          width: "100%",
-          minWidth: "280px",
-        },
-      }}
       slotProps={{
         paper: {
           component: "form",
@@ -174,6 +168,12 @@ function CreatePostDialogue({
         <Button
           disabled={!title || !resource || !description || !category}
           type="submit"
+          color="secondary"
+          sx={{
+            "&:hover": {
+              backgroundColor: "rgb(194 82 128 / 6%)", // added explicit hover style
+            },
+          }}
         >
           <TextGlitchEffect
             text="Create"

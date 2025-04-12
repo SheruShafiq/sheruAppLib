@@ -16,11 +16,12 @@ import { Category, errorProps, User } from "../dataTypeDefinitions";
 import { useSnackbar } from "notistack";
 import React from "react";
 
+const isDesktop = window.innerWidth > 768;
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
     secondary: {
-      main: "rgb(194 82 128)",
+      main: "rgb(255 0 105)",
     },
     primary: {
       main: "#ffffff",
@@ -35,7 +36,25 @@ const darkTheme = createTheme({
       main: "rgb(248 190 82)",
     },
     info: {
-      main: "rgb(194 82 128)",
+      main: "rgb(255 0 105)",
+    },
+  },
+  components: {
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          maxWidth: "500px",
+          width: "100%",
+          minWidth: "280px",
+          background: "#000",
+          border: "1px solid #ffffff1f",
+          borderRadius: "10px",
+        },
+        container: {
+          background: "#00000096",
+          alignItems: isDesktop ? "center" : "flex-start", // Apply alignItems to MuiDialog-container
+        },
+      },
     },
   },
 });

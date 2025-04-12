@@ -92,21 +92,9 @@ function SignUpAndLogin({
       });
     }
   };
-  const isDesktop = window.innerWidth > 768;
   return (
     <Dialog
       open={isOpen}
-      onClose={handleClose}
-      sx={{
-        "& .MuiDialog-paper": {
-          maxWidth: "500px",
-          width: "100%",
-          minWidth: "280px",
-        },
-        "& .MuiDialog-container": {
-          alignItems: isDesktop ? "center" : "flex-start",
-        },
-      }}
       slotProps={{
         paper: {
           component: "form",
@@ -229,13 +217,22 @@ function SignUpAndLogin({
               : !username || !password || !displayName
           }
           type="submit"
+          color="secondary"
+          variant="text"
+          sx={{
+            "&:hover": {
+              backgroundColor: "rgb(194 82 128 / 6%)", // added explicit hover style
+            },
+          }}
         >
-          <TextGlitchEffect
-            text={mode === "login" ? "Login" : "Signup"}
-            speed={40}
-            letterCase="lowercase"
-            className={"loginButtonText"}
-          />
+          <span style={{ pointerEvents: "none" }}>
+            <TextGlitchEffect
+              text={mode === "login" ? "Login" : "Signup"}
+              speed={40}
+              letterCase="lowercase"
+              className={"loginButtonText"}
+            />
+          </span>
         </Button>
       </DialogActions>
     </Dialog>
