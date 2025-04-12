@@ -1,4 +1,3 @@
-
 const jsonServer = require('json-server')
 const server = jsonServer.create()
 const router = jsonServer.router('db.json')
@@ -20,7 +19,7 @@ function getLinkByRelFromLinkHeader(linkHeader, rel) {
 
 // Returned resources will be wrapped in a body property
 router.render = (req, res) => {
-    if (req.method === 'GET' && req.url && !req.route.path.includes(':')) {
+    if (req.method === 'GET' && req.url && req.route && !req.route.path.includes(':')) {
         const obj = {}
         const query = req._parsedUrl.search
         const resource = req.url.replace('/', '').replace(query, '')

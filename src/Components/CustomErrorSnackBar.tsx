@@ -63,7 +63,7 @@ const CustomErrorSnackBar = forwardRef<HTMLDivElement, errorProps>(
           sx={{
             alignItems: "center",
             border: "1px solid #ffffff1f",
-            width: expanded ? "500px" : "410px",
+            width: expanded ? "100%" : "410px",
             transition: "width 0.5s ease-in-out",
             overflow: "hidden",
           }}

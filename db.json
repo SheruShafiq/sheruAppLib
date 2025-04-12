@@ -1,127 +1,58 @@
 {
   "posts": [
     {
-      "id": "1",
-      "title": "Updated Title",
-      "resource": "https://www.dailymotion.com/video/x7xyz12",
+      "title": "Test",
+      "resource": "http://localhost:5173/",
       "authorID": 1,
-      "description": "Found this episode on Dailymotion after it was removed from Hulu in my region (Germany). There's one unskippable ad at the start, but if you use uBlock Origin, it skips the mid-rolls. Also recommend setting quality manually to 720p, auto mode keeps lagging.",
-      "upvotes": 1,
-      "downvotes": 1,
-      "reports": 0,
-      "categoryID": 1,
-      "comments": [
-        1
-      ],
-      "dateCreated": "2025-04-07T10:15:23.345Z",
-      "dateModified": "2025-04-12T00:27:26.456Z",
-      "dateDeleted": ""
-    },
-    {
-      "id": "2",
-      "title": "Updated Title",
-      "resource": "https://www.dailymotion.com/video/x7xyz12",
-      "authorID": 1,
-      "description": "Found this episode on Dailymotion after it was removed from Hulu in my region (Germany). There's one unskippable ad at the start, but if you use uBlock Origin, it skips the mid-rolls. Also recommend setting quality manually to 720p, auto mode keeps lagging.",
-      "upvotes": 2,
-      "downvotes": 0,
-      "reports": 0,
-      "categoryID": 1,
-      "comments": [
-        1
-      ],
-      "dateCreated": "2025-04-07T10:15:23.345Z",
-      "dateModified": "2025-04-12T00:27:38.529Z",
-      "dateDeleted": ""
-    },
-    {
-      "title": "NewPost",
-      "resource": "https://himovies.sx/watch-tv/young-sheldon-39496.4862332",
-      "authorID": 2,
-      "description": "adasdaada",
-      "categoryID": "2",
-      "upvotes": 1,
+      "description": "http://localhost:5173/http://localhost:5173/http://localhost:5173/http://localhost:5173/http://localhost:5173/",
+      "categoryID": "1",
+      "upvotes": 0,
       "downvotes": 0,
       "reports": 0,
       "reportIDs": [],
       "comments": [],
-      "dateCreated": "2025-04-11T23:20:12.319Z",
-      "dateModified": "2025-04-12T00:34:06.610Z",
+      "dateCreated": "2025-04-12T00:59:02.068Z",
+      "dateModified": "2025-04-12T00:59:02.068Z",
+      "dateDeleted": "",
+      "cachedCommentsChainID": "1",
+      "cachedReportsChainID": "",
+      "id": 1
+    },
+    {
+      "title": "http://localhost:5173/",
+      "resource": "http://localhost:5173/http://localhost:5173/http://localhost:5173/http://localhost:5173/",
+      "authorID": 1,
+      "description": "http://localhost:5173/http://localhost:5173/http://localhost:5173/http://localhost:5173/http://localhost:5173/",
+      "categoryID": "1",
+      "upvotes": 0,
+      "downvotes": 0,
+      "reports": 0,
+      "reportIDs": [],
+      "comments": [],
+      "dateCreated": "2025-04-12T01:00:17.065Z",
+      "dateModified": "2025-04-12T01:00:17.065Z",
       "dateDeleted": "",
       "cachedCommentsChainID": "",
       "cachedReportsChainID": "",
-      "id": "6trp40C"
+      "id": 2
     }
   ],
   "users": [
     {
-      "id": 1,
-      "username": "Sheru",
-      "password": "123",
-      "displayName": "Stewie Griffin",
-      "posts": [
-        "1"
-      ],
-      "likedPosts": [
-        "1"
-      ],
-      "dislikedPosts": [
-        "1"
-      ],
-      "reportedPosts": [
-        "1"
-      ],
-      "comments": [
-        "1"
-      ],
-      "dateCreated": "2023-05-12T10:15:30.000Z",
-      "dateModified": "2023-06-10T12:20:30.000Z",
-      "dateDeleted": "",
-      "likedComments": [
-        "1"
-      ],
-      "duslikedComments": [
-        "1"
-      ]
-    },
-    {
       "username": "dev",
       "password": "123",
-      "displayName": "DEVELOPER",
-      "posts": [
-        "6trp40C"
-      ],
-      "upvotedPosts": [
-        "2",
-        "6trp40C"
-      ],
-      "downVotedPosts": [
-        "1"
-      ],
-      "reportedPosts": [],
-      "comments": [],
-      "dateCreated": "2025-04-11T19:30:54.520Z",
-      "dateModified": "2025-04-11T21:41:23.643Z",
-      "dateDeleted": "",
-      "likedComments": [],
-      "dislikedComments": [],
-      "id": 2
-    },
-    {
-      "username": "dev2",
-      "password": "123",
-      "displayName": "test",
-      "posts": [],
+      "displayName": "DEV",
+      "posts": [1, 2],
       "upvotedPosts": [],
       "downVotedPosts": [],
       "reportedPosts": [],
       "comments": [],
-      "dateCreated": "2025-04-11T19:41:56.037Z",
-      "dateModified": "2025-04-11T19:41:56.037Z",
+      "dateCreated": "2025-04-12T00:59:02.068Z",
+      "dateModified": "2025-04-12T00:59:02.068Z",
       "dateDeleted": "",
       "likedComments": [],
       "dislikedComments": [],
-      "id": 3
+      "id": 1
     }
   ],
   "comments": [
@@ -131,18 +62,12 @@
       "text": "Worked great, thanks! Subtitles were auto-generated though.",
       "likes": 0,
       "dislikes": 0,
-      "replies": [
-        "2"
-      ],
+      "replies": ["2"],
       "dateCreated": "2023-04-22T07:30:00.000Z",
       "dateModified": "2023-04-23T08:30:00.000Z",
       "dateDeleted": "",
-      "likedBy": [
-        "1"
-      ],
-      "dislikedBy": [
-        "1"
-      ]
+      "likedBy": ["1"],
+      "dislikedBy": ["1"]
     },
     {
       "id": "2",
@@ -154,21 +79,15 @@
       "dateCreated": "2023-04-22T07:30:00.000Z",
       "dateModified": "2023-04-23T08:30:00.000Z",
       "dateDeleted": "",
-      "likedBy": [
-        "1"
-      ],
-      "dislikedBy": [
-        "1"
-      ]
+      "likedBy": ["1"],
+      "dislikedBy": ["1"]
     }
   ],
   "categories": [
     {
       "id": "1",
       "name": "Movies",
-      "posts": [
-        "1"
-      ],
+      "posts": ["1"],
       "dateCreated": "2023-05-12T10:15:30.000Z",
       "dateModified": "2023-06-10T12:20:30.000Z",
       "dateDeleted": ""
@@ -223,23 +142,15 @@
               "dateCreated": "2023-04-22T07:30:00.000Z",
               "dateModified": "2023-04-23T08:30:00.000Z",
               "dateDeleted": "",
-              "likedBy": [
-                "1"
-              ],
-              "dislikedBy": [
-                "1"
-              ]
+              "likedBy": ["1"],
+              "dislikedBy": ["1"]
             }
           ],
           "dateCreated": "2023-04-22T07:30:00.000Z",
           "dateModified": "2023-04-23T08:30:00.000Z",
           "dateDeleted": "",
-          "likedBy": [
-            "1"
-          ],
-          "dislikedBy": [
-            "1"
-          ]
+          "likedBy": ["1"],
+          "dislikedBy": ["1"]
         }
       ]
     }

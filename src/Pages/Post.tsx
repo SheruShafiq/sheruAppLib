@@ -1,19 +1,17 @@
-import { Alert, Typography, Box, Stack, Switch, Button } from "@mui/material";
+import { Stack } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import { fetchPostById, getCommentByID, fetchUserById } from "../APICalls";
+import { fetchPostById, fetchCommentsChain } from "../APICalls";
 import { useParams } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import PostPreview from "../Components/PostPreview";
 import Header from "../Components/Header";
-import CreatePostDialogue from "../Components/CreatePostDialogue";
 import Divider from "@mui/material/Divider";
 import PostPreviewSkeletonLoader from "../SkeletonLoaders/PostPreviewSkeletonLoader";
 import Fade from "@mui/material/Fade";
-import CommentBlock from "../Components/CommentBlock";
 import { TextGlitchEffect } from "../Components/TextGlitchEffect";
-import { Comment, Post } from "../../dataTypeDefinitions";
+import { Post, Comment, errorProps } from "../../dataTypeDefinitions";
+import CommentBlock from "../Components/CommentBlock";
 const gipyAPIKey = import.meta.env.REACT_APP_GIPHY_API_KEY;
-const tenorAPIKey = import.meta.env.REACT_APP_TENOR_API_KEY;
 import { useNavigate } from "react-router-dom";
 
 function PostPage({
@@ -24,21 +22,22 @@ function PostPage({
   categories,
   refreshUserData,
 }) {
-  const [parentComments, setParentComments] = useState<Comment[]>([]);
-  const [relevantCommentIDs, setRelevantCommentIDs] = useState<number[]>([]);
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
   const [post, setPost] = useState<Post>();
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
+  const [commentsChain, setCommentsChain] = useState<Comment[] | undefined>(
+    undefined
+  );
   const navigate = useNavigate();
-  function fetchCurrentPost(id: string) {
+  function fetchCurrentPostData(id: string) {
     fetchPostById({
       id: id!,
       onSuccess: (data) => {
         setPost(data);
+
         setLoading(false);
-        setRelevantCommentIDs(data?.comments);
       },
       onError: (error) => {
         setLoading(false);
@@ -48,12 +47,37 @@ function PostPage({
   }
 
   useEffect(() => {
-    fetchCurrentPost(id!);
+    fetchCurrentPostData(id!);
   }, [id]);
   function refreshData(id: string) {
-    fetchCurrentPost(id);
+    fetchCurrentPostData(id);
     refreshUserData(userData.id!);
   }
+  useEffect(() => {
+    if (
+      post?.cachedCommentsChainID !== "" &&
+      post?.cachedCommentsChainID !== undefined
+    ) {
+      fetchCommentsChain(
+        post?.cachedCommentsChainID || "",
+        (comments) => {
+          setCommentsChain(comments);
+        },
+        (error) => {
+          const err: errorProps = {
+            id: "fetching cached comments chain error",
+            userFreindlyMessage: "An error occurred while fetching comments.",
+            errorMessage:
+              error instanceof Error ? error.message : "Unknown error",
+            error: error instanceof Error ? error : new Error("Unknown error"),
+          };
+          enqueueSnackbar({ variant: "error", ...err });
+        }
+      );
+    } else {
+      setCommentsChain([]);
+    }
+  }, [post?.cachedCommentsChainID]);
   async function fetchImage() {
     const response = await fetch(
       `https://api.giphy.com/v1/gifs/random?api_key=${gipyAPIKey}&tag=cyberpunkProfilePicture&rating=g`
@@ -65,7 +89,6 @@ function PostPage({
       return null;
     }
   }
-
   return (
     <Stack px={2} width={"100%"}>
       <Header
@@ -148,18 +171,19 @@ function PostPage({
             className="postPageCommentsTitle"
             type="alphanumeric"
           />
-          {/* {parentComments &&
-            parentComments.length > 0 &&
-            parentComments.map((comment, index) => (
+          {commentsChain &&
+            commentsChain.length > 0 &&
+            commentsChain.map((comment, index) => (
               <CommentBlock
                 key={index}
                 dateCreated={comment?.dateCreated}
-                userName={comment?.displayName}
+                userName={"comment?.displayName"}
                 commentContents={comment?.text}
                 replies={comment?.replies}
-                imageURL={comment?.imageURL}
+                imageURL={"comment?.imageURL"}
+                amIaReply={false}
               />
-            ))} */}
+            ))}
         </Stack>
       </Stack>
     </Stack>

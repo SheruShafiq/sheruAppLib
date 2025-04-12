@@ -18,7 +18,7 @@ function CommentBlock({
       sx={{
         borderLeft: depth > 0 ? "1px solid white" : "none",
       }}
-      ml={2}
+      ml={depth > 0 ? 2 : 0}
     >
       <Stack
         gap={1}

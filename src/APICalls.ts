@@ -302,81 +302,19 @@ export async function fetchCategories(
   }
 }
 
-export async function addComment(postId, comment, onSuccess, onError) {
+export async function fetchCommentsChain(
+  postID: string,
+  onSuccess: (comments: Comment[]) => void,
+  onError: (error: any) => void
+) {
   try {
-    const newComment = { ...comment, postId };
-    const response = await fetch(`${APIURL}/comments`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newComment),
-    });
-
+    const response = await fetch(`${APIURL}/cachedCommentsChains/${postID}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch comments");
+    }
     const data = await response.json();
-    onSuccess(data);
-  } catch (error) {
-    onError(error);
-  }
-}
-
-export async function deleteComment(commentId, onSuccess, onError) {
-  try {
-    const response = await fetch(`${APIURL}/comments/${commentId}`, {
-      method: "DELETE",
-    });
-    onSuccess(response);
-  } catch (error) {
-    onError(error);
-  }
-}
-
-export async function editComment(commentId, comment, onSuccess, onError) {
-  try {
-    const response = await fetch(`${APIURL}/comments/${commentId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(comment),
-    });
-
-    const data = await response.json();
-    onSuccess(data);
-  } catch (error) {
-    onError(error);
-  }
-}
-
-export async function fetchUsers(onSuccess, onError) {
-  try {
-    const response = await fetch(`${APIURL}/users`);
-
-    const data = await response.json();
-    onSuccess(data);
-  } catch (error) {
-    onError(error);
-  }
-}
-
-export async function updateUser(id, user, onSuccess, onError) {
-  try {
-    user.dateModified = new Date().toISOString();
-    const response = await fetch(`${APIURL}/users/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(user),
-    });
-
-    const data = await response.json();
-    onSuccess(data);
-  } catch (error) {
-    onError(error);
-  }
-}
-
-export async function getCommentByID(commentId, onSuccess, onError) {
-  try {
-    const response = await fetch(`${APIURL}/comments/${commentId}`);
-
-    const data = await response.json();
-    onSuccess(data);
+    const comments = data.comments;
+    onSuccess(comments);
   } catch (error) {
     onError(error);
   }
