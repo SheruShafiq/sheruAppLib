@@ -14,6 +14,7 @@ function Header({
   categories,
   isOpen,
   onPostCreated,
+  callerIdentifier,
 }) {
   return (
     <Box sx={{ position: "relative", minHeight: "3rem" }} mt={0.5}>
@@ -23,6 +24,7 @@ function Header({
         setOpen={setIsCreatePostModalOpen}
         onPostCreated={onPostCreated}
         userData={userData}
+        callerIdentifier={callerIdentifier}
       />
       <Fade in={isLoggedIn} timeout={1000}>
         <Box

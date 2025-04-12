@@ -110,6 +110,7 @@ function Home({
     <Stack gap={2} px={2} pb={2}>
       <Stack>
         <Header
+          callerIdentifier={"homePage"}
           isLoggedIn={isLoggedIn}
           userData={userData}
           setIsLoggedIn={setIsLoggedIn}

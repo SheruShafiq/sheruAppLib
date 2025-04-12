@@ -47,6 +47,7 @@ function PostPage({
   }
 
   useEffect(() => {
+    refreshUserData(userData.id!);
     fetchCurrentPostData(id!);
   }, [id]);
   function refreshData(id: string) {
@@ -99,6 +100,7 @@ function PostPage({
         categories={categories}
         isOpen={isCreatePostModalOpen}
         setOpen={setOpen}
+        callerIdentifier={"postPage"}
         onPostCreated={(id: string) => {
           navigate(`/posts/${id}`);
         }}

@@ -24,13 +24,13 @@ function CreatePostDialogue({
   onPostCreated,
   userData,
   categories,
+  callerIdentifier,
 }) {
   const { enqueueSnackbar } = useSnackbar();
   const [title, setTitle] = useState("");
   const [resource, setResource] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
-
   const handleClose = () => {
     setOpen(false);
   };
@@ -51,7 +51,11 @@ function CreatePostDialogue({
             field: "posts",
             newValue: [...userData.posts, data.id],
             onSuccess: () => {
-              onPostCreated(data.id);
+              if (callerIdentifier === "postPage") {
+                onPostCreated(data.id);
+              } else {
+                onPostCreated();
+              }
               enqueueSnackbar("Post created successfully!", {
                 variant: "success",
               });
