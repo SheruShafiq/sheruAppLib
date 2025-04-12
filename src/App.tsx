@@ -2,7 +2,6 @@ import { Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Home from "./Pages/Home";
 import Four0Four from "./Pages/404";
-import "./App.css";
 import { SnackbarProvider } from "notistack";
 import { createRef } from "react";
 import CustomSnackbar from "./Components/CustomSnackbar";
@@ -14,6 +13,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import CustomErrorSnackBar from "./Components/CustomErrorSnackBar";
 import { Category, errorProps, User } from "../dataTypeDefinitions";
 import { useSnackbar } from "notistack";
+import BadgeMakerHome from "./Pages/BadgeMakerHome.tsx"
 import React from "react";
 
 const isDesktop = window.innerWidth > 768;
@@ -176,6 +176,7 @@ function App() {
           <Route
             path="/:pageNumber?"
             element={
+              <div className="APP_Sauce">
               <Home
                 setIsLoggedIn={setIsLoggedIn}
                 userData={userData}
@@ -184,12 +185,14 @@ function App() {
                 refreshUserData={getUserData}
                 categories={categories}
               />
+              </div>
             }
           />
           <Route path="*" element={<Four0Four />} />
           <Route
             path="/posts/:id"
             element={
+              <div className="APP_Sauce">
               <Post
                 refreshUserData={getUserData}
                 setIsLoggedIn={setIsLoggedIn}
@@ -198,6 +201,16 @@ function App() {
                 isLoggedIn={isLoggedIn}
                 categories={categories}
               />
+            </div>}
+          />
+          <Route
+            path="/sheru/appLibrary/BadgeMaker"
+            element={
+              <div className="APP_BadgeMaker">
+              <BadgeMakerHome
+                
+              />
+              </div>
             }
           />
         </Routes>

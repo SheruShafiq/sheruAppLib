@@ -16,7 +16,7 @@ body {
   background-color: rgb(0, 0, 0) !important;
   color: rgb(255, 255, 255) !important;
 }
-* {
+.APP_Sauce {
   font-family: monospace !important;
 }
 .standardBorder {
