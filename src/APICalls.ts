@@ -5,13 +5,10 @@ import {
   User,
   Comment,
   Category,
-  Report,
-  cachedCommentsChainID,
   createPostProps,
   standardFetchByIDProps,
   fetchPostsProps,
   fetchPostsPaginatedProps,
-  errorProps,
   createUserProps,
   loginUserProps,
   VoteField,
@@ -52,8 +49,8 @@ export async function fetchPosts({ onSuccess, onError }: fetchPostsProps) {
 export async function fetchPostsPaginated({
   onSuccess,
   onError,
-  page,
-  pageSize,
+  page = 1,
+  pageSize = 3,
 }: fetchPostsPaginatedProps) {
   try {
     const response = await fetch(

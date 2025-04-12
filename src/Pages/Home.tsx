@@ -118,7 +118,9 @@ function Home({
           categories={categories}
           isOpen={isCreatePostModalOpen}
           setOpen={setOpen}
-          onPostCreated={fetchPostsHandeled}
+          onPostCreated={() => {
+            fetchPostsHandeled(curentPage, pageSize);
+          }}
         />
         <Divider
           sx={{
