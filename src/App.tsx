@@ -8,10 +8,13 @@ import { createRef } from "react";
 import CustomSnackbar from "./Components/CustomSnackbar";
 import Post from "./Pages/Post";
 import SignUpAndLogin from "./Components/SignUpAndLogin";
-import { fetchUserById } from "./APICalls";
+import { fetchUserById, fetchCategories } from "./APICalls";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import CustomErrorSnackBar from "./Components/CustomErrorSnackBar";
+import { Category, errorProps, User } from "../dataTypeDefinitions";
+import { useSnackbar } from "notistack";
+import React from "react";
 
 const darkTheme = createTheme({
   palette: {
@@ -43,24 +46,30 @@ function App() {
       .find((row) => row.startsWith("userID="))
       ?.split("=")[1]
   );
-
-  const notistackRef = createRef();
-  const [userData, setUserData] = useState(null);
+  const { enqueueSnackbar } = useSnackbar();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const notistackRef = createRef<SnackbarProvider>();
+  const [userData, setUserData] = useState<User>();
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return userID || false;
   });
   const [loginDialogue, setLogInDialogue] = useState(false);
 
-  function getUserData(userID) {
+  function getUserData(userID: string) {
     fetchUserById(
       userID,
-      (userData) => {
+      (userData: User) => {
         setUserData(userData);
       },
-      (error) => {
-        notistackRef.current.enqueueSnackbar(error.message, {
-          variant: "error",
-        });
+      (error: any) => {
+        const err: errorProps = {
+          id: "fetching User Data Error",
+          userFreindlyMessage: "An error occurred while fetching user data.",
+          errorMessage:
+            error instanceof Error ? error.message : "Unknown error",
+          error: error instanceof Error ? error : new Error("Unknown error"),
+        };
+        enqueueSnackbar({ variant: "error", ...err });
       }
     );
   }
@@ -68,6 +77,21 @@ function App() {
     if (userID) {
       getUserData(userID);
     }
+    fetchCategories(
+      (categories) => {
+        setCategories(categories);
+      },
+      (error) => {
+        const err: errorProps = {
+          id: "fetching Categories Error",
+          userFreindlyMessage: "An error occurred while fetching categories.",
+          errorMessage:
+            error instanceof Error ? error.message : "Unknown error",
+          error: error instanceof Error ? error : new Error("Unknown error"),
+        };
+        enqueueSnackbar({ variant: "error", ...err });
+      }
+    );
   }, [userID]);
 
   return (
@@ -136,6 +160,7 @@ function App() {
                 setOpen={setLogInDialogue}
                 isLoggedIn={isLoggedIn}
                 refreshUserData={getUserData}
+                categories={categories}
               />
             }
           />
@@ -148,6 +173,7 @@ function App() {
                 userData={userData}
                 setOpen={setLogInDialogue}
                 isLoggedIn={isLoggedIn}
+                categories={categories}
               />
             }
           />

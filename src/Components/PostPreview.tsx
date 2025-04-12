@@ -15,20 +15,8 @@ import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import LinkIcon from "@mui/icons-material/Link";
 import { useSnackbar } from "notistack";
 import { TextGlitchEffect } from "./TextGlitchEffect";
-import {
-  patchVotePost,
-  patchUndoVotePost,
-  patchUser,
-  fetchCategories,
-} from "../APICalls";
-import {
-  Category,
-  errorProps,
-  Post,
-  User,
-  VoteField,
-} from "../../dataTypeDefinitions";
-import { error } from "console";
+import { patchVotePost, patchUndoVotePost, patchUser } from "../APICalls";
+import { Category, errorProps, User } from "../../dataTypeDefinitions";
 
 interface PostPreviewProps {
   id: string;
@@ -339,7 +327,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
       px={pageVariant ? 0 : 2}
     >
       <Stack direction="row" alignItems="center" gap={1}>
-        <Link href={`posts/${id}`} target="_blank" rel="noopener">
+        <Link href={`posts/${id}`} rel="noopener">
           <Typography fontSize={16} fontWeight="bold">
             {title}
           </Typography>

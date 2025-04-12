@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Button, Fade, IconButton, Stack } from "@mui/material";
 import { TextGlitchEffect } from "./TextGlitchEffect";
 import AddIcon from "@mui/icons-material/Add";
-
+import CreatePostDialogue from "../Components/CreatePostDialogue";
 import SauceLogo from "./SauceLogo";
 
 function Header({
@@ -11,9 +11,19 @@ function Header({
   setOpen,
   setIsLoggedIn,
   setIsCreatePostModalOpen,
+  categories,
+  isOpen,
+  onPostCreated,
 }) {
   return (
     <Box sx={{ position: "relative", minHeight: "3rem" }} mt={0.5}>
+      <CreatePostDialogue
+        categories={categories}
+        isOpen={isOpen}
+        setOpen={setIsCreatePostModalOpen}
+        onPostCreated={onPostCreated}
+        userData={userData}
+      />
       <Fade in={isLoggedIn} timeout={1000}>
         <Box
           sx={{

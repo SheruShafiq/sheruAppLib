@@ -51,7 +51,7 @@ function CreatePostDialogue({
             field: "posts",
             newValue: [...userData.posts, data.id],
             onSuccess: () => {
-              onPostCreated();
+              onPostCreated(data.id);
               enqueueSnackbar("Post created successfully!", {
                 variant: "success",
               });

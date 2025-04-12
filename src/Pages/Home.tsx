@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Stack, Divider, IconButton } from "@mui/material";
-import { fetchCategories, fetchPostsPaginated, getPostByID } from "../APICalls";
+import { fetchPostsPaginated, getPostByID } from "../APICalls";
 import { useSnackbar } from "notistack";
 import PostPreview from "../Components/PostPreview";
 import Header from "../Components/Header";
-import CreatePostDialogue from "../Components/CreatePostDialogue";
 import PostPreviewSkeletonLoader from "../SkeletonLoaders/PostPreviewSkeletonLoader";
 import Fade from "@mui/material/Fade";
-import Button from "@mui/material/Button";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
@@ -27,6 +25,7 @@ function Home({
   setOpen,
   setIsLoggedIn,
   refreshUserData,
+  categories,
 }) {
   const { pageNumber } = useParams();
   const currentDisplayHeight = window.innerHeight;
@@ -41,7 +40,6 @@ function Home({
   );
   const [posts, setPosts] = useState<Post[]>([]);
   const { enqueueSnackbar } = useSnackbar();
-  const [categories, setCategories] = useState<Category[]>([]);
 
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
   const [metaData, setmetaData] = useState<paginatedPostsMetaDataType | null>(
@@ -100,21 +98,6 @@ function Home({
   }
   useEffect(() => {
     fetchPostsHandeled(curentPage, pageSize);
-    fetchCategories(
-      (categories) => {
-        setCategories(categories);
-      },
-      (error) => {
-        const err: errorProps = {
-          id: "fetching Categories Error",
-          userFreindlyMessage: "An error occurred while fetching categories.",
-          errorMessage:
-            error instanceof Error ? error.message : "Unknown error",
-          error: error instanceof Error ? error : new Error("Unknown error"),
-        };
-        enqueueSnackbar({ variant: "error", ...err });
-      }
-    );
   }, [curentPage]);
 
   const isNoPosts = posts.length === 0;
@@ -129,9 +112,12 @@ function Home({
         <Header
           isLoggedIn={isLoggedIn}
           userData={userData}
-          setOpen={setOpen}
           setIsLoggedIn={setIsLoggedIn}
           setIsCreatePostModalOpen={setIsCreatePostModalOpen}
+          categories={categories}
+          isOpen={isCreatePostModalOpen}
+          setOpen={setOpen}
+          onPostCreated={fetchPostsHandeled}
         />
         <Divider
           sx={{
@@ -139,13 +125,7 @@ function Home({
           }}
         />
       </Stack>
-      <CreatePostDialogue
-        categories={categories}
-        isOpen={isCreatePostModalOpen}
-        setOpen={setIsCreatePostModalOpen}
-        onPostCreated={fetchPostsHandeled}
-        userData={userData}
-      />
+
       <Stack maxWidth={"600px"} alignSelf={"center"} width={"100%"}>
         <Fade in={fetchingInitialPosts} timeout={1000}>
           <Stack

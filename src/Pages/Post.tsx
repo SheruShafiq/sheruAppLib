@@ -11,32 +11,41 @@ import PostPreviewSkeletonLoader from "../SkeletonLoaders/PostPreviewSkeletonLoa
 import Fade from "@mui/material/Fade";
 import CommentBlock from "../Components/CommentBlock";
 import { TextGlitchEffect } from "../Components/TextGlitchEffect";
+import { Comment, Post } from "../../dataTypeDefinitions";
 const gipyAPIKey = import.meta.env.REACT_APP_GIPHY_API_KEY;
 const tenorAPIKey = import.meta.env.REACT_APP_TENOR_API_KEY;
+import { useNavigate } from "react-router-dom";
 
-function Post({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
-  const [parentComments, setParentComments] = useState([]);
-  const [relevantCommentIDs, setRelevantCommentIDs] = useState([]);
+function PostPage({
+  isLoggedIn,
+  userData,
+  setOpen,
+  setIsLoggedIn,
+  categories,
+}) {
+  const [parentComments, setParentComments] = useState<Comment[]>([]);
+  const [relevantCommentIDs, setRelevantCommentIDs] = useState<number[]>([]);
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
-  const [post, setPost] = useState(null);
+  const [post, setPost] = useState<Post>();
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
-
+  const navigate = useNavigate();
   useEffect(() => {
-    fetchPostById(
-      id,
-      (data) => {
+    fetchPostById({
+      id: id!,
+      onSuccess: (data) => {
         setPost(data);
         setLoading(false);
         setRelevantCommentIDs(data?.comments);
       },
-      (error) => {
+      onError: (error) => {
         setLoading(false);
         enqueueSnackbar(`Error fetching post ${error}`, { variant: "error" });
-      }
-    );
-  }, [id, enqueueSnackbar]);
+      },
+    });
+  }, [id]);
+
   async function fetchImage() {
     const response = await fetch(
       `https://api.giphy.com/v1/gifs/random?api_key=${gipyAPIKey}&tag=cyberpunkProfilePicture&rating=g`
@@ -45,98 +54,23 @@ function Post({ isLoggedIn, userData, setOpen, setIsLoggedIn }) {
     if (response.ok) {
       return data.data.images.original.url;
     } else {
-      fetchImageFromTenor();
+      return null;
     }
   }
-  async function fetchImageFromTenor() {
-    const response = await fetch(
-      `
-https://api.tenor.com/v1/random?key=${tenorAPIKey}&q=cyberpunk&limit=1`
-    );
-    const data = await response.json();
-    if (response.ok) {
-      return data.results[0].media[0].gif.url;
-    } else {
-      enqueueSnackbar(`Error fetching image: ${data.message}`, {
-        variant: "error",
-      });
-    }
-  }
-  // Modify fetchCommentChain function for infinite nested replies
-  const fetchCommentChain = async (commentId) => {
-    // Fetch comment data
-    const data = await new Promise((resolve, reject) => {
-      getCommentByID(
-        commentId,
-        (data) => resolve(data),
-        (error) => reject(error)
-      );
-    });
-    // Fetch user display name
-    const user = await new Promise((resolve, reject) => {
-      fetchUserById(data.userID, resolve, reject);
-    });
-    data.displayName = user.displayName;
-    // Fetch random gif for comment (temporarily empty)
-    data.imageURL = ""; // TODO: temporary till I figure out GIPHY API
-    // Recursive call: fetch the entire chain of replies if any
-    if (data.replies && data.replies.length) {
-      data.replies = await Promise.all(
-        data.replies.map((replyId) => fetchCommentChain(replyId))
-      );
-    } else {
-      data.replies = [];
-    }
-    return data;
-  };
-
-  const fetchParentComments = async () => {
-    try {
-      const comments = await Promise.all(
-        relevantCommentIDs.map((commentId) => fetchCommentChain(commentId))
-      );
-      setParentComments(comments);
-    } catch (error) {
-      enqueueSnackbar(`Error fetching comments: ${error.message}`, {
-        variant: "error",
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (relevantCommentIDs.length > 0) {
-      fetchParentComments();
-    }
-  }, [relevantCommentIDs]);
-
-  const fetchPostsHandeled = () => {
-    fetchPostById(
-      id,
-      (data) => {
-        setPost(data);
-        setLoading(false);
-      },
-      (error) => {
-        setLoading(false);
-        enqueueSnackbar(`Error fetching post ${error}`, { variant: "error" });
-      }
-    );
-  };
 
   return (
     <Stack px={2} width={"100%"}>
       <Header
         isLoggedIn={isLoggedIn}
         userData={userData}
-        setOpen={setOpen}
         setIsLoggedIn={setIsLoggedIn}
         setIsCreatePostModalOpen={setIsCreatePostModalOpen}
-      />
-      <CreatePostDialogue
+        categories={categories}
         isOpen={isCreatePostModalOpen}
-        setOpen={setIsCreatePostModalOpen}
-        onPostCreated={fetchPostsHandeled}
-        userData={userData}
+        setOpen={setOpen}
+        onPostCreated={(id: string) => {
+          navigate(`/post/${id}`);
+        }}
       />
       <Divider
         sx={{
@@ -151,31 +85,34 @@ https://api.tenor.com/v1/random?key=${tenorAPIKey}&q=cyberpunk&limit=1`
             }}
           >
             <PostPreview
+              categories={categories}
               pageVariant={true}
               isPostAuthoredByCurrentUser={userData?.posts
                 ?.map(Number)
                 .includes(Number(post?.id))}
               isLoggedIn={isLoggedIn}
-              fetchPosts={fetchPostsHandeled}
-              title={post?.title}
-              resource={post?.resource}
-              description={post?.description}
-              upvotes={post?.upvotes}
-              downvotes={post?.downvotes}
-              reports={post?.reports}
-              category={post?.category}
-              commentsCount={post?.comments.length}
-              id={post?.id}
-              deteCreated={post?.dateCreated}
+              fetchPosts={() => {
+                window.location.reload();
+              }}
+              title={post?.title || ""}
+              resource={post?.resource || ""}
+              description={post?.description || ""}
+              upvotes={post?.upvotes || 0}
+              downvotes={post?.downvotes || 0}
+              reports={post?.reports || 0}
+              categoryID={post?.categoryID || ""}
+              commentsCount={post?.comments.length || 0}
+              id={post?.id || ""}
+              dateCreated={post?.dateCreated || ""}
               upvotedByCurrentUser={userData?.upvotedPosts
-                ?.map(Number)
-                .includes(Number(post?.id))}
+                .map(Number)
+                .includes(Number(post?.id || ""))}
               downvotedByCurrentUser={userData?.downVotedPosts
-                ?.map(Number)
-                .includes(Number(post?.id))}
+                .map(Number)
+                .includes(Number(post?.id || ""))}
               reportedByCurrentUser={userData?.reportedPosts
-                ?.map(Number)
-                .includes(Number(post?.id))}
+                .map(Number)
+                .includes(Number(post?.id || ""))}
               userData={userData}
             />
           </Stack>
@@ -203,7 +140,7 @@ https://api.tenor.com/v1/random?key=${tenorAPIKey}&q=cyberpunk&limit=1`
             className="postPageCommentsTitle"
             type="alphanumeric"
           />
-          {parentComments &&
+          {/* {parentComments &&
             parentComments.length > 0 &&
             parentComments.map((comment, index) => (
               <CommentBlock
@@ -214,11 +151,11 @@ https://api.tenor.com/v1/random?key=${tenorAPIKey}&q=cyberpunk&limit=1`
                 replies={comment?.replies}
                 imageURL={comment?.imageURL}
               />
-            ))}
+            ))} */}
         </Stack>
       </Stack>
     </Stack>
   );
 }
 
-export default Post;
+export default PostPage;
