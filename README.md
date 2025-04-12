@@ -1,4 +1,4 @@
-> # Sauce
+l> # Sauce
 >
 > _A community driven resource sharing application_
 
@@ -83,11 +83,18 @@ TODO: Still not too hyped abt the comments solution
 
 - Frontend Server:
   `npm run dev`
+  - ENV variables: 
+    - VITE_BACKEND_URL
+    - VITE_GIPHY_API_KEY
 - Backend Server:
-  <del>`npx json-server db.json`</del>
-  `node server.cjs`
+  `node index.cjs`
+  - ENV variables:
+    - GITHUB_SYNC
+    - GITHUB_TOKEN
 - Vercel Prod URL
-  `https://sauce-weld.vercel.app/`
+  <a href="https://sauce-weld.vercel.app/">https://sauce-weld.vercel.app/</a>
+- Render Backend Prod URL
+  <a href="https://saucebackend.onrender.com/">https://saucebackend.onrender.com/</a>
 
 After multiple hours of scrootny and discovery, I have come to the conclusion, that the problem is in
 my function and not the makeshift cache backend in vercel cuz it's also breaking in onRender.
