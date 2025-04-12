@@ -169,6 +169,7 @@ function App() {
             path="/posts/:id"
             element={
               <Post
+                refreshUserData={getUserData}
                 setIsLoggedIn={setIsLoggedIn}
                 userData={userData}
                 setOpen={setLogInDialogue}

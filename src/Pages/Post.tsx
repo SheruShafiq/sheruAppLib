@@ -22,6 +22,7 @@ function PostPage({
   setOpen,
   setIsLoggedIn,
   categories,
+  refreshUserData,
 }) {
   const [parentComments, setParentComments] = useState<Comment[]>([]);
   const [relevantCommentIDs, setRelevantCommentIDs] = useState<number[]>([]);
@@ -31,7 +32,7 @@ function PostPage({
   const { id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
-  useEffect(() => {
+  function fetchCurrentPost(id: string) {
     fetchPostById({
       id: id!,
       onSuccess: (data) => {
@@ -44,8 +45,15 @@ function PostPage({
         enqueueSnackbar(`Error fetching post ${error}`, { variant: "error" });
       },
     });
-  }, [id]);
+  }
 
+  useEffect(() => {
+    fetchCurrentPost(id!);
+  }, [id]);
+  function refreshData(id: string) {
+    fetchCurrentPost(id);
+    refreshUserData(userData.id!);
+  }
   async function fetchImage() {
     const response = await fetch(
       `https://api.giphy.com/v1/gifs/random?api_key=${gipyAPIKey}&tag=cyberpunkProfilePicture&rating=g`
@@ -69,7 +77,7 @@ function PostPage({
         isOpen={isCreatePostModalOpen}
         setOpen={setOpen}
         onPostCreated={(id: string) => {
-          navigate(`/post/${id}`);
+          navigate(`/posts/${id}`);
         }}
       />
       <Divider
@@ -92,7 +100,7 @@ function PostPage({
                 .includes(Number(post?.id))}
               isLoggedIn={isLoggedIn}
               fetchPosts={() => {
-                window.location.reload();
+                refreshData(post?.id || "");
               }}
               title={post?.title || ""}
               resource={post?.resource || ""}
@@ -105,14 +113,14 @@ function PostPage({
               id={post?.id || ""}
               dateCreated={post?.dateCreated || ""}
               upvotedByCurrentUser={userData?.upvotedPosts
-                .map(Number)
-                .includes(Number(post?.id || ""))}
+                .map(String)
+                .includes(String(post?.id || ""))}
               downvotedByCurrentUser={userData?.downVotedPosts
-                .map(Number)
-                .includes(Number(post?.id || ""))}
+                .map(String)
+                .includes(String(post?.id || ""))}
               reportedByCurrentUser={userData?.reportedPosts
-                .map(Number)
-                .includes(Number(post?.id || ""))}
+                .map(String)
+                .includes(String(post?.id || ""))}
               userData={userData}
             />
           </Stack>

@@ -168,14 +168,14 @@ function Home({
                 id={posts[key].id}
                 dateCreated={posts[key].dateCreated}
                 upvotedByCurrentUser={userData?.upvotedPosts
-                  ?.map(Number)
-                  .includes(Number(posts[key].id))}
+                  ?.map(String)
+                  .includes(String(posts[key].id))}
                 downvotedByCurrentUser={userData?.downVotedPosts
-                  ?.map(Number)
-                  .includes(Number(posts[key].id))}
+                  ?.map(String)
+                  .includes(String(posts[key].id))}
                 reportedByCurrentUser={userData?.reportedPosts
-                  ?.map(Number)
-                  .includes(Number(posts[key].id))}
+                  ?.map(String)
+                  .includes(String(posts[key].id))}
                 userData={userData}
               />
             ))}
