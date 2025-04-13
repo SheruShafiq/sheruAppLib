@@ -17,6 +17,7 @@ import { useSnackbar } from "notistack";
 import { TextGlitchEffect } from "./TextGlitchEffect";
 import { patchVotePost, patchUndoVotePost, patchUser } from "../APICalls";
 import { Category, errorProps, User } from "../../dataTypeDefinitions";
+import IOSLoader from "./IOSLoader";
 
 interface PostPreviewProps {
   id: string;
@@ -391,9 +392,10 @@ const PostPreview: React.FC<PostPreviewProps> = ({
         <Button
           onClick={() => handleVote("upvote")}
           disabled={!!loadingAction}
+          sx={{ mb: loadingAction === "upvote" ? "-3px" : "0px" }}
           startIcon={
             loadingAction === "upvote" ? (
-              <CircularProgress size={20} />
+              <IOSLoader />
             ) : (
               <InsertEmotionIcon
                 color={voteStatus === "up" ? "success" : "inherit"}
@@ -406,9 +408,10 @@ const PostPreview: React.FC<PostPreviewProps> = ({
         <Button
           onClick={() => handleVote("downvote")}
           disabled={!!loadingAction}
+          sx={{ mb: loadingAction === "downvote" ? "-3px" : "0px" }}
           startIcon={
             loadingAction === "downvote" ? (
-              <CircularProgress size={20} />
+              <IOSLoader />
             ) : (
               <SentimentVeryDissatisfiedIcon
                 color={voteStatus === "down" ? "error" : "inherit"}
@@ -421,9 +424,10 @@ const PostPreview: React.FC<PostPreviewProps> = ({
         <Button
           onClick={() => handleVote("report")}
           disabled={!!loadingAction}
+          sx={{ mb: loadingAction === "report" ? "-3px" : "0px" }}
           startIcon={
             loadingAction === "report" ? (
-              <CircularProgress size={20} />
+              <IOSLoader />
             ) : (
               <ErrorOutlinedIcon color={reported ? "warning" : "inherit"} />
             )

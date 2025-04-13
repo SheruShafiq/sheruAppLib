@@ -12,6 +12,9 @@ import { useGlitch } from "react-powerglitch";
 import { TextGlitchEffect } from "./TextGlitchEffect";
 import { enqueueSnackbar } from "notistack";
 import { errorProps, loginUserProps, User } from "../../dataTypeDefinitions";
+import SaveIcon from "@mui/icons-material/Save";
+import IOSLoader from "./IOSLoader";
+import LoginIcon from "@mui/icons-material/Login";
 
 function SignUpAndLogin({
   isOpen,
@@ -24,6 +27,8 @@ function SignUpAndLogin({
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [creatingOrLoggingIn, setCreatingOrLoggingIn] = useState(false);
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -42,6 +47,7 @@ function SignUpAndLogin({
   const handleSubmit = (event) => {
     event.preventDefault();
     if (mode === "login") {
+      setCreatingOrLoggingIn(true);
       loginUser({
         username,
         password,
@@ -51,6 +57,7 @@ function SignUpAndLogin({
           setUserData(user);
           setIsLoggedIn(true);
           handleClose();
+          setCreatingOrLoggingIn(false);
         },
         onError: (error: any) => {
           const err: errorProps = {
@@ -61,9 +68,11 @@ function SignUpAndLogin({
             error: error instanceof Error ? error : new Error("Unknown error"),
           };
           enqueueSnackbar({ variant: "error", ...err });
+          setCreatingOrLoggingIn(false);
         },
       });
     } else {
+      setCreatingOrLoggingIn(true);
       createUser({
         username,
         password,
@@ -77,6 +86,7 @@ function SignUpAndLogin({
           setIsLoggedIn(true);
           document.cookie = `userID=${user.id}; path=/;`;
           setOpen(false);
+          setCreatingOrLoggingIn(false);
         },
         onError: (error: any) => {
           const err: errorProps = {
@@ -88,6 +98,7 @@ function SignUpAndLogin({
             error: error instanceof Error ? error : new Error("Unknown error"),
           };
           enqueueSnackbar({ variant: "error", ...err });
+          setCreatingOrLoggingIn(false);
         },
       });
     }
@@ -220,7 +231,15 @@ function SignUpAndLogin({
           color="secondary"
           variant="text"
           className="secondaryButtonHoverStyles"
-         
+          startIcon={
+            creatingOrLoggingIn ? (
+              <IOSLoader size={18} />
+            ) : mode === "signup" ? (
+              <SaveIcon />
+            ) : (
+              <LoginIcon />
+            )
+          }
         >
           <span style={{ pointerEvents: "none" }}>
             <TextGlitchEffect

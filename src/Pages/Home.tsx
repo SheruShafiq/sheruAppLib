@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Stack, Divider, IconButton } from "@mui/material";
+import { Stack, Divider, IconButton, Button } from "@mui/material";
 import { fetchPostsPaginated, getPostByID } from "../APICalls";
 import { useSnackbar } from "notistack";
 import PostPreview from "../Components/PostPreview";
@@ -19,6 +19,7 @@ import {
 } from "../../dataTypeDefinitions";
 import { errorProps } from "../../dataTypeDefinitions";
 import Footer from "../Components/Footer";
+import IOSSpinner from "../Components/IOSLoader";
 
 function Home({
   isLoggedIn,

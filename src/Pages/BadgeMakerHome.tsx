@@ -23,6 +23,7 @@ import Papa from "papaparse";
 import "../Styles/BadgeMakerMain.css";
 import { TextGlitchEffect } from "../Components/TextGlitchEffect";
 import Logo from "../Components/Logo";
+import IOSLoader from "../Components/IOSLoader";
 
 // Rename the interface to avoid confusion with the component name.
 export type RowData = {
@@ -190,6 +191,7 @@ function Home() {
           <Fade in={generate}>
             <Button
               loading={isExporting}
+              loadingIndicator={<IOSLoader />}
               className="secondaryButtonHoverStyles"
               color="secondary"
               onClick={handleExportPDF}
