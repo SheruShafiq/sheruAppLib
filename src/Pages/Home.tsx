@@ -18,6 +18,7 @@ import {
   Category,
 } from "../../dataTypeDefinitions";
 import { errorProps } from "../../dataTypeDefinitions";
+import Footer from "../Components/Footer";
 
 function Home({
   isLoggedIn,
@@ -107,7 +108,7 @@ function Home({
   const nextPage = metaData?.next?.match(/_page=(\d+)/)?.[1];
   const lastPage = Number(metaData?.last?.match(/_page=(\d+)/)?.[1] || 1);
   return (
-    <Stack gap={2} pb={2}>
+    <Stack height={"100%"} minHeight={"100vh"} gap={2} pb={2}>
       <Stack>
         <Header
           callerIdentifier={"homePage"}
@@ -245,6 +246,7 @@ function Home({
           </IconButton>
         </Stack>
       </Stack>
+      <Footer />
     </Stack>
   );
 }

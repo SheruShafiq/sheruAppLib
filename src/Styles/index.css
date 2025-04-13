@@ -64,6 +64,12 @@ body {
 .secondaryButtonHoverStyles:hover{
       background-color: rgb(194 82 128 / 15%);
 }
+.footerDevDesc{
+  font-size: 9px;
+}
+.footerDevName:hover{
+  text-decoration: underline;
+}
 @media (max-width: 600px) {
   .loggedInUserName {
     display: none;
