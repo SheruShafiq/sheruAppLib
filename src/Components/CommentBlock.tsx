@@ -251,6 +251,7 @@ function CommentBlock({
                 e.stopPropagation();
                 handleCommentVote("upvote");
               }}
+              sx={{ mb: loadingAction === "upvote" ? "-3px" : "0px" }}
               disabled={!!loadingAction}
               startIcon={
                 loadingAction === "upvote" ? (
@@ -269,6 +270,7 @@ function CommentBlock({
                 e.stopPropagation();
                 handleCommentVote("downvote");
               }}
+              sx={{ mb: loadingAction === "downvote" ? "-3px" : "0px" }}
               disabled={!!loadingAction}
               startIcon={
                 loadingAction === "downvote" ? (
