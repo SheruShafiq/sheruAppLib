@@ -81,6 +81,7 @@ Product properties
 30. Categories PostsID array is also not working as intended
 31. Better error handeling when post ID in URL is wrong
 32. On Post page, user's profile who posted it needs to be implemented
+33. Loaders for commenting, replying
 
 ---
 

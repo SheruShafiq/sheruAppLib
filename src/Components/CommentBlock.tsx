@@ -305,7 +305,7 @@ function CommentBlock({
                 setCreatingReply(false);
               }}
             >
-              Reply
+              {openReply ? "Cancel" : "Reply"}
             </Button>
           </Stack>
           <Collapse in={openReply} timeout="auto" unmountOnExit>
