@@ -83,7 +83,6 @@ function PostPage({
   const [creatingComment, setcreatingComment] = useState(false);
 
   async function handleCommentCreate() {
-    console.log(newComment);
     if (newComment.length < 1) {
       enqueueSnackbar({
         variant: "warning",
@@ -158,8 +157,6 @@ function PostPage({
       }
     );
   }
-
-  console.log("commentsChain", commentsChain);
 
   return (
     <Stack width={"100%"} minHeight={"100vh"} height={"100%"}>
@@ -284,7 +281,7 @@ function PostPage({
                 replies={comment.replies}
                 imageURL={comment.imageURL}
                 amIaReply={false}
-                depth={index}
+                depth={0}
               />
             ))}
         </Stack>
