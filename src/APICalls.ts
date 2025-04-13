@@ -442,3 +442,27 @@ export async function patchUndoVoteComment(
   });
   return response.json();
 }
+
+export async function patchComment(
+  id: string,
+  field: string,
+  newValue: any,
+  onSuccess: (comment: Comment) => void,
+  onError: (error: any) => void
+) {
+  try {
+    const now = new Date().toISOString();
+    const response = await fetch(`${APIURL}/comments/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ [field]: newValue, dateModified: now }),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to update comment");
+    }
+    const data = await response.json();
+    onSuccess(data);
+  } catch (error) {
+    onError(error);
+  }
+}

@@ -6,6 +6,7 @@ import {
   createComment,
   patchUser,
   patchPost,
+  patchComment,
 } from "../APICalls";
 import { useParams } from "react-router-dom";
 import { useSnackbar } from "notistack";
@@ -82,19 +83,12 @@ function PostPage({
   }
   const [creatingComment, setcreatingComment] = useState(false);
 
-  async function handleCommentCreate() {
-    if (newComment.length < 1) {
-      enqueueSnackbar({
-        variant: "warning",
-        message: "Comment cannot be empty",
-      });
-      return;
-    }
+  async function handleCommentCreate({ reply, comment, replies }) {
     setcreatingComment(true);
     createComment(
       userData.id!,
       post?.id!,
-      newComment,
+      reply ? comment : newComment,
       (comment) => {
         setCommentsChain((prev) => {
           if (prev) {
@@ -107,28 +101,56 @@ function PostPage({
           field: "comments",
           newValue: [...(userData.comments || []), comment.id],
           onSuccess: (user) => {
-            patchPost(
-              post?.id!,
-              "comments",
-              [...(post?.comments || []), comment.id],
-              (post) => {
-                refreshData(post.id!);
-                setcreatingComment(false);
-              },
-              (error) => {
-                const err: errorProps = {
-                  id: "failed to add comment to post",
-                  userFreindlyMessage:
-                    "Something went wrong when creating comment",
-                  errorMessage:
-                    error instanceof Error ? error.message : "Unknown error",
-                  error:
-                    error instanceof Error ? error : new Error("Unknown error"),
-                };
-                enqueueSnackbar({ variant: "error", ...err });
-                setcreatingComment(false);
-              }
-            );
+            if (reply) {
+              patchComment(
+                reply,
+                "replies",
+                [...replies, comment.id],
+                (comment) => {
+                  refreshData(post?.id!);
+                  setcreatingComment(false);
+                },
+                (error) => {
+                  const err: errorProps = {
+                    id: "failed to add comment to post",
+                    userFreindlyMessage:
+                      "Something went wrong when creating comment",
+                    errorMessage:
+                      error instanceof Error ? error.message : "Unknown error",
+                    error:
+                      error instanceof Error
+                        ? error
+                        : new Error("Unknown error"),
+                  };
+                  enqueueSnackbar({ variant: "error", ...err });
+                  setcreatingComment(false);
+                }
+              );
+            } else
+              patchPost(
+                post?.id!,
+                "comments",
+                [...(post?.comments || []), comment.id],
+                (post) => {
+                  refreshData(post.id!);
+                  setcreatingComment(false);
+                },
+                (error) => {
+                  const err: errorProps = {
+                    id: "failed to add comment to post",
+                    userFreindlyMessage:
+                      "Something went wrong when creating comment",
+                    errorMessage:
+                      error instanceof Error ? error.message : "Unknown error",
+                    error:
+                      error instanceof Error
+                        ? error
+                        : new Error("Unknown error"),
+                  };
+                  enqueueSnackbar({ variant: "error", ...err });
+                  setcreatingComment(false);
+                }
+              );
           },
           onError: (error) => {
             const err: errorProps = {
@@ -257,7 +279,7 @@ function PostPage({
             />
             <Button
               onClick={() => {
-                handleCommentCreate();
+                handleCommentCreate({ reply: null, comment: null });
               }}
               disabled={!isLoggedIn || creatingComment || newComment.length < 1}
               color="secondary"
@@ -274,6 +296,7 @@ function PostPage({
               commentsChain.length > 0 &&
               commentsChain.map((comment, index) => (
                 <CommentBlock
+                  handleCommentCreate={handleCommentCreate}
                   id={comment.id}
                   userData={userData}
                   key={comment.id}

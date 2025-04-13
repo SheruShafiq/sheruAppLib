@@ -1,4 +1,4 @@
-import { Button, Collapse, Stack, Typography } from "@mui/material";
+import { Button, Collapse, Stack, TextField, Typography } from "@mui/material";
 import React, { useState, useEffect, useMemo } from "react";
 import { useSnackbar } from "notistack";
 import Chip from "@mui/material/Chip";
@@ -9,6 +9,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import HeartBrokenIcon from "@mui/icons-material/HeartBroken";
 import { patchVoteComment, patchUndoVoteComment, patchUser } from "../APICalls";
 import IOSLoader from "./IOSLoader";
+import SendIcon from "@mui/icons-material/Send";
 
 function CommentBlock({
   id,
@@ -25,6 +26,7 @@ function CommentBlock({
   dislikes,
   dislikedByCurrentUser,
   userData,
+  handleCommentCreate,
 }) {
   const { enqueueSnackbar } = useSnackbar();
   const [expanded, setExpanded] = useState(false);
@@ -193,6 +195,9 @@ function CommentBlock({
       setLoadingAction(null);
     }
   }
+  const [creatingReply, setCreatingReply] = useState(false);
+  const [newComment, setNewComment] = useState("");
+  const [openReply, setOpenReply] = useState(false);
 
   return (
     <Stack
@@ -205,7 +210,7 @@ function CommentBlock({
       {/* ---- The main comment row ---- */}
       <Stack direction="row" spacing={2} py={1}>
         <Avatar src={imageUrl || GIFs[randomGIFIndex]} alt={userName} />
-        <Stack>
+        <Stack gap={1}>
           <Stack direction="row" spacing={1} alignItems="center">
             <Typography fontWeight="bold">{userName}</Typography>
             <Chip
@@ -217,7 +222,7 @@ function CommentBlock({
           <Typography variant="body2">{commentContents}</Typography>
 
           {/* If there are replies, add a toggle button to expand/collapse */}
-          <Stack mt={1} direction="row" alignItems="center">
+          <Stack direction="row" alignItems="center">
             {replies.length > 0 && (
               <Stack
                 direction="row"
@@ -258,7 +263,7 @@ function CommentBlock({
                   <IOSLoader />
                 ) : (
                   <FavoriteIcon
-                    color={voteStatus === "up" ? "success" : "inherit"}
+                    color={voteStatus === "up" ? "secondary" : "inherit"}
                   />
                 )
               }
@@ -277,14 +282,57 @@ function CommentBlock({
                   <IOSLoader />
                 ) : (
                   <HeartBrokenIcon
-                    color={voteStatus === "down" ? "error" : "inherit"}
+                    color={voteStatus === "down" ? "warning" : "inherit"}
                   />
                 )
               }
             >
               {localDislikes}
             </Button>
+            <Button
+              size="small"
+              onClick={() => {
+                setOpenReply(!openReply);
+                setCreatingReply(false);
+              }}
+            >
+              Reply
+            </Button>
           </Stack>
+          <Collapse in={openReply} timeout="auto" unmountOnExit>
+            <Stack gap={2} width={"100%"}>
+              <TextField
+                label={
+                  !isLoggedIn ? "You need to login to comment" : "Add a comment"
+                }
+                multiline
+                disabled={!isLoggedIn}
+                variant="standard"
+                onChange={(e) => {
+                  setNewComment(e.target.value);
+                }}
+                fullWidth
+              />
+              <Button
+                onClick={() => {
+                  handleCommentCreate({
+                    reply: id,
+                    replies: replies,
+                    comment: newComment,
+                  });
+                  setOpenReply(false);
+                }}
+                disabled={!isLoggedIn || creatingReply || newComment.length < 1}
+                color="secondary"
+                className="secondaryButtonHoverStyles"
+                sx={{ mb: creatingReply ? "-3px" : "0px" }}
+                variant="outlined"
+                size="small"
+              >
+                {creatingReply ? <IOSLoader /> : <SendIcon />}
+              </Button>
+            </Stack>
+          </Collapse>
         </Stack>
       </Stack>
 
@@ -293,6 +341,7 @@ function CommentBlock({
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           {replies.map((reply) => (
             <CommentBlock
+              handleCommentCreate={handleCommentCreate}
               id={reply.id}
               amIaReply={true}
               imageURL={reply.imageURL}
