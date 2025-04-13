@@ -2,16 +2,16 @@ import { useGlitch } from "react-powerglitch";
 import { TextGlitchEffect } from "./TextGlitchEffect";
 import { Box } from "@mui/material";
 
-const SauceLogo = () => {
+const Logo = ({ logoName, URL }) => {
   const glitch = useGlitch({
     timing: {
       iterations: 1,
       easing: "ease-in-out",
-      duration: 1000,
+      duration: 500,
     },
     glitchTimeSpan: {
       start: 0,
-      end: 0.5,
+      end: 0.3,
     },
     playMode: "hover",
   });
@@ -24,12 +24,12 @@ const SauceLogo = () => {
         cursor: "pointer",
       }}
       onClick={() => {
-        window.location.href = "/";
+        window.location.href = URL;
       }}
       ref={glitch.ref}
     >
       <TextGlitchEffect
-        text={"Sauce"}
+        text={logoName}
         speed={100}
         letterCase="lowercase"
         className="neonText HeaderLogo"
@@ -39,4 +39,4 @@ const SauceLogo = () => {
   );
 };
 
-export default SauceLogo;
+export default Logo;

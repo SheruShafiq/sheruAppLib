@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Table,
   TableBody,
@@ -8,9 +8,9 @@ import {
   TableRow,
   Paper,
   TextField,
-} from '@mui/material';
-import { ExcelInput, RowData } from '../Pages/BadgeMakerHome'; // Adjust the import path as necessary
-
+  Typography,
+} from "@mui/material";
+import { ExcelInput, RowData } from "../Pages/BadgeMakerHome"; // Adjust the import path as necessary
 
 const ExcelLikeTable: React.FC<ExcelInput> = ({ rows, setRows }) => {
   // Start with one blank row
@@ -28,44 +28,60 @@ const ExcelLikeTable: React.FC<ExcelInput> = ({ rows, setRows }) => {
     // If editing the last row and at least one field is not empty, add a new blank row.
     if (
       index === rows.length - 1 &&
-      (newRows[index].col1.trim() !== '' || newRows[index].col2.trim() !== '')
+      (newRows[index].col1.trim() !== "" || newRows[index].col2.trim() !== "")
     ) {
-      setRows([...newRows, { col1: '', col2: '' }]);
+      setRows([...newRows, { col1: "", col2: "" }]);
     }
   };
 
   return (
-    <TableContainer >
-      <Table>
+    <TableContainer>
+      <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>Column 1</TableCell>
-            <TableCell>Column 2</TableCell>
+            <TableCell>
+              <Typography variant="h6" fontWeight={600}>
+                Role
+              </Typography>
+            </TableCell>
+            <TableCell>
+              {" "}
+              <Typography variant="h6" fontWeight={600}>
+                Name
+              </Typography>
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rows.map((row, index) => (
-            <TableRow key={index}>
-              <TableCell>
+            <TableRow
+              sx={{
+                border: "none",
+              }}
+              key={index}
+            >
+              <TableCell sx={{ borderBottom: "none" }}>
                 <TextField
+                  size="small"
                   value={row.col1}
                   onChange={(e) =>
-                    handleInputChange(index, 'col1', e.target.value)
+                    handleInputChange(index, "col1", e.target.value)
                   }
                   fullWidth
-                  variant="outlined"
-                  placeholder="Enter data..."
+                  variant="standard"
+                  placeholder="Nazim"
                 />
               </TableCell>
-              <TableCell>
+              <TableCell sx={{ borderBottom: "none" }}>
                 <TextField
+                  size="small"
                   value={row.col2}
                   onChange={(e) =>
-                    handleInputChange(index, 'col2', e.target.value)
+                    handleInputChange(index, "col2", e.target.value)
                   }
                   fullWidth
-                  variant="outlined"
-                  placeholder="Enter data..."
+                  variant="standard"
+                  placeholder="Ali"
                 />
               </TableCell>
             </TableRow>

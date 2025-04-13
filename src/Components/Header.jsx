@@ -3,7 +3,7 @@ import { Box, Button, Fade, IconButton, Stack } from "@mui/material";
 import { TextGlitchEffect } from "./TextGlitchEffect";
 import AddIcon from "@mui/icons-material/Add";
 import CreatePostDialogue from "../Components/CreatePostDialogue";
-import SauceLogo from "./SauceLogo";
+import Logo from "./Logo";
 
 function Header({
   isLoggedIn,
@@ -60,7 +60,7 @@ function Header({
                 Logout
               </Button>
             </Stack>
-            <SauceLogo />
+            <Logo logoName={"Sauce"} URL={"/"} />
             <IconButton
               variant="outlined"
               onClick={() => {
@@ -99,7 +99,7 @@ function Header({
               Login
             </Button>
           </Box>
-          <SauceLogo />
+          <Logo logoName={"Sauce"} URL={"/"} />
           <Box
             sx={{
               visibility: "hidden",
