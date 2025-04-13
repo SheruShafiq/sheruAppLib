@@ -219,11 +219,8 @@ function SignUpAndLogin({
           type="submit"
           color="secondary"
           variant="text"
-          sx={{
-            "&:hover": {
-              backgroundColor: "rgb(194 82 128 / 6%)", // added explicit hover style
-            },
-          }}
+          className="secondaryButtonHoverStyles"
+         
         >
           <span style={{ pointerEvents: "none" }}>
             <TextGlitchEffect

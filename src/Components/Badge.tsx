@@ -6,6 +6,7 @@ import AhmadiyyaFlag from "../assets/ahmadiyyaFlag.png";
 import React from "react";
 
 
+
 export type badgeProps = {
   role: string;
   name: string;
@@ -47,7 +48,7 @@ function TwentyFive({
             src={AhmadiyyaFlag}
           />
         </Box>
-        <Stack alignItems={"center"}>
+        <Stack mt={1} alignItems={"center"}>
           <Typography color={"#AF1623"}>
             Ahmadiyya Moslim Gemeenschap
           </Typography>
@@ -55,7 +56,7 @@ function TwentyFive({
             sx={{
               borderBottom: "2px solid #AF1623",
               lineHeight: "40px",
-              mt: "10px",
+              mt: "6px",
             }}
             fontWeight={500}
             color="black"
@@ -63,7 +64,7 @@ function TwentyFive({
           >
             JALSA SALANA
           </Typography>
-          <Typography fontWeight={200} color="black" fontSize={"1em"}>
+          <Typography mt={1} fontWeight={200} color="black" fontSize={"1em"}>
             43
             <sup style={{ fontSize: "9px", verticalAlign: "super" }}>
               ste

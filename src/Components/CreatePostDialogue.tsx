@@ -169,11 +169,7 @@ function CreatePostDialogue({
           disabled={!title || !resource || !description || !category}
           type="submit"
           color="secondary"
-          sx={{
-            "&:hover": {
-              backgroundColor: "rgb(194 82 128 / 6%)", // added explicit hover style
-            },
-          }}
+        className="secondaryButtonHoverStyles"
         >
           <TextGlitchEffect
             text="Create"

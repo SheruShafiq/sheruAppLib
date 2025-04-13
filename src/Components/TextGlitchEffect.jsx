@@ -64,8 +64,6 @@ export const TextGlitchEffect = ({
             ? individualLetter.toUpperCase()
             : individualLetter.toLowerCase();
 
-          //Build will fail because of the unused variable
-          return alphabet;
         })
         .join("");
 
