@@ -77,6 +77,8 @@ Product properties
 26. Add readmore toggle to descriptions and comments too long. Add a text size limit on displayName
 27. Add a check if username and password already exist
 28. Overflow issues on home
+29. Upvoted posts and downvoted posts in users object doesnt seem to work as intended
+30. Categories PostsID array is also not working as intended
 
 ---
 
