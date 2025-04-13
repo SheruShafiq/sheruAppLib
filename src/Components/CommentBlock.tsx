@@ -66,17 +66,17 @@ function CommentBlock({
     "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcnQzenphZWEwM2xwYnZ4eTQ5ZWRkNGkwYmN5ZnA4c3d1aDAzd3RsZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/NKEt9elQ5cR68/giphy.gif",
     "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGc0d2M5aHhvbzViYWJ0b2lod3dxajJwNW95dmJjYTB4czR6MG5rcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3dhmyq6EKw2x7eFt4X/giphy.gif",
   ];
-  const [iseReply, setIsReply] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   const handleExpandClick = () => {
-    setIsReply(!iseReply);
+    setExpanded(!expanded);
   };
   return (
     <Stack
       sx={{
-        borderLeft: depth > 0 && iseReply ? "1px solid white" : "none",
+        borderLeft: depth > 0 ? "1px solid white" : "none",
       }}
-      ml={depth > 0 ? 2 : 0}
+      ml={depth > 0 && amIaReply ? 2 : 0}
     >
       <Stack
         gap={1}
@@ -111,41 +111,29 @@ function CommentBlock({
         </Stack>
       </Stack>
       {replies && replies.length > 0 && (
-        <Stack>
-          {replies.map((reply) => (
-            <Stack
-              direction={"row"}
-              alignItems={"center"}
-              gap={1}
-              key={reply.id}
-            >
-              <Collapse
-                in={iseReply}
+        <Stack direction={"row"} alignItems={"center"} gap={1}>
+          <Collapse in={expanded} timeout="auto" unmountOnExit>
+            {replies.map((reply) => (
+              <CommentBlock
                 key={reply.id}
-                timeout="auto"
-                unmountOnExit
-              >
-                <CommentBlock
-                  key={reply.id}
-                  dateCreated={reply.dateCreated}
-                  userName={reply.authorName}
-                  commentContents={reply.text}
-                  replies={reply.replies}
-                  imageURL={reply.imageURL}
-                  amIaReply={true}
-                  depth={depth + 1}
-                />
-              </Collapse>
-              <ExpandMore
-                expand={iseReply}
-                onClick={handleExpandClick}
-                aria-expanded={iseReply}
-                aria-label="show more"
-              >
-                <ExpandMoreIcon />
-              </ExpandMore>
-            </Stack>
-          ))}
+                dateCreated={reply.dateCreated}
+                userName={reply.authorName}
+                commentContents={reply.text}
+                replies={reply.replies}
+                imageURL={reply.imageURL}
+                amIaReply={true}
+                depth={depth + 1}
+              />
+            ))}
+          </Collapse>
+          <ExpandMore
+            expand={expanded}
+            onClick={handleExpandClick}
+            aria-expanded={expanded}
+            aria-label="show more"
+          >
+            <ExpandMoreIcon />
+          </ExpandMore>
         </Stack>
       )}
     </Stack>
