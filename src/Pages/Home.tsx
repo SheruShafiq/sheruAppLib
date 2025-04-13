@@ -107,7 +107,7 @@ function Home({
   const nextPage = metaData?.next?.match(/_page=(\d+)/)?.[1];
   const lastPage = Number(metaData?.last?.match(/_page=(\d+)/)?.[1] || 1);
   return (
-    <Stack gap={2} px={2} pb={2}>
+    <Stack gap={2} pb={2}>
       <Stack>
         <Header
           callerIdentifier={"homePage"}
@@ -129,7 +129,7 @@ function Home({
         />
       </Stack>
 
-      <Stack maxWidth={"600px"} alignSelf={"center"} width={"100%"}>
+      <Stack px={2} maxWidth={"600px"} alignSelf={"center"} width={"100%"}>
         <Fade in={fetchingInitialPosts} timeout={1000}>
           <Stack
             gap={2}
