@@ -1,5 +1,5 @@
 l> # Sauce
->
+
 > _A community driven resource sharing application_
 
 **Sauce** is a simple application developed solely for research purposes. **Sauce** aims to provide it's users
@@ -47,46 +47,39 @@ Product properties
 
 ---
 
-
 ## Make shift JIRA Board:
 
 1. Are you sure and provide a reason dialogue on report post.
 2. <del>Creating a post formulier</del>
-3. Post page
-4. create a a comment formulier
+3. <del>Post page</del>
+4. <del>create a a comment formulier</del>
 5. <del>MUI theming</del>
-6. Creating the UI proper once all functionality is online
-7. Loaders for litteraly everything and check if all API calls are async
-8. Once I have the loaders, redo the functionality on system to remove any dependency on localdata and make it completely live only.
+6. <del>Creating the UI proper once all functionality is online</del>
+7. <del>Loaders for litteraly everything and check if all API calls are async</del>
+8. <del>Once I have the loaders, redo the functionality on system to remove any dependency on localdata and make it completely live only.</del>
 9. <del>Make API URLs dynamic from .env to make it easy to deploy</del>
 10. Sorting functionality on Home
 11. Search functionality on Home
-12. A user screen that shows all of user's posts
+12. A user screen that shows all of user's posts, and comments
 13. implementing categorisation
-14. An effecienter way of handeling comments chain, where a comments chain is created inside the post as well to save API calls amount.
-15. Add credits in the footer
-16. Get giphy to prod
-17. MUSIC
-18. URL(ise) the paginated home
-19. Comments don't have like and dilike options yet, not even in data structure
-20. The error snackbar needs to have dev details that can be opened optionally.
-21. Move to typescript (API res body(s) are a nightmare right now withou t types habing no idea what the hell to pass on and what to expect.)
-22. <del> For some reason there's a weird temporary empty array for like a second after mutation</del>
-23. Lazy LOAD
-24. look into service workers
-25. Giphy PROD
-26. Move to NextJS if it's a smoother backend and easy enough setup.
-27. TODO: Need to check for overflows on things like posts, comments, resource description etc on giga long texts. Breaks sometimes on mobile it seems.
-28. TODO: Still not too hyped abt the comments solution
-
-
-
+14. <del>An effecienter way of handeling comments chain, where a comments chain is created inside the post as well to save API calls amount.</del>
+15. <del>Add credits in the footer</del>
+16. MUSIC
+17. <del>URL(ise) the paginated home</del>
+18. <del>Comments don't have like and dilike options yet, not even in data structure</del>
+19. <del>The error snackbar needs to have dev details that can be opened optionally.</del>
+20. <del>Move to typescript (API res body(s) are a nightmare right now withou t types habing no idea what the hell to pass on and what to expect.)</del>
+21. <del> For some reason there's a weird temporary empty array for like a second after mutation</del>
+22. Lazy LOAD
+23. look into service workers
+24. Giphy PROD
+25. Move to NextJS if it's a smoother backend and easy enough setup. 26. Need to check for overflows on things like posts, comments, resource description etc on giga long texts. Breaks sometimes on mobile it seems.
 
 ---
 
 - Frontend Server:
   `npm run dev`
-  - ENV variables: 
+  - ENV variables:
     - VITE_BACKEND_URL
     - VITE_GIPHY_API_KEY
 - Backend Server:
@@ -99,15 +92,12 @@ Product properties
 - Render Backend Prod URL
   <a href="https://saucebackend.onrender.com/">https://saucebackend.onrender.com/</a>
 
-
 ---
 
->Notes of insanity (A log of shit I did, and lost life years overw )
-After multiple hours of scrootny and discovery, I have come to the conclusion, that the problem is in
-my function and not the makeshift cache backend in vercel cuz it's also breaking in onRender.
-All be it, onRender does feel a bit more reliable as far as reliablity goes.
-Need to look into as to why the likes array of user isn't being updated properly.
-
-
+> Notes of insanity (A log of shit I did, and lost life years overw )
+> After multiple hours of scrootny and discovery, I have come to the conclusion, that the problem is in
+> my function and not the makeshift cache backend in vercel cuz it's also breaking in onRender.
+> All be it, onRender does feel a bit more reliable as far as reliablity goes.
+> Need to look into as to why the likes array of user isn't being updated properly.
 
 #### Yes. Sauce is inspired from the 6 digit sauce.
