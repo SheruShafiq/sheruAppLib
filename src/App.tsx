@@ -13,9 +13,11 @@ import CssBaseline from "@mui/material/CssBaseline";
 import CustomErrorSnackBar from "./Components/CustomErrorSnackBar";
 import { Category, errorProps, User } from "../dataTypeDefinitions";
 import { useSnackbar } from "notistack";
-import BadgeMakerHome from "./Pages/BadgeMakerHome.tsx"
+import BadgeMakerHome from "./Pages/BadgeMakerHome.tsx";
 import React from "react";
+import { Buffer } from "buffer";
 
+globalThis.Buffer = Buffer;
 const isDesktop = window.innerWidth > 768;
 const darkTheme = createTheme({
   palette: {
@@ -177,14 +179,14 @@ function App() {
             path="/:pageNumber?"
             element={
               <div className="APP_Sauce">
-              <Home
-                setIsLoggedIn={setIsLoggedIn}
-                userData={userData}
-                setOpen={setLogInDialogue}
-                isLoggedIn={isLoggedIn}
-                refreshUserData={getUserData}
-                categories={categories}
-              />
+                <Home
+                  setIsLoggedIn={setIsLoggedIn}
+                  userData={userData}
+                  setOpen={setLogInDialogue}
+                  isLoggedIn={isLoggedIn}
+                  refreshUserData={getUserData}
+                  categories={categories}
+                />
               </div>
             }
           />
@@ -193,23 +195,22 @@ function App() {
             path="/posts/:id"
             element={
               <div className="APP_Sauce">
-              <Post
-                refreshUserData={getUserData}
-                setIsLoggedIn={setIsLoggedIn}
-                userData={userData}
-                setOpen={setLogInDialogue}
-                isLoggedIn={isLoggedIn}
-                categories={categories}
-              />
-            </div>}
+                <Post
+                  refreshUserData={getUserData}
+                  setIsLoggedIn={setIsLoggedIn}
+                  userData={userData}
+                  setOpen={setLogInDialogue}
+                  isLoggedIn={isLoggedIn}
+                  categories={categories}
+                />
+              </div>
+            }
           />
           <Route
             path="/sheru/appLibrary/BadgeMaker"
             element={
               <div className="APP_BadgeMaker">
-              <BadgeMakerHome
-                
-              />
+                <BadgeMakerHome />
               </div>
             }
           />

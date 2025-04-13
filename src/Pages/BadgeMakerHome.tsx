@@ -5,6 +5,7 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import Badge, { badgeProps } from "../Components/Badge.tsx";
+
 import {
   PDFDownloadLink,
   Document as PdfDocument,
@@ -40,6 +41,8 @@ const VisuallyHiddenInput = styled("input")({
 });
 function Home() {
   const [pdfImages, setPdfImages] = useState<string[]>([]);
+  // Add a new ref for file input
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const refs = useRef<(HTMLDivElement | null)[]>([]);
   const [csvFile, setCSV] = useState<FileList | null>(null);
   const [isExporting, setIsExporting] = useState(false);
@@ -137,6 +140,7 @@ function Home() {
                 setGenerate(false);
                 setPdfImages([]);
                 setCSV(null);
+                if (fileInputRef.current) fileInputRef.current.value = "";
               }}
               sx={{
                 display: generate ? "block" : "none",
@@ -246,6 +250,7 @@ function Home() {
                   type="file"
                   onChange={(event) => setCSV(event.target.files)}
                   multiple
+                  ref={fileInputRef} // attach fileInputRef here
                 />
               </Button>
             </Stack>
