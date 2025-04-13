@@ -159,7 +159,7 @@ function PostPage({
   }
 
   return (
-    <Stack width={"100%"} minHeight={"100vh"} height={"100%"}>
+    <Stack pb={2} width={"100%"} minHeight={"100vh"} height={"100%"}>
       <Header
         isLoggedIn={isLoggedIn}
         userData={userData}
@@ -274,6 +274,8 @@ function PostPage({
               commentsChain.length > 0 &&
               commentsChain.map((comment, index) => (
                 <CommentBlock
+                  id={comment.id}
+                  userData={userData}
                   key={comment.id}
                   dateCreated={comment.dateCreated}
                   userName={comment.authorName}
@@ -282,6 +284,19 @@ function PostPage({
                   imageURL={comment.imageURL}
                   amIaReply={false}
                   depth={0}
+                  isLoggedIn={isLoggedIn}
+                  likedByCurrentUser={
+                    userData?.likedComments
+                      .map(String)
+                      .includes(String(comment.id)) || false
+                  }
+                  dislikedByCurrentUser={
+                    userData?.dislikedComments
+                      .map(String)
+                      .includes(String(comment.id)) || false
+                  }
+                  likes={comment.likes}
+                  dislikes={comment.dislikes}
                 />
               ))}
           </Stack>

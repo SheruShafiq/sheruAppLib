@@ -113,7 +113,7 @@ export type paginatedPostsMetaDataType = {
   next: string;
   last: string;
 };
-export type VoteField = "upvotes" | "downvotes" | "reports";
+type VoteField = "likes" | "dislikes" | "upvotes" | "downvotes" | "reports";
 export type createUserProps = {
   username: string;
   password: string;

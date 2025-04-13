@@ -411,3 +411,34 @@ export async function patchPost(
     onError(error);
   }
 }
+
+export async function patchVoteComment(
+  id: string,
+  field: VoteField,
+  currentValue: number,
+  increment: number = 1
+): Promise<any> {
+  const newValue = currentValue + increment;
+  const now = new Date().toISOString();
+  const response = await fetch(`${APIURL}/comments/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ [field]: newValue, dateModified: now }),
+  });
+  return response.json();
+}
+
+export async function patchUndoVoteComment(
+  id: string,
+  field: VoteField,
+  currentValue: number
+): Promise<any> {
+  const newValue = currentValue - 1;
+  const now = new Date().toISOString();
+  const response = await fetch(`${APIURL}/comments/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ [field]: newValue, dateModified: now }),
+  });
+  return response.json();
+}
