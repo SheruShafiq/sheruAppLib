@@ -1,7 +1,7 @@
 import { Avatar, Stack, Typography, Box } from "@mui/material"; // added Box import
 import React from "react";
 import giphyCredits from "../assets/giphyCredits.gif";
-import MUIicon from "../assets/muiIcon.svg";
+import MUIicon from "../assets/MUIicon.svg";
 import SheruPFP from "../assets/sheruPFP.jpeg";
 import { Link } from "react-router-dom";
 import { useGlitch } from "react-powerglitch";
