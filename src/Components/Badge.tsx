@@ -86,7 +86,13 @@ function TwentyFive({ role, name, preview }: badgeProps) {
             width={"100%"}
             justifyItems={"center"}
           >
-            <Typography fontWeight={500} color="black" fontSize={"5rem"}>
+            <Typography
+              width={"fit-content"}
+              mx={"auto"}
+              fontWeight={500}
+              color="black"
+              fontSize={"5rem"}
+            >
               {role}
             </Typography>
           </Box>

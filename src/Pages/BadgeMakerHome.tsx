@@ -120,7 +120,12 @@ function Home() {
               key={i}
               size="A4"
               orientation="landscape"
-              style={{ padding: 0 }}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#ffffff",
+              }}
             >
               <PdfImage src={img} style={{ width: "100%", height: "auto" }} />
             </Page>
