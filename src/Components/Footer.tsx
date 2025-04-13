@@ -1,4 +1,4 @@
-import { Avatar, Stack, Typography } from "@mui/material";
+import { Avatar, Stack, Typography, Box } from "@mui/material"; // added Box import
 import React from "react";
 import giphyCredits from "../assets/giphyCredits.gif";
 import MUIicon from "../assets/muiIcon.svg";
@@ -22,15 +22,14 @@ function Footer() {
     playMode: "hover",
   });
   return (
-    <Stack
-      px={2}
-      mt={"auto"}
-      direction={"row"}
-      alignItems="center"
-      justifyContent={"space-between"}
-      sx={{ position: "relative" }} // added for absolute positioning context
-    >
-      <img style={{ width: "200px" }} src={giphyCredits} alt="Giphy Credits" />
+    <Stack px={2} mt={"auto"} direction={"row"} alignItems="center">
+      <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-start" }}>
+        <img
+          style={{ width: "200px" }}
+          src={giphyCredits}
+          alt="Giphy Credits"
+        />
+      </Box>
       <Stack
         direction={"row"}
         alignContent={"center"}
@@ -69,7 +68,9 @@ function Footer() {
         </Stack>
       </Stack>
       {isDesktop && (
-        <img style={{ width: "100px" }} src={MUIicon} alt="MUI Icon" />
+        <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
+          <img style={{ width: "100px" }} src={MUIicon} alt="MUI Icon" />
+        </Box>
       )}
     </Stack>
   );
