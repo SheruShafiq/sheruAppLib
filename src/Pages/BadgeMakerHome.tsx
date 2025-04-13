@@ -119,7 +119,7 @@ function Home() {
             <Page
               key={i}
               size="A4"
-              orientation="landscape"
+              orientation="portrait"
               style={{
                 display: "flex",
                 justifyContent: "center",

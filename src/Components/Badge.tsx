@@ -13,13 +13,19 @@ export type badgeProps = {
 
 function TwentyFive({ role, name, preview }: badgeProps) {
   return (
-    <Stack width={620} height={350} bgcolor={"white"}>
+    <Stack
+      maxWidth={"660px"}
+      mx={"auto"}
+      width={"100%"}
+      height={"100%"}
+      bgcolor={"white"}
+    >
       <Stack
         sx={{
           background: `linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)), url(${Flower})`,
           backgroundSize: "600px 600px",
           backgroundRepeat: "no-repeat",
-          backgroundPosition: "0px 30px",
+          backgroundPosition: "50% 30px",
         }}
         width={"100%"}
         height={"100%"}
@@ -42,7 +48,7 @@ function TwentyFive({ role, name, preview }: badgeProps) {
               src={AhmadiyyaFlag}
             />
           </Box>
-          <Stack mt={1} alignItems={"center"}>
+          <Stack px={2} mt={1} alignItems={"center"}>
             <Typography color={"#AF1623"}>
               Ahmadiyya Moslim Gemeenschap
             </Typography>
