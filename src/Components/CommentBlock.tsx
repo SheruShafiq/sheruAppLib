@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Chip from "@mui/material/Chip";
 import Avatar from "@mui/material/Avatar";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
+import { GIFs } from "../assets/GIFs";
 function CommentBlock({
   dateCreated,
   userName,
@@ -35,14 +35,20 @@ function CommentBlock({
     <Stack
       sx={{
         position: "relative",
-        ml: depth > 0 ? 3 : 0,
-        pl: 2,
-        borderLeft: depth > 0 ? "1px dotted #ccc" : "none",
+        ml: depth > 0 ? "45px" : 0,
+        pl: amIaReply ? 2 : 0,
+        // borderLeft: depth > 0 ? "1px dotted #ccc" : "none",
       }}
     >
       {/* ---- The main comment row ---- */}
       <Stack direction="row" spacing={2} py={1}>
-        <Avatar alt={userName} />
+        <Avatar
+          src={
+            GIFs[Math.floor(Math.random() * Math.min(GIFs.length, 40))] ||
+            imageUrl
+          }
+          alt={userName}
+        />
         <Stack>
           <Stack direction="row" spacing={1} alignItems="center">
             <Typography fontWeight="bold">{userName}</Typography>

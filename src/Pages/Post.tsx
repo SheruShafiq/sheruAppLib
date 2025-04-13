@@ -269,21 +269,22 @@ function PostPage({
               {creatingComment ? <IOSLoader /> : <SendIcon />}
             </Button>
           </Stack>
-
-          {commentsChain &&
-            commentsChain.length > 0 &&
-            commentsChain.map((comment, index) => (
-              <CommentBlock
-                key={comment.id}
-                dateCreated={comment.dateCreated}
-                userName={comment.authorName}
-                commentContents={comment.text}
-                replies={comment.replies}
-                imageURL={comment.imageURL}
-                amIaReply={false}
-                depth={0}
-              />
-            ))}
+          <Stack gap={1}>
+            {commentsChain &&
+              commentsChain.length > 0 &&
+              commentsChain.map((comment, index) => (
+                <CommentBlock
+                  key={comment.id}
+                  dateCreated={comment.dateCreated}
+                  userName={comment.authorName}
+                  commentContents={comment.text}
+                  replies={comment.replies}
+                  imageURL={comment.imageURL}
+                  amIaReply={false}
+                  depth={0}
+                />
+              ))}
+          </Stack>
         </Stack>
       </Stack>
       <Footer />
