@@ -10,9 +10,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { ExcelInput, RowData } from "../Pages/BadgeMakerHome"; // Adjust the import path as necessary
+import { ExcelInputProps, RowData } from "../Pages/BadgeMakerHome"; // Adjust the import path as necessary
 
-const ExcelLikeTable: React.FC<ExcelInput> = ({ rows, setRows }) => {
+const ExcelLikeTable: React.FC<ExcelInputProps> = ({ rows, setRows }) => {
   // Start with one blank row
 
   // Update row data and auto append new row when needed
