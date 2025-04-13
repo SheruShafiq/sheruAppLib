@@ -84,18 +84,14 @@ function PostPage({
   const [creatingComment, setcreatingComment] = useState(false);
 
   async function handleCommentCreate({ reply, comment, replies }) {
-    setcreatingComment(true);
+    if (!reply && !comment && !replies) {
+      setcreatingComment(true);
+    }
     createComment(
       userData.id!,
       post?.id!,
       reply ? comment : newComment,
       (comment) => {
-        setCommentsChain((prev) => {
-          if (prev) {
-            return [...prev, comment];
-          }
-          return [comment];
-        });
         patchUser({
           userID: userData.id!,
           field: "comments",
@@ -105,7 +101,7 @@ function PostPage({
               patchComment(
                 reply,
                 "replies",
-                [...replies, comment.id],
+                [...replies.map((r) => r.id), comment.id],
                 (comment) => {
                   refreshData(post?.id!);
                   setcreatingComment(false);
@@ -279,7 +275,11 @@ function PostPage({
             />
             <Button
               onClick={() => {
-                handleCommentCreate({ reply: null, comment: null });
+                handleCommentCreate({
+                  reply: false,
+                  comment: false,
+                  replies: false,
+                });
               }}
               disabled={!isLoggedIn || creatingComment || newComment.length < 1}
               color="secondary"

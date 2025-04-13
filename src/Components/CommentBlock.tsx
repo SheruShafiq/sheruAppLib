@@ -10,6 +10,7 @@ import HeartBrokenIcon from "@mui/icons-material/HeartBroken";
 import { patchVoteComment, patchUndoVoteComment, patchUser } from "../APICalls";
 import IOSLoader from "./IOSLoader";
 import SendIcon from "@mui/icons-material/Send";
+import { formatDateRedditStyle } from "./PostPreview";
 
 function CommentBlock({
   id,
@@ -215,7 +216,7 @@ function CommentBlock({
             <Typography fontWeight="bold">{userName}</Typography>
             <Chip
               size="small"
-              label={new Date(dateCreated).toLocaleDateString()}
+              label={formatDateRedditStyle(new Date(dateCreated))}
               variant="outlined"
             />
           </Stack>

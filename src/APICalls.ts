@@ -295,8 +295,6 @@ export async function fetchCategories(
   }
 }
 
-
-
 export async function createComment(
   authorID: string,
   postID: string,
@@ -317,7 +315,7 @@ export async function createComment(
       likedBy: [],
       dislikedBy: [],
       postID: postID,
-    }
+    };
     const response = await fetch(`${APIURL}/posts/${postID}/comments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -332,8 +330,6 @@ export async function createComment(
     onError(error);
   }
 }
-
-
 
 export async function fetchCommentByID(
   commentID: string,
@@ -354,7 +350,10 @@ export async function fetchCommentByID(
 
 // New utility types and functions for generating full comments with user names
 // Updated FullComment type using Omit to override 'replies'
-type FullComment = Omit<Comment, "replies"> & { authorName: string; replies: FullComment[] };
+type FullComment = Omit<Comment, "replies"> & {
+  authorName: string;
+  replies: FullComment[];
+};
 
 function getCommentByIdPromise(commentId: string): Promise<Comment> {
   return new Promise((resolve, reject) => {
@@ -384,7 +383,9 @@ async function getFullComment(commentId: string): Promise<FullComment> {
   return { ...comment, authorName, replies: fullReplies };
 }
 
-export async function generateCommentsChain(commentIds: string[]): Promise<FullComment[]> {
+export async function generateCommentsChain(
+  commentIds: string[]
+): Promise<FullComment[]> {
   return Promise.all(commentIds.map((id) => getFullComment(id)));
 }
 
