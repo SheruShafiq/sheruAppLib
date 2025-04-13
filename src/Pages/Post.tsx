@@ -144,10 +144,6 @@ function PostPage({
             setcreatingComment(false);
           },
         });
-        enqueueSnackbar({
-          variant: "success",
-          message: "Comment created successfully",
-        });
       },
       (error) => {
         const err: errorProps = {
@@ -185,7 +181,7 @@ function PostPage({
           borderColor: "white",
         }}
       />
-      <Stack px={2} maxWidth={"600px"}>
+      <Stack pb={4} px={2} maxWidth={"600px"}>
         <Fade in={!loading} timeout={1000}>
           <Stack
             sx={{

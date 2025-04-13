@@ -20,6 +20,7 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   return <IconButton {...other} />;
 })(({ theme }) => ({
   marginLeft: "auto",
+  alignSelf: "flex-end",
   transition: theme.transitions.create("transform", {
     duration: theme.transitions.duration.shortest,
   }),
@@ -83,7 +84,7 @@ function CommentBlock({
         width="100%"
         py={2}
         pt={depth === 0 ? 0 : 2}
-        pl={depth * 1}
+        pl={1}
         sx={{
           borderBottom: "1px solid white",
         }}
@@ -108,6 +109,16 @@ function CommentBlock({
             </Stack>
             <span>{commentContents}</span>
           </Stack>
+          {replies && replies.length > 0 && (
+            <ExpandMore
+              expand={expanded}
+              onClick={handleExpandClick}
+              aria-expanded={expanded}
+              aria-label="show more"
+            >
+              <ExpandMoreIcon />
+            </ExpandMore>
+          )}
         </Stack>
       </Stack>
       {replies && replies.length > 0 && (
@@ -126,14 +137,6 @@ function CommentBlock({
               />
             ))}
           </Collapse>
-          <ExpandMore
-            expand={expanded}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
-          >
-            <ExpandMoreIcon />
-          </ExpandMore>
         </Stack>
       )}
     </Stack>
