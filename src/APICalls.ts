@@ -388,3 +388,26 @@ export async function generateCommentsChain(commentIds: string[]): Promise<FullC
   return Promise.all(commentIds.map((id) => getFullComment(id)));
 }
 
+export async function patchPost(
+  id: string,
+  field: string,
+  newValue: any,
+  onSuccess: (post: Post) => void,
+  onError: (error: any) => void
+) {
+  try {
+    const now = new Date().toISOString();
+    const response = await fetch(`${APIURL}/posts/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ [field]: newValue, dateModified: now }),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to update post");
+    }
+    const data = await response.json();
+    onSuccess(data);
+  } catch (error) {
+    onError(error);
+  }
+}

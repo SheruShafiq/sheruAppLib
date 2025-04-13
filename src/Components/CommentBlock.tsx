@@ -74,7 +74,7 @@ function CommentBlock({
   return (
     <Stack
       sx={{
-        borderLeft: depth > 0 ? "1px solid white" : "none",
+        borderLeft: depth > 0 && iseReply ? "1px solid white" : "none",
       }}
       ml={depth > 0 ? 2 : 0}
     >

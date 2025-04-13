@@ -5,6 +5,7 @@ import {
   generateCommentsChain,
   createComment,
   patchUser,
+  patchPost,
 } from "../APICalls";
 import { useParams } from "react-router-dom";
 import { useSnackbar } from "notistack";
@@ -31,6 +32,7 @@ function PostPage({
 }) {
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
   const [post, setPost] = useState<Post>();
+  const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
@@ -81,11 +83,19 @@ function PostPage({
   const [creatingComment, setcreatingComment] = useState(false);
 
   async function handleCommentCreate() {
+    console.log(newComment);
+    if (newComment.length < 1) {
+      enqueueSnackbar({
+        variant: "warning",
+        message: "Comment cannot be empty",
+      });
+      return;
+    }
     setcreatingComment(true);
     createComment(
       userData.id!,
       post?.id!,
-      "This is a test comment",
+      newComment,
       (comment) => {
         setCommentsChain((prev) => {
           if (prev) {
@@ -96,14 +106,34 @@ function PostPage({
         patchUser({
           userID: userData.id!,
           field: "comments",
-          newValue: [...(userData.comments || []), comment.id], // merged comments array
+          newValue: [...(userData.comments || []), comment.id],
           onSuccess: (user) => {
-            refreshUserData(user.id!);
-            setcreatingComment(false);
+            patchPost(
+              post?.id!,
+              "comments",
+              [...(post?.comments || []), comment.id],
+              (post) => {
+                refreshData(post.id!);
+                setcreatingComment(false);
+              },
+              (error) => {
+                const err: errorProps = {
+                  id: "failed to add comment to post",
+                  userFreindlyMessage:
+                    "Something went wrong when creating comment",
+                  errorMessage:
+                    error instanceof Error ? error.message : "Unknown error",
+                  error:
+                    error instanceof Error ? error : new Error("Unknown error"),
+                };
+                enqueueSnackbar({ variant: "error", ...err });
+                setcreatingComment(false);
+              }
+            );
           },
           onError: (error) => {
             const err: errorProps = {
-              id: "failed to create comment",
+              id: "failed to create comment in user",
               userFreindlyMessage: "Something went wrong when creating comment",
               errorMessage:
                 error instanceof Error ? error.message : "Unknown error",
@@ -114,7 +144,6 @@ function PostPage({
             setcreatingComment(false);
           },
         });
-        // Removed erroneous error object and replaced with a success message.
         enqueueSnackbar({
           variant: "success",
           message: "Comment created successfully",
@@ -133,6 +162,8 @@ function PostPage({
       }
     );
   }
+
+  console.log("commentsChain", commentsChain);
 
   return (
     <Stack width={"100%"} minHeight={"100vh"} height={"100%"}>
@@ -217,29 +248,35 @@ function PostPage({
             className="postPageCommentsTitle"
             type="alphanumeric"
           />
-          <TextField
-            label={
-              !isLoggedIn ? "You need to login to comment" : "Add a comment"
-            }
-            multiline
-            placeholder="Like for one good luck, ignore for chinchin en kintama torture"
-            disabled={!isLoggedIn}
-            variant="standard"
-          />
-          <Stack direction={"row"} gap={1}>
-            <Button>Cancel</Button>
+          <Stack gap={2} width={"100%"}>
+            <TextField
+              label={
+                !isLoggedIn ? "You need to login to comment" : "Add a comment"
+              }
+              multiline
+              placeholder="Like for one good luck, ignore for chinchin en kintama torture"
+              disabled={!isLoggedIn}
+              variant="standard"
+              onChange={(e) => {
+                setNewComment(e.target.value);
+              }}
+              fullWidth
+            />
             <Button
               onClick={() => {
                 handleCommentCreate();
               }}
+              disabled={!isLoggedIn || creatingComment || newComment.length < 1}
               color="secondary"
               className="secondaryButtonHoverStyles"
               sx={{ mb: creatingComment ? "-3px" : "0px" }}
-              startIcon={creatingComment ? <IOSLoader /> : <SendIcon />}
+              variant="outlined"
+              size="small"
             >
-              Post
+              {creatingComment ? <IOSLoader /> : <SendIcon />}
             </Button>
           </Stack>
+
           {commentsChain &&
             commentsChain.length > 0 &&
             commentsChain.map((comment, index) => (
