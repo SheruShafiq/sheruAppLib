@@ -65,7 +65,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
   userData,
 }) => {
   const { enqueueSnackbar } = useSnackbar();
-
+  const formattedTitle = title.length > 20 ? `${title.slice(0, 20)}...` : title;
   const [loadingAction, setLoadingAction] = useState<LoadingAction>(null);
   const [voteStatus, setVoteStatus] = useState<"up" | "down" | "none">("none");
   const [reported, setReported] = useState(false);
@@ -329,7 +329,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
       <Stack direction="row" alignItems="center" gap={1}>
         <Link href={`posts/${id}`} rel="noopener">
           <Typography fontSize={16} fontWeight="bold">
-            {title}
+            {formattedTitle}
           </Typography>
         </Link>
         <Chip size="small" label={formattedDate} variant="outlined" />
