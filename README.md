@@ -79,6 +79,8 @@ Product properties
 28. Overflow issues on home
 29. Upvoted posts and downvoted posts in users object doesnt seem to work as intended
 30. Categories PostsID array is also not working as intended
+31. Better error handeling when post ID in URL is wrong
+32. On Post page, user's profile who posted it needs to be implemented
 
 ---
 

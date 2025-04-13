@@ -447,7 +447,12 @@ const PostPreview: React.FC<PostPreviewProps> = ({
           {localReports}
         </Button>
         <Button>{categories[Number(categoryID) - 1]?.name}</Button>
-        <Button startIcon={<MessageOutlinedIcon color="secondary" />}>
+        <Button
+          onClick={() => {
+            window.history.pushState(null, "", `/posts/${id}`);
+          }}
+          startIcon={<MessageOutlinedIcon color="secondary" />}
+        >
           {commentsCount}
         </Button>
       </Box>
