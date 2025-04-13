@@ -126,12 +126,13 @@ function CreatePostDialogue({
           autoFocus
           required
           margin="dense"
-          label="Title"
+          label="Title max 50 characters"
           type="text"
           fullWidth
           variant="standard"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          slotProps={{ htmlInput: { maxLength: 50 } }}
         />
         <TextField
           required

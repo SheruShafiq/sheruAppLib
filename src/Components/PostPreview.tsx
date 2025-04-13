@@ -7,6 +7,7 @@ import {
   Chip,
   Stack,
   CircularProgress,
+  Divider,
 } from "@mui/material";
 import InsertEmotionIcon from "@mui/icons-material/InsertEmoticon";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
@@ -18,6 +19,7 @@ import { TextGlitchEffect } from "./TextGlitchEffect";
 import { patchVotePost, patchUndoVotePost, patchUser } from "../APICalls";
 import { Category, errorProps, User } from "../../dataTypeDefinitions";
 import IOSLoader from "./IOSLoader";
+import ReadMore from "./ReadMore";
 
 interface PostPreviewProps {
   id: string;
@@ -323,10 +325,17 @@ const PostPreview: React.FC<PostPreviewProps> = ({
       py={2}
       px={pageVariant ? 0 : 2}
     >
-      <Stack direction="row" alignItems="center" gap={1}>
-        <Link href={`posts/${id}`} rel="noopener">
-          <Typography fontSize={16} fontWeight="bold">
-            {formattedTitle}
+      <Stack direction="row" alignItems="center" gap={1} maxWidth={"100%"}>
+        <Link href={`posts/${id}`} rel="noopener" style={{ flex: 1 }}>
+          <Typography
+            fontSize={16}
+            fontWeight="bold"
+            sx={{
+              whiteSpace: "normal",
+              wordBreak: "break-word",
+            }}
+          >
+            {pageVariant ? title : formattedTitle}
           </Typography>
         </Link>
         <Chip size="small" label={formattedDate} variant="outlined" />
@@ -371,7 +380,12 @@ const PostPreview: React.FC<PostPreviewProps> = ({
             }}
             ref={descRef}
           >
-            <Typography>{description}</Typography>
+            <Box py={1}>
+              <ReadMore
+                text={description}
+                maxLength={pageVariant ? 300 : 1000}
+              />
+            </Box>
             {isOverflow && (
               <Box
                 sx={{

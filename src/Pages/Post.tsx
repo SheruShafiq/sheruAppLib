@@ -130,6 +130,7 @@ function PostPage({
                 (post) => {
                   refreshData(post.id!);
                   setcreatingComment(false);
+                  setNewComment("");
                 },
                 (error) => {
                   const err: errorProps = {
@@ -273,6 +274,7 @@ function PostPage({
               onChange={(e) => {
                 setNewComment(e.target.value);
               }}
+              value={newComment}
               fullWidth
             />
             <Button

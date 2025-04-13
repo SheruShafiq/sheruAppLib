@@ -11,6 +11,7 @@ import { patchVoteComment, patchUndoVoteComment, patchUser } from "../APICalls";
 import IOSLoader from "./IOSLoader";
 import SendIcon from "@mui/icons-material/Send";
 import { formatDateRedditStyle } from "./PostPreview";
+import ReadMore from "./ReadMore";
 
 function CommentBlock({
   id,
@@ -227,7 +228,7 @@ function CommentBlock({
               variant="outlined"
             />
           </Stack>
-          <Typography variant="body2">{commentContents}</Typography>
+          <ReadMore text={commentContents} maxLength={200} />
 
           {/* If there are replies, add a toggle button to expand/collapse */}
           <Stack direction="row" alignItems="center">
