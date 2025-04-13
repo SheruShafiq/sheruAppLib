@@ -20,6 +20,7 @@ import { patchVotePost, patchUndoVotePost, patchUser } from "../APICalls";
 import { Category, errorProps, User } from "../../dataTypeDefinitions";
 import IOSLoader from "./IOSLoader";
 import ReadMore from "./ReadMore";
+import { useNavigate } from "react-router-dom";
 
 interface PostPreviewProps {
   id: string;
@@ -92,6 +93,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
   pageVariant,
   userData,
 }) => {
+  const history = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const formattedTitle = title.length > 20 ? `${title.slice(0, 20)}...` : title;
   const [loadingAction, setLoadingAction] = useState<LoadingAction>(null);
@@ -449,7 +451,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
         <Button>{categories[Number(categoryID) - 1]?.name}</Button>
         <Button
           onClick={() => {
-            window.history.pushState(null, "", `/posts/${id}`);
+            history(`/posts/${id}`);
           }}
           startIcon={<MessageOutlinedIcon color="secondary" />}
         >
