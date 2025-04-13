@@ -1,4 +1,4 @@
-l> # Sauce
+> # Sauce
 
 > _A community driven resource sharing application_
 
