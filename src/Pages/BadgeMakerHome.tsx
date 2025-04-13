@@ -5,9 +5,7 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import Badge, { badgeProps } from "../Components/Badge.tsx";
-
 import {
-  PDFDownloadLink,
   Document as PdfDocument,
   Page,
   Image as PdfImage,
