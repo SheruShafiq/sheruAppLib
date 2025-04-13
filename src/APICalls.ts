@@ -30,8 +30,6 @@ function createSafePost(post: Partial<Post>): Post {
     dateCreated: post.dateCreated ?? now,
     dateModified: now,
     dateDeleted: post.dateDeleted ?? "",
-    cachedCommentsChainID: post.cachedCommentsChainID ?? "",
-    cachedReportsChainID: post.cachedReportsChainID ?? "",
   };
 }
 
@@ -103,8 +101,6 @@ export async function createPost({
       reports: 0,
       reportIDs: [],
       comments: [],
-      cachedCommentsChainID: "",
-      cachedReportsChainID: "",
     };
     post.dateCreated = post.dateCreated || now;
     post.dateModified = post.dateModified || now;
@@ -299,23 +295,7 @@ export async function fetchCategories(
   }
 }
 
-export async function fetchCommentsChain(
-  postID: string,
-  onSuccess: (comments: Comment[]) => void,
-  onError: (error: any) => void
-) {
-  try {
-    const response = await fetch(`${APIURL}/cachedCommentsChains/${postID}`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch comments");
-    }
-    const data = await response.json();
-    const comments = data.comments;
-    onSuccess(comments);
-  } catch (error) {
-    onError(error);
-  }
-}
+
 
 export async function createComment(
   authorID: string,
@@ -352,3 +332,61 @@ export async function createComment(
     onError(error);
   }
 }
+
+
+
+export async function fetchCommentByID(
+  commentID: string,
+  onSuccess: (comment: Comment) => void,
+  onError: (error: any) => void
+) {
+  try {
+    const response = await fetch(`${APIURL}/comments/${commentID}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch comment");
+    }
+    const data = await response.json();
+    onSuccess(data);
+  } catch (error) {
+    onError(error);
+  }
+}
+
+// New utility types and functions for generating full comments with user names
+// Updated FullComment type using Omit to override 'replies'
+type FullComment = Omit<Comment, "replies"> & { authorName: string; replies: FullComment[] };
+
+function getCommentByIdPromise(commentId: string): Promise<Comment> {
+  return new Promise((resolve, reject) => {
+    // Wrap callback-based fetchCommentByID to a Promise
+    fetchCommentByID(commentId, resolve, reject);
+  });
+}
+
+function getUserByIdPromise(userId: string): Promise<any> {
+  return new Promise((resolve, reject) => {
+    // Wrap callback-based fetchUserById to a Promise
+    fetchUserById(userId, resolve, reject);
+  });
+}
+
+async function getFullComment(commentId: string): Promise<FullComment> {
+  const comment = await getCommentByIdPromise(commentId);
+  const user = await getUserByIdPromise(comment.authorID);
+  const authorName = user?.displayName || "Unknown";
+  // Ensure replies is processed only if it is an array
+  let fullReplies: FullComment[] = [];
+  if (Array.isArray(comment.replies) && comment.replies.length > 0) {
+    fullReplies = await Promise.all(
+      comment.replies.map((replyId: string) => getFullComment(replyId))
+    );
+  }
+  return { ...comment, authorName, replies: fullReplies };
+}
+
+export async function generateCommentsChain(commentIds: string[]): Promise<FullComment[]> {
+  // Process each comment id from the user's comments array
+  return Promise.all(commentIds.map((id) => getFullComment(id)));
+}
+
+

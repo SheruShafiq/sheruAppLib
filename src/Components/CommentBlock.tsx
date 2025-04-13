@@ -25,18 +25,13 @@ function CommentBlock({
     }
   }
   const [imageUrl, setImageUrl] = useState(imageURL);
-  // useEffect(() => {
-  //   if (!imageUrl) {
-  //     fetchImage().then((url) => {
-  //       setImageUrl(url);
-  //     });
-  //   }
-  // }, [imageURL]);
+
   const randomHardcodedGIFURLs = [
     "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2k5YjRqNGZxa2tnenpzcDc5cDUybWJldTFqejU3ODJwbTg3djB2cSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ox91VuRSYDxKkQF3zf/giphy.gif",
     "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcnQzenphZWEwM2xwYnZ4eTQ5ZWRkNGkwYmN5ZnA4c3d1aDAzd3RsZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/NKEt9elQ5cR68/giphy.gif",
     "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGc0d2M5aHhvbzViYWJ0b2lod3dxajJwNW95dmJjYTB4czR6MG5rcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3dhmyq6EKw2x7eFt4X/giphy.gif",
   ];
+  console.log("asdasdadasd", replies);
   return (
     <Stack
       sx={{
@@ -80,13 +75,13 @@ function CommentBlock({
           {replies.map((reply) => (
             <CommentBlock
               key={reply.id}
-              dateCreated={reply?.dateCreated}
-              userName={reply?.authorID?.toString() || ""}
-              commentContents={reply?.text}
-              replies={reply?.replies}
-              imageURL={reply?.imageURL}
+              dateCreated={reply.dateCreated}
+              userName={reply.authorName}
+              commentContents={reply.text}
+              replies={reply.replies}
+              imageURL={reply.imageURL}
               amIaReply={true}
-              depth={depth + 1} // increment depth for nested replies
+              depth={depth + 1}
             />
           ))}
         </Stack>

@@ -13,8 +13,6 @@ export type Post = {
   dateCreated: string;
   dateModified: string;
   dateDeleted: string;
-  cachedCommentsChainID: string;
-  cachedReportsChainID: string;
 };
 
 export type User = {
@@ -65,14 +63,7 @@ export type Report = {
   dateModified: string;
   dateDeleted: string;
 };
-export type cachedCommentsChainID = {
-  id: string;
-  postID: string;
-  comments: Comment[];
-  dateCreated: string;
-  dateModified: string;
-  dateDeleted: string;
-};
+
 export type fetchPostsProps = {
   onSuccess: (posts: Post[]) => void;
   onError: (errorProps: errorProps) => void;

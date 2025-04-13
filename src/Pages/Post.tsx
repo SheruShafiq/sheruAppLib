@@ -1,6 +1,6 @@
 import { Stack, TextField } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import { fetchPostById, fetchCommentsChain } from "../APICalls";
+import { fetchPostById, generateCommentsChain } from "../APICalls";
 import { useParams } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import PostPreview from "../Components/PostPreview";
@@ -26,9 +26,7 @@ function PostPage({
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
-  const [commentsChain, setCommentsChain] = useState<Comment[] | undefined>(
-    undefined
-  );
+  const [commentsChain, setCommentsChain] = useState<any>(undefined);
   const navigate = useNavigate();
   function fetchCurrentPostData(id: string) {
     fetchPostById({
@@ -40,7 +38,14 @@ function PostPage({
       },
       onError: (error) => {
         setLoading(false);
-        enqueueSnackbar(`Error fetching post ${error}`, { variant: "error" });
+        const err: errorProps = {
+          id: "failed to get post data",
+          userFreindlyMessage: "Something went wrong when getting post data",
+          errorMessage:
+            error instanceof Error ? error.message : "Unknown error",
+          error: error instanceof Error ? error : new Error("Unknown error"),
+        };
+        enqueueSnackbar({ variant: "error", ...err });
       },
     });
   }
@@ -51,35 +56,22 @@ function PostPage({
     }
     fetchCurrentPostData(id!);
   }, [id]);
+
+  // New effect to generate full comments chain after post is fetched
+  useEffect(() => {
+    if (post && post.comments && post.comments.length > 0) {
+      generateCommentsChain(post.comments.map(String))
+        .then((chain) => setCommentsChain(chain))
+        .catch((err) => console.error(err));
+    }
+  }, [post]);
+
   function refreshData(id: string) {
     fetchCurrentPostData(id);
     refreshUserData(userData.id!);
   }
-  useEffect(() => {
-    if (
-      post?.cachedCommentsChainID !== "" &&
-      post?.cachedCommentsChainID !== undefined
-    ) {
-      fetchCommentsChain(
-        post?.cachedCommentsChainID || "",
-        (comments) => {
-          setCommentsChain(comments);
-        },
-        (error) => {
-          const err: errorProps = {
-            id: "fetching cached comments chain error",
-            userFreindlyMessage: "An error occurred while fetching comments.",
-            errorMessage:
-              error instanceof Error ? error.message : "Unknown error",
-            error: error instanceof Error ? error : new Error("Unknown error"),
-          };
-          enqueueSnackbar({ variant: "error", ...err });
-        }
-      );
-    } else {
-      setCommentsChain([]);
-    }
-  }, [post?.cachedCommentsChainID]);
+
+  console.log("commentsChain", commentsChain);
 
   return (
     <Stack width={"100%"}>
@@ -177,13 +169,14 @@ function PostPage({
             commentsChain.length > 0 &&
             commentsChain.map((comment, index) => (
               <CommentBlock
-                key={index}
-                dateCreated={comment?.dateCreated}
-                userName={comment?.authorID?.toString() || ""}
-                commentContents={comment?.text}
-                replies={comment?.replies}
-                imageURL={"comment?.imageURL"}
+                key={comment.id}
+                dateCreated={comment.dateCreated}
+                userName={comment.authorName}
+                commentContents={comment.text}
+                replies={comment.replies}
+                imageURL={comment.imageURL}
                 amIaReply={false}
+                depth={index}
               />
             ))}
         </Stack>
