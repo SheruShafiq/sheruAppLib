@@ -1,5 +1,5 @@
 import { Stack, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Chip from "@mui/material/Chip";
 import Avatar from "@mui/material/Avatar";
 
@@ -12,7 +12,26 @@ function CommentBlock({
   amIaReply, // can be kept for any other style if needed
   depth = 0,
 }) {
+  const gipyAPIKey = import.meta.env.REACT_APP_GIPHY_API_KEY;
+  async function fetchImage() {
+    const response = await fetch(
+      `https://api.giphy.com/v1/gifs/random?api_key=${gipyAPIKey}&tag=cyberpunkProfilePicture&rating=g`
+    );
+    const data = await response.json();
+    if (response.ok) {
+      return data.data.images.original.url;
+    } else {
+      return null;
+    }
+  }
   const [imageUrl, setImageUrl] = useState(imageURL);
+  // useEffect(() => {
+  //   if (!imageUrl) {
+  //     fetchImage().then((url) => {
+  //       setImageUrl(url);
+  //     });
+  //   }
+  // }, [imageURL]);
   return (
     <Stack
       sx={{

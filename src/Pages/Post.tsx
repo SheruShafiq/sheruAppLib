@@ -11,7 +11,6 @@ import Fade from "@mui/material/Fade";
 import { TextGlitchEffect } from "../Components/TextGlitchEffect";
 import { Post, Comment, errorProps } from "../../dataTypeDefinitions";
 import CommentBlock from "../Components/CommentBlock";
-const gipyAPIKey = import.meta.env.REACT_APP_GIPHY_API_KEY;
 import { useNavigate } from "react-router-dom";
 
 function PostPage({
@@ -81,19 +80,9 @@ function PostPage({
       setCommentsChain([]);
     }
   }, [post?.cachedCommentsChainID]);
-  async function fetchImage() {
-    const response = await fetch(
-      `https://api.giphy.com/v1/gifs/random?api_key=${gipyAPIKey}&tag=cyberpunkProfilePicture&rating=g`
-    );
-    const data = await response.json();
-    if (response.ok) {
-      return data.data.images.original.url;
-    } else {
-      return null;
-    }
-  }
+
   return (
-    <Stack px={2} width={"100%"}>
+    <Stack width={"100%"}>
       <Header
         isLoggedIn={isLoggedIn}
         userData={userData}
@@ -112,7 +101,7 @@ function PostPage({
           borderColor: "white",
         }}
       />
-      <Stack maxWidth={"600px"}>
+      <Stack px={2} maxWidth={"600px"}>
         <Fade in={!loading} timeout={1000}>
           <Stack
             sx={{

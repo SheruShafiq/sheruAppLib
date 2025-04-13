@@ -56,6 +56,7 @@ body {
 
 .loggedInUserName {
   display: block;
+  font-weight: bold;
 }
 .neonBorder {
   box-shadow: var(--all-shadow);

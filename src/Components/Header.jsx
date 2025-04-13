@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, Fade, IconButton, Stack } from "@mui/material";
+import { Avatar, Box, Button, Fade, IconButton, Stack } from "@mui/material";
 import { TextGlitchEffect } from "./TextGlitchEffect";
 import AddIcon from "@mui/icons-material/Add";
 import CreatePostDialogue from "../Components/CreatePostDialogue";
@@ -32,13 +32,22 @@ function Header({
             <Box flex={1}>
               <Stack flexDirection="row" alignItems="center" gap={2}>
                 {userData?.displayName && (
-                  <TextGlitchEffect
-                    text={userData?.displayName}
-                    speed={40}
-                    letterCase="lowercase"
-                    className="loggedInUserName"
-                    type="alphanumeric"
-                  />
+                  <Stack direction={"row"} gap={1} alignItems={"center"}>
+                    <Avatar
+                      alt={userData?.displayName}
+                      src={
+                        "https://i.pinimg.com/originals/e5/4a/fa/e54afabd75adb33464e85f2687b43f87.gif"
+                      }
+                      sx={{ width: 40, height: 40 }}
+                    />
+                    <TextGlitchEffect
+                      text={userData?.displayName}
+                      speed={40}
+                      letterCase="lowercase"
+                      className="loggedInUserName"
+                      type="alphanumeric"
+                    />
+                  </Stack>
                 )}
                 <Button
                   onClick={() => {
