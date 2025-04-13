@@ -385,8 +385,6 @@ async function getFullComment(commentId: string): Promise<FullComment> {
 }
 
 export async function generateCommentsChain(commentIds: string[]): Promise<FullComment[]> {
-  // Process each comment id from the user's comments array
   return Promise.all(commentIds.map((id) => getFullComment(id)));
 }
-
 

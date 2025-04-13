@@ -1,6 +1,11 @@
-import { Stack, TextField } from "@mui/material";
+import { Button, Stack, TextField } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import { fetchPostById, generateCommentsChain } from "../APICalls";
+import {
+  fetchPostById,
+  generateCommentsChain,
+  createComment,
+  patchUser,
+} from "../APICalls";
 import { useParams } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import PostPreview from "../Components/PostPreview";
@@ -12,6 +17,9 @@ import { TextGlitchEffect } from "../Components/TextGlitchEffect";
 import { Post, Comment, errorProps } from "../../dataTypeDefinitions";
 import CommentBlock from "../Components/CommentBlock";
 import { useNavigate } from "react-router-dom";
+import Footer from "../Components/Footer";
+import IOSLoader from "../Components/IOSLoader";
+import SendIcon from "@mui/icons-material/Send";
 
 function PostPage({
   isLoggedIn,
@@ -70,11 +78,64 @@ function PostPage({
     fetchCurrentPostData(id);
     refreshUserData(userData.id!);
   }
+  const [creatingComment, setcreatingComment] = useState(false);
 
-  console.log("commentsChain", commentsChain);
+  async function handleCommentCreate() {
+    setcreatingComment(true);
+    createComment(
+      userData.id!,
+      post?.id!,
+      "This is a test comment",
+      (comment) => {
+        setCommentsChain((prev) => {
+          if (prev) {
+            return [...prev, comment];
+          }
+          return [comment];
+        });
+        patchUser({
+          userID: userData.id!,
+          field: "comments",
+          newValue: [...(userData.comments || []), comment.id], // merged comments array
+          onSuccess: (user) => {
+            refreshUserData(user.id!);
+            setcreatingComment(false);
+          },
+          onError: (error) => {
+            const err: errorProps = {
+              id: "failed to create comment",
+              userFreindlyMessage: "Something went wrong when creating comment",
+              errorMessage:
+                error instanceof Error ? error.message : "Unknown error",
+              error:
+                error instanceof Error ? error : new Error("Unknown error"),
+            };
+            enqueueSnackbar({ variant: "error", ...err });
+            setcreatingComment(false);
+          },
+        });
+        // Removed erroneous error object and replaced with a success message.
+        enqueueSnackbar({
+          variant: "success",
+          message: "Comment created successfully",
+        });
+      },
+      (error) => {
+        const err: errorProps = {
+          id: "failed to create comment",
+          userFreindlyMessage: "Something went wrong when creating comment",
+          errorMessage:
+            error instanceof Error ? error.message : "Unknown error",
+          error: error instanceof Error ? error : new Error("Unknown error"),
+        };
+        enqueueSnackbar({ variant: "error", ...err });
+        setcreatingComment(false);
+      }
+    );
+  }
 
   return (
-    <Stack width={"100%"}>
+    <Stack width={"100%"} minHeight={"100vh"} height={"100%"}>
       <Header
         isLoggedIn={isLoggedIn}
         userData={userData}
@@ -165,6 +226,20 @@ function PostPage({
             disabled={!isLoggedIn}
             variant="standard"
           />
+          <Stack direction={"row"} gap={1}>
+            <Button>Cancel</Button>
+            <Button
+              onClick={() => {
+                handleCommentCreate();
+              }}
+              color="secondary"
+              className="secondaryButtonHoverStyles"
+              sx={{ mb: creatingComment ? "-3px" : "0px" }}
+              startIcon={creatingComment ? <IOSLoader /> : <SendIcon />}
+            >
+              Post
+            </Button>
+          </Stack>
           {commentsChain &&
             commentsChain.length > 0 &&
             commentsChain.map((comment, index) => (
@@ -181,6 +256,7 @@ function PostPage({
             ))}
         </Stack>
       </Stack>
+      <Footer />
     </Stack>
   );
 }

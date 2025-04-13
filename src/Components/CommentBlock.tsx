@@ -1,8 +1,43 @@
-import { Stack, Typography } from "@mui/material";
+import {
+  Collapse,
+  IconButton,
+  IconButtonProps,
+  Stack,
+  Typography,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Chip from "@mui/material/Chip";
 import Avatar from "@mui/material/Avatar";
+import { styled } from "@mui/material/styles";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
+interface ExpandMoreProps extends IconButtonProps {
+  expand: boolean;
+}
+
+const ExpandMore = styled((props: ExpandMoreProps) => {
+  const { expand, ...other } = props;
+  return <IconButton {...other} />;
+})(({ theme }) => ({
+  marginLeft: "auto",
+  transition: theme.transitions.create("transform", {
+    duration: theme.transitions.duration.shortest,
+  }),
+  variants: [
+    {
+      props: ({ expand }) => !expand,
+      style: {
+        transform: "rotate(0deg)",
+      },
+    },
+    {
+      props: ({ expand }) => !!expand,
+      style: {
+        transform: "rotate(180deg)",
+      },
+    },
+  ],
+}));
 function CommentBlock({
   dateCreated,
   userName,
@@ -31,7 +66,11 @@ function CommentBlock({
     "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcnQzenphZWEwM2xwYnZ4eTQ5ZWRkNGkwYmN5ZnA4c3d1aDAzd3RsZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/NKEt9elQ5cR68/giphy.gif",
     "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGc0d2M5aHhvbzViYWJ0b2lod3dxajJwNW95dmJjYTB4czR6MG5rcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3dhmyq6EKw2x7eFt4X/giphy.gif",
   ];
-  console.log("asdasdadasd", replies);
+  const [iseReply, setIsReply] = useState(false);
+
+  const handleExpandClick = () => {
+    setIsReply(!iseReply);
+  };
   return (
     <Stack
       sx={{
@@ -43,6 +82,7 @@ function CommentBlock({
         gap={1}
         width="100%"
         py={2}
+        pt={depth === 0 ? 0 : 2}
         pl={depth * 1}
         sx={{
           borderBottom: "1px solid white",
@@ -73,16 +113,38 @@ function CommentBlock({
       {replies && replies.length > 0 && (
         <Stack>
           {replies.map((reply) => (
-            <CommentBlock
+            <Stack
+              direction={"row"}
+              alignItems={"center"}
+              gap={1}
               key={reply.id}
-              dateCreated={reply.dateCreated}
-              userName={reply.authorName}
-              commentContents={reply.text}
-              replies={reply.replies}
-              imageURL={reply.imageURL}
-              amIaReply={true}
-              depth={depth + 1}
-            />
+            >
+              <Collapse
+                in={iseReply}
+                key={reply.id}
+                timeout="auto"
+                unmountOnExit
+              >
+                <CommentBlock
+                  key={reply.id}
+                  dateCreated={reply.dateCreated}
+                  userName={reply.authorName}
+                  commentContents={reply.text}
+                  replies={reply.replies}
+                  imageURL={reply.imageURL}
+                  amIaReply={true}
+                  depth={depth + 1}
+                />
+              </Collapse>
+              <ExpandMore
+                expand={iseReply}
+                onClick={handleExpandClick}
+                aria-expanded={iseReply}
+                aria-label="show more"
+              >
+                <ExpandMoreIcon />
+              </ExpandMore>
+            </Stack>
           ))}
         </Stack>
       )}
