@@ -60,7 +60,7 @@ function PostPage({
       },
     });
   }
-
+  const history = useNavigate();
   useEffect(() => {
     if (userData?.id) {
       refreshUserData(userData.id!);
@@ -175,7 +175,9 @@ function PostPage({
       }
     );
   }
-
+  if (!post || Object.keys(post).length === 0) {
+    navigate("/404");
+  }
   return (
     <Stack pb={2} width={"100%"} minHeight={"100vh"} height={"100%"}>
       <Header

@@ -4,6 +4,8 @@ import { TextGlitchEffect } from "./TextGlitchEffect";
 import AddIcon from "@mui/icons-material/Add";
 import CreatePostDialogue from "../Components/CreatePostDialogue";
 import Logo from "./Logo";
+import { useMemo } from "react";
+import { GIFs } from "../assets/GIFs";
 
 function Header({
   isLoggedIn,
@@ -16,6 +18,10 @@ function Header({
   onPostCreated,
   callerIdentifier,
 }) {
+  const randomGIFIndex = useMemo(
+    () => Math.floor(Math.random() * Math.min(GIFs.length, 200)),
+    []
+  );
   return (
     <Box px={2} sx={{ position: "relative", minHeight: "3rem" }} mt={0.5}>
       <CreatePostDialogue
@@ -35,9 +41,7 @@ function Header({
                   <Stack direction={"row"} gap={1} alignItems={"center"}>
                     <Avatar
                       alt={userData?.displayName}
-                      src={
-                        "https://i.pinimg.com/originals/e5/4a/fa/e54afabd75adb33464e85f2687b43f87.gif"
-                      }
+                      src={GIFs[randomGIFIndex]}
                       sx={{ width: 40, height: 40 }}
                     />
                     <TextGlitchEffect

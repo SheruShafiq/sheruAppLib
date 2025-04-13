@@ -66,7 +66,7 @@ function CommentBlock({
   }
   const [imageUrl, setImageUrl] = useState(imageURL);
   const randomGIFIndex = useMemo(
-    () => Math.floor(Math.random() * Math.min(GIFs.length, 40)),
+    () => Math.floor(Math.random() * Math.min(GIFs.length, 200)),
     []
   );
 
@@ -213,7 +213,14 @@ function CommentBlock({
         <Avatar src={imageUrl || GIFs[randomGIFIndex]} alt={userName} />
         <Stack gap={1}>
           <Stack direction="row" spacing={1} alignItems="center">
-            <Typography fontWeight="bold">{userName}</Typography>
+            <Typography
+              fontWeight="bold"
+              color={
+                userData.displayName === userName ? "secondary" : "primary"
+              }
+            >
+              {userData.displayName === userName ? "You" : userName}
+            </Typography>
             <Chip
               size="small"
               label={formatDateRedditStyle(new Date(dateCreated))}

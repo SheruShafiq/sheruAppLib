@@ -74,6 +74,9 @@ Product properties
 23. look into service workers
 24. Giphy PROD
 25. Move to NextJS if it's a smoother backend and easy enough setup. 26. Need to check for overflows on things like posts, comments, resource description etc on giga long texts. Breaks sometimes on mobile it seems.
+26. Add readmore toggle to descriptions and comments too long. Add a text size limit on displayName
+27. Add a check if username and password already exist
+28. Overflow issues on home
 
 ---
 
