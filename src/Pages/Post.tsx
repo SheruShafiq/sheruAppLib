@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material";
+import { Stack, TextField } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { fetchPostById, fetchCommentsChain } from "../APICalls";
 import { useParams } from "react-router-dom";
@@ -158,11 +158,20 @@ function PostPage({
         />
         <Stack mt={2} gap={2}>
           <TextGlitchEffect
-            text={"Comments"}
+            text={`${post?.comments.length || 0} Comments`}
             speed={60}
             letterCase="lowercase"
             className="postPageCommentsTitle"
             type="alphanumeric"
+          />
+          <TextField
+            label={
+              !isLoggedIn ? "You need to login to comment" : "Add a comment"
+            }
+            multiline
+            placeholder="Like for one good luck, ignore for chinchin en kintama torture"
+            disabled={!isLoggedIn}
+            variant="standard"
           />
           {commentsChain &&
             commentsChain.length > 0 &&
@@ -170,7 +179,7 @@ function PostPage({
               <CommentBlock
                 key={index}
                 dateCreated={comment?.dateCreated}
-                userName={"comment?.displayName"}
+                userName={comment?.authorID?.toString() || ""}
                 commentContents={comment?.text}
                 replies={comment?.replies}
                 imageURL={"comment?.imageURL"}

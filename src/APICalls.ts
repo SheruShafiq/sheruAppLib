@@ -316,3 +316,39 @@ export async function fetchCommentsChain(
     onError(error);
   }
 }
+
+export async function createComment(
+  authorID: string,
+  postID: string,
+  comment: string,
+  onSuccess: (comment: Comment) => void,
+  onError: (error: any) => void
+) {
+  try {
+    const newComment: Comment = {
+      authorID: authorID,
+      text: comment,
+      likes: 0,
+      dislikes: 0,
+      replies: [],
+      dateCreated: now,
+      dateModified: now,
+      dateDeleted: "",
+      likedBy: [],
+      dislikedBy: [],
+      postID: postID,
+    }
+    const response = await fetch(`${APIURL}/posts/${postID}/comments`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newComment),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to create comment");
+    }
+    const data = await response.json();
+    onSuccess(data);
+  } catch (error) {
+    onError(error);
+  }
+}

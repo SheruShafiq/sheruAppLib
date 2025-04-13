@@ -32,6 +32,11 @@ function CommentBlock({
   //     });
   //   }
   // }, [imageURL]);
+  const randomHardcodedGIFURLs = [
+    "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2k5YjRqNGZxa2tnenpzcDc5cDUybWJldTFqejU3ODJwbTg3djB2cSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ox91VuRSYDxKkQF3zf/giphy.gif",
+    "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcnQzenphZWEwM2xwYnZ4eTQ5ZWRkNGkwYmN5ZnA4c3d1aDAzd3RsZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/NKEt9elQ5cR68/giphy.gif",
+    "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGc0d2M5aHhvbzViYWJ0b2lod3dxajJwNW95dmJjYTB4czR6MG5rcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3dhmyq6EKw2x7eFt4X/giphy.gif",
+  ];
   return (
     <Stack
       sx={{
@@ -42,7 +47,7 @@ function CommentBlock({
       <Stack
         gap={1}
         width="100%"
-        pt={2}
+        py={2}
         pl={depth * 1}
         sx={{
           borderBottom: "1px solid white",
@@ -51,20 +56,24 @@ function CommentBlock({
         <Stack direction="row" alignItems="center" gap={1}>
           <Avatar
             sx={{
-              width: 20,
-              height: 20,
+              width: 40,
+              height: 40,
             }}
             alt={userName}
-            src={imageUrl}
+            src={randomHardcodedGIFURLs[depth]}
           />
-          <Typography fontWeight={600}>{userName}</Typography>
-          <Chip
-            size="small"
-            label={new Date(dateCreated).toLocaleDateString()}
-            variant="outlined"
-          />
+          <Stack gap={0.5}>
+            <Stack alignItems="center" gap={1} direction={"row"}>
+              <Typography fontWeight={600}>{userName}</Typography>
+              <Chip
+                size="small"
+                label={new Date(dateCreated).toLocaleDateString()}
+                variant="outlined"
+              />
+            </Stack>
+            <span>{commentContents}</span>
+          </Stack>
         </Stack>
-        <p>{commentContents}</p>
       </Stack>
       {replies && replies.length > 0 && (
         <Stack>
@@ -72,7 +81,7 @@ function CommentBlock({
             <CommentBlock
               key={reply.id}
               dateCreated={reply?.dateCreated}
-              userName={reply?.displayName}
+              userName={reply?.authorID?.toString() || ""}
               commentContents={reply?.text}
               replies={reply?.replies}
               imageURL={reply?.imageURL}

@@ -34,7 +34,7 @@ export type User = {
   dislikedComments: string[];
 };
 export type Comment = {
-  id: string;
+  id?: string;
   authorID: string;
   text: string;
   likes: number;
