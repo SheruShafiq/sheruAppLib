@@ -217,10 +217,10 @@ function CommentBlock({
             <Typography
               fontWeight="bold"
               color={
-                userData.displayName === userName ? "secondary" : "primary"
+                userData?.displayName === userName ? "secondary" : "primary"
               }
             >
-              {userData.displayName === userName ? "You" : userName}
+              {userData?.displayName === userName ? "You" : userName}
             </Typography>
             <Chip
               size="small"
