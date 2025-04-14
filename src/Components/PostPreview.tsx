@@ -413,7 +413,6 @@ const PostPreview: React.FC<PostPreviewProps> = ({
         <Button
           onClick={() => handleVote("upvote")}
           disabled={!!loadingAction}
-          sx={{ mb: loadingAction === "upvote" ? "-3px" : "0px" }}
           startIcon={
             loadingAction === "upvote" ? (
               <IOSLoader />
@@ -429,7 +428,6 @@ const PostPreview: React.FC<PostPreviewProps> = ({
         <Button
           onClick={() => handleVote("downvote")}
           disabled={!!loadingAction}
-          sx={{ mb: loadingAction === "downvote" ? "-3px" : "0px" }}
           startIcon={
             loadingAction === "downvote" ? (
               <IOSLoader />
@@ -445,7 +443,6 @@ const PostPreview: React.FC<PostPreviewProps> = ({
         <Button
           onClick={() => handleVote("report")}
           disabled={!!loadingAction}
-          sx={{ mb: loadingAction === "report" ? "-3px" : "0px" }}
           startIcon={
             loadingAction === "report" ? (
               <IOSLoader />

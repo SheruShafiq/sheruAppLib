@@ -241,7 +241,7 @@ function CommentBlock({
                 sx={{
                   cursor: "pointer",
                   width: "fit-content",
-                  p: 0.5,
+                  p: 1,
                   borderRadius: 1,
                 }}
                 spacing={0.5}
@@ -266,7 +266,6 @@ function CommentBlock({
                 e.stopPropagation();
                 handleCommentVote("upvote");
               }}
-              sx={{ mb: loadingAction === "upvote" ? "-3px" : "0px" }}
               disabled={!!loadingAction}
               startIcon={
                 loadingAction === "upvote" ? (
@@ -285,7 +284,6 @@ function CommentBlock({
                 e.stopPropagation();
                 handleCommentVote("downvote");
               }}
-              sx={{ mb: loadingAction === "downvote" ? "-3px" : "0px" }}
               disabled={!!loadingAction}
               startIcon={
                 loadingAction === "downvote" ? (
@@ -300,7 +298,6 @@ function CommentBlock({
               {localDislikes}
             </Button>
             <Button
-              size="small"
               onClick={() => {
                 setOpenReply(!openReply);
                 setCreatingReply(false);
@@ -340,7 +337,6 @@ function CommentBlock({
                 disabled={!isLoggedIn || creatingReply || newComment.length < 1}
                 color="secondary"
                 className="secondaryButtonHoverStyles"
-                sx={{ mb: creatingReply ? "-3px" : "0px" }}
                 variant="outlined"
                 size="small"
               >
