@@ -213,7 +213,7 @@ function CommentBlock({
       {/* ---- The main comment row ---- */}
       <Stack direction="row" spacing={2} py={1}>
         <Avatar src={imageUrl || GIFs[randomGIFIndex]} alt={userName} />
-        <Stack gap={1}>
+        <Stack gap={1} width={"100%"}>
           <Stack direction="row" spacing={1} alignItems="center">
             <Typography
               fontWeight="bold"
