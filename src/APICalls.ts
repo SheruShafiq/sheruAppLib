@@ -316,7 +316,7 @@ export async function createComment(
       dislikedBy: [],
       postID: postID,
     };
-    const response = await fetch(`${APIURL}/posts/${postID}/comments`, {
+    const response = await fetch(`${APIURL}/comments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newComment),
