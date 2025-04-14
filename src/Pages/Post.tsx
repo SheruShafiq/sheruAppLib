@@ -303,7 +303,6 @@ function PostPage({
               disabled={!isLoggedIn || creatingComment || newComment.length < 1}
               color="secondary"
               className="secondaryButtonHoverStyles"
-              sx={{ mb: creatingComment ? "-3px" : "0px" }}
               variant="outlined"
               size="small"
             >

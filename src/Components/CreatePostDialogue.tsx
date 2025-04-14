@@ -183,7 +183,6 @@ function CreatePostDialogue({
           type="submit"
           color="secondary"
           className="secondaryButtonHoverStyles"
-          sx={{ mb: creatingPost ? "-3px" : "0px" }}
           startIcon={creatingPost ? <IOSLoader /> : <SaveIcon />}
         >
           <TextGlitchEffect

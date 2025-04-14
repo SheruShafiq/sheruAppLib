@@ -12,6 +12,7 @@ import IOSLoader from "./IOSLoader";
 import SendIcon from "@mui/icons-material/Send";
 import { formatDateRedditStyle } from "./PostPreview";
 import ReadMore from "./ReadMore";
+import { errorProps } from "../../dataTypeDefinitions";
 
 function CommentBlock({
   id,
@@ -193,7 +194,13 @@ function CommentBlock({
         }
       }
     } catch (error: any) {
-      enqueueSnackbar("Error updating vote", { variant: "error" });
+      const err: errorProps = {
+        id: "processing Comment Vote Error",
+        userFreindlyMessage: "An error occurred while voting.",
+        errorMessage: error instanceof Error ? error.message : "Unknown error",
+        error: error instanceof Error ? error : new Error("Unknown error"),
+      };
+      enqueueSnackbar({ variant: "error", ...err });
     } finally {
       setLoadingAction(null);
     }
@@ -266,7 +273,6 @@ function CommentBlock({
                 e.stopPropagation();
                 handleCommentVote("upvote");
               }}
-              sx={{ mb: loadingAction === "upvote" ? "-3px" : "0px" }}
               disabled={!!loadingAction}
               startIcon={
                 loadingAction === "upvote" ? (
@@ -285,7 +291,6 @@ function CommentBlock({
                 e.stopPropagation();
                 handleCommentVote("downvote");
               }}
-              sx={{ mb: loadingAction === "downvote" ? "-3px" : "0px" }}
               disabled={!!loadingAction}
               startIcon={
                 loadingAction === "downvote" ? (
@@ -340,7 +345,6 @@ function CommentBlock({
                 disabled={!isLoggedIn || creatingReply || newComment.length < 1}
                 color="secondary"
                 className="secondaryButtonHoverStyles"
-                sx={{ mb: creatingReply ? "-3px" : "0px" }}
                 variant="outlined"
                 size="small"
               >
