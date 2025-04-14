@@ -152,6 +152,7 @@ function Home({
           >
             {Object.keys(posts).map((key) => (
               <PostPreview
+                authorID={posts[key].authorID}
                 categories={categories}
                 pageVariant={false}
                 isPostAuthoredByCurrentUser={userData?.posts

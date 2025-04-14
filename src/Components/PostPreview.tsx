@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import {
   Typography,
   Box,
@@ -8,6 +8,7 @@ import {
   Stack,
   CircularProgress,
   Divider,
+  Avatar,
 } from "@mui/material";
 import InsertEmotionIcon from "@mui/icons-material/InsertEmoticon";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
@@ -16,11 +17,17 @@ import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import LinkIcon from "@mui/icons-material/Link";
 import { useSnackbar } from "notistack";
 import { TextGlitchEffect } from "./TextGlitchEffect";
-import { patchVotePost, patchUndoVotePost, patchUser } from "../APICalls";
+import {
+  patchVotePost,
+  patchUndoVotePost,
+  patchUser,
+  fetchUserById,
+} from "../APICalls";
 import { Category, errorProps, User } from "../../dataTypeDefinitions";
 import IOSLoader from "./IOSLoader";
 import ReadMore from "./ReadMore";
 import { useNavigate } from "react-router-dom";
+import { GIFs } from "../assets/GIFs";
 
 interface PostPreviewProps {
   id: string;
@@ -42,6 +49,7 @@ interface PostPreviewProps {
   isPostAuthoredByCurrentUser: boolean;
   pageVariant?: boolean;
   userData: User;
+  authorID: string;
 }
 
 type LoadingAction = "upvote" | "downvote" | "report" | null;
@@ -92,6 +100,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
   isPostAuthoredByCurrentUser,
   pageVariant,
   userData,
+  authorID,
 }) => {
   const history = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -103,7 +112,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
   const [localUpvotes, setLocalUpvotes] = useState(upvotes);
   const [localDownvotes, setLocalDownvotes] = useState(downvotes);
   const [localReports, setLocalReports] = useState(reports);
-
+  const [authorData, setAuthorData] = useState<User | null>(null);
   const descRef = useRef<HTMLDivElement>(null);
   const [isOverflow, setIsOverflow] = useState(false);
 
@@ -318,7 +327,29 @@ const PostPreview: React.FC<PostPreviewProps> = ({
       setLoadingAction(null);
     }
   };
-
+  const randomGIFIndex = useMemo(
+    () => Math.floor(Math.random() * Math.min(GIFs.length, 200)),
+    []
+  );
+  useEffect(() => {
+    fetchUserById(
+      authorID,
+      (userData) => {
+        setAuthorData(userData);
+      },
+      (error: any) => {
+        const err: errorProps = {
+          id: "fetching author data Error",
+          userFreindlyMessage:
+            "An error occurred while fetching post's author data.",
+          errorMessage:
+            error instanceof Error ? error.message : "Unknown error",
+          error: error instanceof Error ? error : new Error("Unknown error"),
+        };
+        enqueueSnackbar({ variant: "error", ...err });
+      }
+    );
+  }, [authorID]);
   return (
     <Stack
       gap={1}
@@ -329,20 +360,36 @@ const PostPreview: React.FC<PostPreviewProps> = ({
     >
       <Stack direction="row" alignItems="center" gap={1} maxWidth={"100%"}>
         {pageVariant ? (
-          <Typography
-            fontSize={16}
-            fontWeight="bold"
-            sx={{
-              whiteSpace: "normal",
-              wordBreak: "break-word",
-            }}
-          >
-            {pageVariant ? title : formattedTitle}
-          </Typography>
+          <Stack gap={1}>
+            <Stack direction={"row"} gap={1} alignItems={"center"}>
+              <Avatar
+                sx={{ width: 14, height: 14 }}
+                src={GIFs[randomGIFIndex]}
+              />
+              <Link href={`users/${id}`} rel="noopener">
+                <Typography fontSize={14} width={"fit-content"}>
+                  {authorData?.displayName === userData?.displayName
+                    ? "You"
+                    : authorData?.displayName}
+                </Typography>
+              </Link>
+              <Chip size="small" label={formattedDate} variant="outlined" />
+            </Stack>
+            <Typography
+              fontSize={24}
+              fontWeight="bold"
+              sx={{
+                whiteSpace: "normal",
+                wordBreak: "break-word",
+              }}
+            >
+              {pageVariant ? title : formattedTitle}
+            </Typography>
+          </Stack>
         ) : (
           <Link href={`posts/${id}`} rel="noopener" style={{ flex: 1 }}>
             <Typography
-              fontSize={16}
+              fontSize={24}
               fontWeight="bold"
               sx={{
                 whiteSpace: "normal",
@@ -353,14 +400,8 @@ const PostPreview: React.FC<PostPreviewProps> = ({
             </Typography>
           </Link>
         )}
-        <Chip size="small" label={formattedDate} variant="outlined" />
-        {isPostAuthoredByCurrentUser && (
-          <Chip
-            size="small"
-            label="Your Post"
-            variant="outlined"
-            color="success"
-          />
+        {!pageVariant && (
+          <Chip size="small" label={formattedDate} variant="outlined" />
         )}
       </Stack>
       <Box>
@@ -375,6 +416,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
                 backgroundColor: "#ffffff21",
                 borderRadius: "5px",
               }}
+              alignItems={"center"}
             >
               <LinkIcon />
               <TextGlitchEffect
@@ -477,3 +519,6 @@ const PostPreview: React.FC<PostPreviewProps> = ({
 
 export default PostPreview;
 export { formatDateRedditStyle };
+function getUserByIdPromise(authorID: any) {
+  throw new Error("Function not implemented.");
+}

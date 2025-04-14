@@ -221,6 +221,7 @@ function PostPage({
             className="postPageCommentsTitle"
           >
             <PostPreview
+              authorID={post?.authorID || ""}
               categories={categories}
               pageVariant={true}
               isPostAuthoredByCurrentUser={userData?.posts

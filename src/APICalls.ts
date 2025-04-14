@@ -364,7 +364,6 @@ function getCommentByIdPromise(commentId: string): Promise<Comment> {
 
 function getUserByIdPromise(userId: string): Promise<any> {
   return new Promise((resolve, reject) => {
-    // Wrap callback-based fetchUserById to a Promise
     fetchUserById(userId, resolve, reject);
   });
 }
