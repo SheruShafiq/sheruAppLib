@@ -18,6 +18,9 @@ import React from "react";
 import { Buffer } from "buffer";
 import UserProfilePage from "./Pages/UserProfilePage.tsx";
 
+// Ensure TypeScript recognizes custom variants declared in main.tsx
+import "./main";
+
 globalThis.Buffer = Buffer;
 const isDesktop = window.innerWidth > 768;
 const darkTheme = createTheme({
@@ -211,7 +214,6 @@ function App() {
             path="/user/:id"
             element={
               <UserProfilePage
-                pageVariant={false}
                 setIsLoggedIn={setIsLoggedIn}
                 loggedInUserData={userData}
                 setOpen={setLogInDialogue}

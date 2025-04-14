@@ -17,7 +17,7 @@ import Divider from "@mui/material/Divider";
 import PostPreviewSkeletonLoader from "../SkeletonLoaders/PostPreviewSkeletonLoader";
 import Fade from "@mui/material/Fade";
 import { TextGlitchEffect } from "../Components/TextGlitchEffect";
-import { Post, Comment, errorProps } from "../../dataTypeDefinitions";
+import { Post, Comment, errorProps, User } from "../../dataTypeDefinitions";
 import CommentBlock from "../Components/CommentBlock";
 import { useNavigate } from "react-router-dom";
 import Footer from "../Components/Footer";

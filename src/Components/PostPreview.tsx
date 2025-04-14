@@ -50,7 +50,7 @@ interface PostPreviewProps {
   isPostAuthoredByCurrentUser: boolean;
   pageVariant?: boolean;
   userData: User;
-  authorData: User;
+  authorData: User | null;
   randomGIFIndex: number;
 }
 
@@ -132,7 +132,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
   */
   const handleVote = async (type: "upvote" | "downvote" | "report") => {
     if (!isLoggedIn) {
-      enqueueSnackbar("Please log in to vote", { variant: "login" });
+      enqueueSnackbar("Please log in to vote", { variant: "info" });
       return;
     }
     if (loadingAction) return;
