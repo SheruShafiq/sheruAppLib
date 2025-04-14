@@ -85,7 +85,7 @@ Product properties
 34. <del>BUG: post title is clickable on post page</del>
 35. <del>Create post loader keeps going on live for some reason</del>
 36. ThreeJS 404 page after basic exams
-37. The right section of post page will be "other posts from this user" or something
+37. <del> The right section of post page will be "other posts from this user" or something</del>
 
 ---
 

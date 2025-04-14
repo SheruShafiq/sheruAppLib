@@ -252,10 +252,12 @@ function PostPage({
         mt={2}
         pb={4}
         px={2}
-        justifyContent={"space-between"}
         direction={"row"}
+        maxWidth={"1200px"}
+        mx={"auto"}
+        gap={8}
       >
-        <Stack width={isDesktop ? "70%" : "100%"} maxWidth={"700px"}>
+        <Stack width={"100%"}>
           <Fade in={!loading} timeout={1000}>
             <Stack
               sx={{
