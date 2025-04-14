@@ -32,7 +32,7 @@ function Home({
   const { pageNumber } = useParams();
   const currentDisplayHeight = window.innerHeight;
   const headerHeight = 65;
-  const postPreviewHeight = 225;
+  const postPreviewHeight = 170;
   const pageSize = Math.floor(
     (currentDisplayHeight - headerHeight) / postPreviewHeight
   );
