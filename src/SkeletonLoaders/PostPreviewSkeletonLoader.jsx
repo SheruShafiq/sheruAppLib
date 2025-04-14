@@ -14,13 +14,13 @@ function PostPreviewSkeletonLoader({ pageVariant }) {
         <Skeleton animation="wave" variant="text" width={60} height={24} />
       </Stack>
       <Stack gap={1}>
-        <Skeleton animation="wave" variant="text" width="50%" />
+        <Skeleton animation="wave" variant="text" width="100%" />
         <Stack gap={1}>
           <Skeleton
             animation="wave"
             variant="rounded"
             width="100%"
-            height={Math.floor(Math.random() * (100 - 20 + 1))}
+            height={Math.floor(Math.random() * (100 - 50 + 1))}
           />
           <Stack direction="row" spacing={2}>
             <Skeleton

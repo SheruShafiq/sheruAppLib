@@ -19,7 +19,12 @@ import { Buffer } from "buffer";
 import UserProfilePage from "./Pages/UserProfilePage.tsx";
 
 // Ensure TypeScript recognizes custom variants declared in main.tsx
-import "./main";
+
+declare module "notistack" {
+  interface VariantOverrides {
+    login: true;
+  }
+}
 
 globalThis.Buffer = Buffer;
 const isDesktop = window.innerWidth > 768;
