@@ -255,7 +255,7 @@ function PostPage({
         justifyContent={"space-between"}
         direction={"row"}
       >
-        <Stack width={isDesktop ? "70%" : "100%"}>
+        <Stack width={isDesktop ? "70%" : "100%"} maxWidth={"700px"}>
           <Fade in={!loading} timeout={1000}>
             <Stack
               sx={{

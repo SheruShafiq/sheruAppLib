@@ -390,7 +390,14 @@ const PostPreview: React.FC<PostPreviewProps> = ({
             }}
             ref={descRef}
           >
-            <Box py={1}>
+            <Box
+              py={1}
+              width={"100%"}
+              sx={{
+                wordBreak: "break-word",
+                overflowWrap: "break-word",
+              }}
+            >
               <ReadMore
                 text={description}
                 maxLength={pageVariant ? 300 : 1000}

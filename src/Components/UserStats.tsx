@@ -1,4 +1,4 @@
-import { Stack, Avatar, Chip, Button } from "@mui/material";
+import { Stack, Avatar, Chip, Button, Link } from "@mui/material";
 import React, { useMemo } from "react";
 import { GIFs } from "../assets/GIFs";
 import { formatDateRedditStyle } from "../globalFunctions";
@@ -56,12 +56,23 @@ function UserStats({ userData, isLoggedIn, randomGIFIndex, pageVariant }) {
       alignItems={"center"}
       width={pageVariant ? "fit-content" : "100%"}
     >
-      <Avatar
-        className="userProfileAvatarGIF"
-        alt={userData?.displayName}
-        src={isLoggedIn ? GIFs[randomGIFIndex] : ""}
-        sx={{ width: 200, height: 200 }}
-      />
+      {pageVariant ? (
+        <Link underline="always" href={`/user/${userData?.id}`}>
+          <Avatar
+            className="userProfileAvatarGIF"
+            alt={userData?.displayName}
+            src={isLoggedIn ? GIFs[randomGIFIndex] : ""}
+            sx={{ width: 200, height: 200 }}
+          />
+        </Link>
+      ) : (
+        <Avatar
+          className="userProfileAvatarGIF"
+          alt={userData?.displayName}
+          src={isLoggedIn ? GIFs[randomGIFIndex] : ""}
+          sx={{ width: 200, height: 200 }}
+        />
+      )}
 
       <Stack gap={pageVariant ? 2 : 0}>
         <Stack
@@ -69,13 +80,25 @@ function UserStats({ userData, isLoggedIn, randomGIFIndex, pageVariant }) {
           alignItems={"center"}
           gap={pageVariant ? 0 : 2}
         >
-          <TextGlitchEffect
-            text={userData?.displayName}
-            speed={40}
-            letterCase="lowercase"
-            className="userProfilePageUserName"
-            type="alphanumeric"
-          />
+          {pageVariant ? (
+            <Link underline="always" href={`/user/${userData?.id}`}>
+              <TextGlitchEffect
+                text={userData?.displayName}
+                speed={40}
+                letterCase="lowercase"
+                className="userProfilePageUserName"
+                type="alphanumeric"
+              />
+            </Link>
+          ) : (
+            <TextGlitchEffect
+              text={userData?.displayName}
+              speed={40}
+              letterCase="lowercase"
+              className="userProfilePageUserName"
+              type="alphanumeric"
+            />
+          )}
           <Stack gap={1}>
             <Chip
               size="small"
