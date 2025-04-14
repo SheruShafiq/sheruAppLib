@@ -319,35 +319,37 @@ function PostPage({
             >
               {commentsChain &&
                 commentsChain.length > 0 &&
-                commentsChain.map((comment, index) => (
-                  <CommentBlock
-                    handleCommentCreate={handleCommentCreate}
-                    id={comment.id}
-                    userData={userData}
-                    key={comment.id}
-                    dateCreated={comment.dateCreated}
-                    userName={comment.authorName}
-                    commentContents={comment.text}
-                    replies={comment.replies}
-                    imageURL={comment.imageURL}
-                    amIaReply={false}
-                    depth={0}
-                    isLoggedIn={isLoggedIn}
-                    likedByCurrentUser={
-                      userData?.likedComments
-                        .map(String)
-                        .includes(String(comment.id)) || false
-                    }
-                    dislikedByCurrentUser={
-                      userData?.dislikedComments
-                        .map(String)
-                        .includes(String(comment.id)) || false
-                    }
-                    likes={comment.likes}
-                    dislikes={comment.dislikes}
-                    setGeneratingCommentsChain={setGeneratingCommentsChain}
-                  />
-                ))}
+                commentsChain
+                  .reverse()
+                  .map((comment, index) => (
+                    <CommentBlock
+                      handleCommentCreate={handleCommentCreate}
+                      id={comment.id}
+                      userData={userData}
+                      key={comment.id}
+                      dateCreated={comment.dateCreated}
+                      userName={comment.authorName}
+                      commentContents={comment.text}
+                      replies={comment.replies}
+                      imageURL={comment.imageURL}
+                      amIaReply={false}
+                      depth={0}
+                      isLoggedIn={isLoggedIn}
+                      likedByCurrentUser={
+                        userData?.likedComments
+                          .map(String)
+                          .includes(String(comment.id)) || false
+                      }
+                      dislikedByCurrentUser={
+                        userData?.dislikedComments
+                          .map(String)
+                          .includes(String(comment.id)) || false
+                      }
+                      likes={comment.likes}
+                      dislikes={comment.dislikes}
+                      setGeneratingCommentsChain={setGeneratingCommentsChain}
+                    />
+                  ))}
             </Stack>
           </Fade>
           <Fade in={generatingCommentsChain} timeout={1000}>

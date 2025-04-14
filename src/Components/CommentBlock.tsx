@@ -326,6 +326,7 @@ function CommentBlock({
               />
               <Button
                 onClick={() => {
+                  // setCreatingReply(false);
                   setGeneratingCommentsChain(true);
                   handleCommentCreate({
                     reply: id,
@@ -333,7 +334,8 @@ function CommentBlock({
                     comment: newComment,
                   });
                   setNewComment("");
-                  // setOpenReply(false);
+                  setOpenReply(false);
+                  setExpanded(true);
                 }}
                 disabled={!isLoggedIn || creatingReply || newComment.length < 1}
                 color="secondary"
@@ -352,7 +354,7 @@ function CommentBlock({
       {/* ---- Replies section ---- */}
       {replies.length > 0 && (
         <Collapse in={expanded} timeout="auto" unmountOnExit>
-          {replies.map((reply) => (
+          {replies.reverse().map((reply) => (
             <CommentBlock
               handleCommentCreate={handleCommentCreate}
               setGeneratingCommentsChain={setGeneratingCommentsChain}
