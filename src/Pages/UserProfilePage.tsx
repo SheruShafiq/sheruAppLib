@@ -8,12 +8,9 @@ import { GIFs } from "../assets/GIFs";
 import { TextGlitchEffect } from "../Components/TextGlitchEffect";
 import { errorProps, Comment, User } from "../../dataTypeDefinitions";
 import { enqueueSnackbar } from "notistack";
-import MessageOutlinedIcon from "@mui/icons-material/MessageOutlined";
-import BackupTableIcon from "@mui/icons-material/BackupTable";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import HeartBrokenIcon from "@mui/icons-material/HeartBroken";
-import ErrorIcon from "@mui/icons-material/Error";
+
 import { formatDateRedditStyle } from "../globalFunctions";
+import UserStats from "../Components/UserStats";
 
 function UserProfilePage({
   isLoggedIn,
@@ -51,46 +48,6 @@ function UserProfilePage({
   );
 
   // New: useMemo to consolidate stats data
-  const stats = useMemo(
-    () => [
-      {
-        label: "Comments",
-        count: userData?.comments?.length,
-        icon: <MessageOutlinedIcon color="secondary" />,
-      },
-      {
-        label: "Posts",
-        count: userData?.posts?.length,
-        icon: <BackupTableIcon color="secondary" />,
-      },
-      {
-        label: "Downvoted Posts",
-        count: userData?.downVotedPosts?.length,
-        icon: <FavoriteIcon color="secondary" />,
-      },
-      {
-        label: "Upvoted Posts",
-        count: userData?.upvotedPosts?.length,
-        icon: <HeartBrokenIcon color="secondary" />,
-      },
-      {
-        label: "Liked Comments",
-        count: userData?.likedComments?.length,
-        icon: <FavoriteIcon color="secondary" />,
-      },
-      {
-        label: "Disliked Comments",
-        count: userData?.dislikedComments?.length,
-        icon: <HeartBrokenIcon color="secondary" />,
-      },
-      {
-        label: "Reports",
-        count: userData?.reportedPosts?.length,
-        icon: <ErrorIcon color="secondary" />,
-      },
-    ],
-    [userData]
-  );
 
   return (
     <Stack height={"100%"} minHeight={"100vh"} gap={2} pb={2}>
@@ -113,61 +70,12 @@ function UserProfilePage({
         />
       </Stack>
       <Stack px={2}>
-        <Stack direction={"row"} gap={6} alignItems={"center"}>
-          <Avatar
-            className="userProfileAvatarGIF"
-            alt={userData?.displayName}
-            src={isLoggedIn ? GIFs[randomGIFIndex] : ""}
-            sx={{ width: 200, height: 200 }}
-          />
-
-          <Stack>
-            <Stack direction={"row"} alignItems={"center"} gap={2}>
-              <TextGlitchEffect
-                text={userData?.displayName}
-                speed={40}
-                letterCase="lowercase"
-                className="userProfilePageUserName"
-                type="alphanumeric"
-              />
-              <Stack gap={1}>
-                <Chip
-                  size="small"
-                  variant="outlined"
-                  label={`Account created: ${formatDateRedditStyle(
-                    new Date(userData?.dateCreated)
-                  )}`}
-                />
-                <Chip
-                  size="small"
-                  variant="outlined"
-                  label={`Last online: ${formatDateRedditStyle(
-                    new Date(userData?.dateModified)
-                  )}`}
-                />
-              </Stack>
-            </Stack>
-            <Stack direction={"row"} flexWrap={"wrap"} gap={2}>
-              {stats.map((stat) => (
-                <Button
-                  key={stat.label}
-                  variant="outlined"
-                  sx={{ pointerEvents: "none" }}
-                  startIcon={stat.icon}
-                >
-                  <TextGlitchEffect
-                    text={stat.label}
-                    speed={40}
-                    letterCase="lowercase"
-                    className="userProfilePageUserStats"
-                    type="alphanumeric"
-                  />
-                  <strong> {stat.count}</strong>
-                </Button>
-              ))}
-            </Stack>
-          </Stack>
-        </Stack>
+        <UserStats
+          userData={userData}
+          isLoggedIn={isLoggedIn}
+          randomGIFIndex={randomGIFIndex}
+          pageVariant={false}
+        />
       </Stack>
       <Footer />
     </Stack>

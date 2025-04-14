@@ -1,5 +1,5 @@
 import { Button, Stack, TextField } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useLayoutEffect } from "react";
 import {
   fetchPostById,
   generateCommentsChain,
@@ -7,6 +7,7 @@ import {
   patchUser,
   patchPost,
   patchComment,
+  fetchUserById,
 } from "../APICalls";
 import { useParams } from "react-router-dom";
 import { useSnackbar } from "notistack";
@@ -24,6 +25,9 @@ import IOSLoader from "../Components/IOSLoader";
 import SendIcon from "@mui/icons-material/Send";
 import CommentSkeletonLoader from "../SkeletonLoaders/CommentSkeletonLoader";
 import { useMaximumRenderableSkeletonComments } from "../hooks/useMaximumRenderableSkeletonComments";
+import UserProfilePage from "./UserProfilePage";
+import UserStats from "../Components/UserStats";
+import { GIFs } from "../assets/GIFs";
 
 function PostPage({
   isLoggedIn,
@@ -42,6 +46,10 @@ function PostPage({
   const [commentsChain, setCommentsChain] = useState<any>(undefined);
   const [generatingCommentsChain, setGeneratingCommentsChain] = useState(false);
   const navigate = useNavigate();
+  const randomGIFIndex = useMemo(
+    () => Math.floor(Math.random() * Math.min(GIFs.length, 200)),
+    []
+  );
   function fetchCurrentPostData(id: string) {
     fetchPostById({
       id: id!,
@@ -63,6 +71,27 @@ function PostPage({
       },
     });
   }
+  const [authorData, setAuthorData] = useState<User | null>(null);
+  useEffect(() => {
+    if (!post?.authorID) return;
+    fetchUserById(
+      post?.authorID,
+      (userData) => {
+        setAuthorData(userData);
+      },
+      (error: any) => {
+        const err: errorProps = {
+          id: "fetching author data Error",
+          userFreindlyMessage:
+            "An error occurred while fetching post's author data.",
+          errorMessage:
+            error instanceof Error ? error.message : "Unknown error",
+          error: error instanceof Error ? error : new Error("Unknown error"),
+        };
+        enqueueSnackbar({ variant: "error", ...err });
+      }
+    );
+  }, [post?.authorID]);
   const history = useNavigate();
   useEffect(() => {
     if (userData?.id) {
@@ -186,21 +215,28 @@ function PostPage({
       }
     );
   }
-  // const totalMaximumRenderableSkeletonComment =
-  //   useMaximumRenderableSkeletonComments();
-  // const maximumRenderableSkeletonComments =
-  //   totalMaximumRenderableSkeletonComment
-  //     ? totalMaximumRenderableSkeletonComment - 1
-  //     : 2;
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 700);
+
+  useLayoutEffect(() => {
+    const handleResize = () => {
+      const isNowDesktop = window.innerWidth > 700;
+      if (isNowDesktop !== isDesktop) {
+        setIsDesktop(isNowDesktop);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [isDesktop]);
   return (
     <Stack pb={2} width={"100%"} minHeight={"100vh"} height={"100%"}>
       <Header
         isLoggedIn={isLoggedIn}
         userData={userData}
         setIsLoggedIn={setIsLoggedIn}
-        setIsCreatePostModalOpen={setIsCreatePostModalOpen}
         categories={categories}
-        isOpen={isCreatePostModalOpen}
         setOpen={setOpen}
         callerIdentifier={"postPage"}
         onPostCreated={(id: string) => {
@@ -212,176 +248,195 @@ function PostPage({
           borderColor: "white",
         }}
       />
-      <Stack mt={2} pb={4} px={2} maxWidth={"600px"}>
-        <Fade in={!loading} timeout={1000}>
-          <Stack
-            sx={{
-              display: loading ? "none" : "flex",
-            }}
-            className="postPageCommentsTitle"
-          >
-            <PostPreview
-              authorID={post?.authorID || ""}
-              categories={categories}
-              pageVariant={true}
-              isPostAuthoredByCurrentUser={userData?.posts
-                ?.map(Number)
-                .includes(Number(post?.id))}
-              isLoggedIn={isLoggedIn}
-              fetchPosts={() => {
-                refreshData(post?.id || "");
+      <Stack
+        mt={2}
+        pb={4}
+        px={2}
+        justifyContent={"space-between"}
+        direction={"row"}
+      >
+        <Stack width={isDesktop ? "70%" : "100%"}>
+          <Fade in={!loading} timeout={1000}>
+            <Stack
+              sx={{
+                display: loading ? "none" : "flex",
               }}
-              title={post?.title || ""}
-              resource={post?.resource || ""}
-              description={post?.description || ""}
-              upvotes={post?.upvotes || 0}
-              downvotes={post?.downvotes || 0}
-              reports={post?.reports || 0}
-              categoryID={post?.categoryID || ""}
-              commentsCount={post?.comments.length || 0}
-              id={post?.id || ""}
-              dateCreated={post?.dateCreated || ""}
-              upvotedByCurrentUser={userData?.upvotedPosts
-                .map(String)
-                .includes(String(post?.id || ""))}
-              downvotedByCurrentUser={userData?.downVotedPosts
-                .map(String)
-                .includes(String(post?.id || ""))}
-              reportedByCurrentUser={userData?.reportedPosts
-                .map(String)
-                .includes(String(post?.id || ""))}
-              userData={userData}
-            />
-          </Stack>
-        </Fade>
-        <Fade in={loading} timeout={1000}>
-          <Stack
-            sx={{
-              display: loading ? "flex" : "none",
-            }}
-          >
-            <PostPreviewSkeletonLoader pageVariant={true} />
-          </Stack>
-        </Fade>
+              className="postPageCommentsTitle"
+            >
+              <PostPreview
+                randomGIFIndex={randomGIFIndex}
+                authorData={authorData}
+                categories={categories}
+                pageVariant={true}
+                isPostAuthoredByCurrentUser={userData?.posts
+                  ?.map(Number)
+                  .includes(Number(post?.id))}
+                isLoggedIn={isLoggedIn}
+                fetchPosts={() => {
+                  refreshData(post?.id || "");
+                }}
+                title={post?.title || ""}
+                resource={post?.resource || ""}
+                description={post?.description || ""}
+                upvotes={post?.upvotes || 0}
+                downvotes={post?.downvotes || 0}
+                reports={post?.reports || 0}
+                categoryID={post?.categoryID || ""}
+                commentsCount={post?.comments.length || 0}
+                id={post?.id || ""}
+                dateCreated={post?.dateCreated || ""}
+                upvotedByCurrentUser={userData?.upvotedPosts
+                  .map(String)
+                  .includes(String(post?.id || ""))}
+                downvotedByCurrentUser={userData?.downVotedPosts
+                  .map(String)
+                  .includes(String(post?.id || ""))}
+                reportedByCurrentUser={userData?.reportedPosts
+                  .map(String)
+                  .includes(String(post?.id || ""))}
+                userData={userData}
+              />
+            </Stack>
+          </Fade>
+          <Fade in={loading} timeout={1000}>
+            <Stack
+              sx={{
+                display: loading ? "flex" : "none",
+              }}
+            >
+              <PostPreviewSkeletonLoader pageVariant={true} />
+            </Stack>
+          </Fade>
 
-        <Divider
-          sx={{
-            borderColor: "white",
-          }}
-        />
-        <Stack mt={2} gap={2}>
-          <TextGlitchEffect
-            text={`${post?.comments.length || 0} Comments`}
-            speed={60}
-            letterCase="lowercase"
-            className="postPageCommentsTitle"
-            type="alphanumeric"
+          <Divider
+            sx={{
+              borderColor: "white",
+            }}
           />
-          <Stack gap={2} width={"100%"}>
-            <TextField
-              label={
-                !isLoggedIn ? "You need to login to comment" : "Add a comment"
-              }
-              multiline
-              placeholder="Like for one good luck, ignore for chinchin en kintama torture"
-              disabled={!isLoggedIn}
-              variant="standard"
-              onChange={(e) => {
-                setNewComment(e.target.value);
-              }}
-              value={newComment}
-              fullWidth
+          <Stack mt={2} gap={2}>
+            <TextGlitchEffect
+              text={`${post?.comments.length || 0} Comments`}
+              speed={60}
+              letterCase="lowercase"
+              className="postPageCommentsTitle"
+              type="alphanumeric"
             />
-            <Button
-              onClick={() => {
-                handleCommentCreate({
-                  reply: false,
-                  comment: false,
-                  replies: false,
-                });
-              }}
-              disabled={!isLoggedIn || creatingComment || newComment.length < 1}
-              color="secondary"
-              className="secondaryButtonHoverStyles"
-              sx={{ mb: creatingComment ? "-3px" : "0px" }}
-              variant="outlined"
-              size="small"
-            >
-              {creatingComment ? <IOSLoader /> : <SendIcon />}
-            </Button>
-          </Stack>
-          <Fade in={!generatingCommentsChain} timeout={1000}>
-            <Stack
-              gap={1}
-              sx={{
-                display: generatingCommentsChain ? "none" : "flex",
-              }}
-            >
-              {commentsChain &&
-                commentsChain.length > 0 &&
-                commentsChain
-                  .reverse()
-                  .map((comment, index) => (
-                    <CommentBlock
-                      handleCommentCreate={handleCommentCreate}
-                      id={comment.id}
-                      userData={userData}
-                      key={comment.id}
-                      dateCreated={comment.dateCreated}
-                      userName={comment.authorName}
-                      commentContents={comment.text}
-                      replies={comment.replies}
-                      imageURL={comment.imageURL}
-                      amIaReply={false}
-                      depth={0}
-                      isLoggedIn={isLoggedIn}
-                      likedByCurrentUser={
-                        userData?.likedComments
-                          .map(String)
-                          .includes(String(comment.id)) || false
-                      }
-                      dislikedByCurrentUser={
-                        userData?.dislikedComments
-                          .map(String)
-                          .includes(String(comment.id)) || false
-                      }
-                      likes={comment.likes}
-                      dislikes={comment.dislikes}
-                      setGeneratingCommentsChain={setGeneratingCommentsChain}
-                    />
+            <Stack gap={2} width={"100%"}>
+              <TextField
+                label={
+                  !isLoggedIn ? "You need to login to comment" : "Add a comment"
+                }
+                multiline
+                placeholder="Like for one good luck, ignore for chinchin en kintama torture"
+                disabled={!isLoggedIn}
+                variant="standard"
+                onChange={(e) => {
+                  setNewComment(e.target.value);
+                }}
+                value={newComment}
+                fullWidth
+              />
+              <Button
+                onClick={() => {
+                  handleCommentCreate({
+                    reply: false,
+                    comment: false,
+                    replies: false,
+                  });
+                }}
+                disabled={
+                  !isLoggedIn || creatingComment || newComment.length < 1
+                }
+                color="secondary"
+                className="secondaryButtonHoverStyles"
+                sx={{ mb: creatingComment ? "-3px" : "0px" }}
+                variant="outlined"
+                size="small"
+              >
+                {creatingComment ? <IOSLoader /> : <SendIcon />}
+              </Button>
+            </Stack>
+            <Fade in={!generatingCommentsChain} timeout={1000}>
+              <Stack
+                gap={1}
+                sx={{
+                  display: generatingCommentsChain ? "none" : "flex",
+                }}
+              >
+                {commentsChain &&
+                  commentsChain.length > 0 &&
+                  commentsChain
+                    .reverse()
+                    .map((comment, index) => (
+                      <CommentBlock
+                        handleCommentCreate={handleCommentCreate}
+                        id={comment.id}
+                        userData={userData}
+                        key={comment.id}
+                        dateCreated={comment.dateCreated}
+                        userName={comment.authorName}
+                        commentContents={comment.text}
+                        replies={comment.replies}
+                        imageURL={comment.imageURL}
+                        amIaReply={false}
+                        depth={0}
+                        isLoggedIn={isLoggedIn}
+                        likedByCurrentUser={
+                          userData?.likedComments
+                            .map(String)
+                            .includes(String(comment.id)) || false
+                        }
+                        dislikedByCurrentUser={
+                          userData?.dislikedComments
+                            .map(String)
+                            .includes(String(comment.id)) || false
+                        }
+                        likes={comment.likes}
+                        dislikes={comment.dislikes}
+                        setGeneratingCommentsChain={setGeneratingCommentsChain}
+                      />
+                    ))}
+              </Stack>
+            </Fade>
+            <Fade in={generatingCommentsChain} timeout={1000}>
+              <Stack
+                gap={2}
+                sx={{
+                  display: generatingCommentsChain ? "flex" : "none",
+                }}
+              >
+                {post?.comments.length &&
+                  [...Array(post?.comments.length)].map((_, index) => (
+                    <CommentSkeletonLoader key={index} />
                   ))}
-            </Stack>
-          </Fade>
-          <Fade in={generatingCommentsChain} timeout={1000}>
-            <Stack
-              gap={2}
-              sx={{
-                display: generatingCommentsChain ? "flex" : "none",
-              }}
-            >
-              {post?.comments.length &&
-                [...Array(post?.comments.length)].map((_, index) => (
-                  <CommentSkeletonLoader key={index} />
-                ))}
-              {post?.comments.length === null && <CommentSkeletonLoader />}
-              {post?.comments.length === 0 && (
-                <Stack
-                  width={"100%"}
-                  justifyContent={"center"}
-                  alignItems={"center"}
-                >
-                  <TextGlitchEffect
-                    text={`No comments yet`}
-                    speed={60}
-                    letterCase="lowercase"
-                    type="alphanumeric"
-                    className={"no Comments Found"}
-                  />
-                </Stack>
-              )}
-            </Stack>
-          </Fade>
+                {post?.comments.length === null && <CommentSkeletonLoader />}
+                {post?.comments.length === 0 && (
+                  <Stack
+                    width={"100%"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                  >
+                    <TextGlitchEffect
+                      text={`No comments yet`}
+                      speed={60}
+                      letterCase="lowercase"
+                      type="alphanumeric"
+                      className={"no Comments Found"}
+                    />
+                  </Stack>
+                )}
+              </Stack>
+            </Fade>
+          </Stack>
         </Stack>
+        {isDesktop && (
+          <UserStats
+            userData={authorData}
+            isLoggedIn={isLoggedIn}
+            randomGIFIndex={randomGIFIndex}
+            pageVariant={true}
+          />
+        )}
       </Stack>
       <Footer />
     </Stack>

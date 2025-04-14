@@ -211,6 +211,7 @@ function App() {
             path="/user/:id"
             element={
               <UserProfilePage
+                pageVariant={false}
                 setIsLoggedIn={setIsLoggedIn}
                 loggedInUserData={userData}
                 setOpen={setLogInDialogue}

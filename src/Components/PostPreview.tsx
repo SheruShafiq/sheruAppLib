@@ -50,7 +50,8 @@ interface PostPreviewProps {
   isPostAuthoredByCurrentUser: boolean;
   pageVariant?: boolean;
   userData: User;
-  authorID: string;
+  authorData: User;
+  randomGIFIndex: number;
 }
 
 type LoadingAction = "upvote" | "downvote" | "report" | null;
@@ -72,10 +73,10 @@ const PostPreview: React.FC<PostPreviewProps> = ({
   upvotedByCurrentUser,
   downvotedByCurrentUser,
   reportedByCurrentUser,
-  isPostAuthoredByCurrentUser,
   pageVariant,
   userData,
-  authorID,
+  authorData,
+  randomGIFIndex,
 }) => {
   const history = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -87,7 +88,6 @@ const PostPreview: React.FC<PostPreviewProps> = ({
   const [localUpvotes, setLocalUpvotes] = useState(upvotes);
   const [localDownvotes, setLocalDownvotes] = useState(downvotes);
   const [localReports, setLocalReports] = useState(reports);
-  const [authorData, setAuthorData] = useState<User | null>(null);
   const descRef = useRef<HTMLDivElement>(null);
   const [isOverflow, setIsOverflow] = useState(false);
 
@@ -302,29 +302,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
       setLoadingAction(null);
     }
   };
-  const randomGIFIndex = useMemo(
-    () => Math.floor(Math.random() * Math.min(GIFs.length, 200)),
-    []
-  );
-  useEffect(() => {
-    fetchUserById(
-      authorID,
-      (userData) => {
-        setAuthorData(userData);
-      },
-      (error: any) => {
-        const err: errorProps = {
-          id: "fetching author data Error",
-          userFreindlyMessage:
-            "An error occurred while fetching post's author data.",
-          errorMessage:
-            error instanceof Error ? error.message : "Unknown error",
-          error: error instanceof Error ? error : new Error("Unknown error"),
-        };
-        enqueueSnackbar({ variant: "error", ...err });
-      }
-    );
-  }, [authorID]);
+
   return (
     <Stack
       gap={1}

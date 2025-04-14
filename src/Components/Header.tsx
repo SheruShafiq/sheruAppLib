@@ -8,7 +8,7 @@ import { useMemo } from "react";
 import { GIFs } from "../assets/GIFs";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import ArrowDropDownCircleOutlinedIcon from "@mui/icons-material/ArrowDropDownCircleOutlined";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import LogoutIcon from "@mui/icons-material/Logout";
 function Header({
   isLoggedIn,
@@ -134,7 +134,7 @@ function Header({
                   top: "12px",
                 }}
               >
-                <ArrowDropDownCircleOutlinedIcon
+                <KeyboardArrowDownIcon
                   sx={{
                     backgroundColor: "black",
                     borderRadius: "100%",
