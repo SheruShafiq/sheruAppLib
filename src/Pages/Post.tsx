@@ -22,6 +22,8 @@ import { useNavigate } from "react-router-dom";
 import Footer from "../Components/Footer";
 import IOSLoader from "../Components/IOSLoader";
 import SendIcon from "@mui/icons-material/Send";
+import CommentSkeletonLoader from "../SkeletonLoaders/CommentSkeletonLoader";
+import { useMaximumRenderableSkeletonComments } from "../hooks/useMaximumRenderableSkeletonComments";
 
 function PostPage({
   isLoggedIn,
@@ -38,6 +40,7 @@ function PostPage({
   const { id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
   const [commentsChain, setCommentsChain] = useState<any>(undefined);
+  const [generatingCommentsChain, setGeneratingCommentsChain] = useState(false);
   const navigate = useNavigate();
   function fetchCurrentPostData(id: string) {
     fetchPostById({
@@ -71,9 +74,16 @@ function PostPage({
   // New effect to generate full comments chain after post is fetched
   useEffect(() => {
     if (post && post.comments && post.comments.length > 0) {
+      setGeneratingCommentsChain(true);
       generateCommentsChain(post.comments.map(String))
-        .then((chain) => setCommentsChain(chain))
-        .catch((err) => console.error(err));
+        .then((chain) => {
+          setCommentsChain(chain);
+          setGeneratingCommentsChain(false);
+        })
+        .catch((err: unknown) => {
+          console.error(err);
+          setGeneratingCommentsChain(false);
+        });
     }
   }, [post]);
 
@@ -176,7 +186,12 @@ function PostPage({
       }
     );
   }
-
+  // const totalMaximumRenderableSkeletonComment =
+  //   useMaximumRenderableSkeletonComments();
+  // const maximumRenderableSkeletonComments =
+  //   totalMaximumRenderableSkeletonComment
+  //     ? totalMaximumRenderableSkeletonComment - 1
+  //     : 2;
   return (
     <Stack pb={2} width={"100%"} minHeight={"100vh"} height={"100%"}>
       <Header
@@ -203,6 +218,7 @@ function PostPage({
             sx={{
               display: loading ? "none" : "flex",
             }}
+            className="postPageCommentsTitle"
           >
             <PostPreview
               categories={categories}
@@ -293,38 +309,74 @@ function PostPage({
               {creatingComment ? <IOSLoader /> : <SendIcon />}
             </Button>
           </Stack>
-          <Stack gap={1}>
-            {commentsChain &&
-              commentsChain.length > 0 &&
-              commentsChain.map((comment, index) => (
-                <CommentBlock
-                  handleCommentCreate={handleCommentCreate}
-                  id={comment.id}
-                  userData={userData}
-                  key={comment.id}
-                  dateCreated={comment.dateCreated}
-                  userName={comment.authorName}
-                  commentContents={comment.text}
-                  replies={comment.replies}
-                  imageURL={comment.imageURL}
-                  amIaReply={false}
-                  depth={0}
-                  isLoggedIn={isLoggedIn}
-                  likedByCurrentUser={
-                    userData?.likedComments
-                      .map(String)
-                      .includes(String(comment.id)) || false
-                  }
-                  dislikedByCurrentUser={
-                    userData?.dislikedComments
-                      .map(String)
-                      .includes(String(comment.id)) || false
-                  }
-                  likes={comment.likes}
-                  dislikes={comment.dislikes}
-                />
-              ))}
-          </Stack>
+          <Fade in={!generatingCommentsChain} timeout={1000}>
+            <Stack
+              gap={1}
+              sx={{
+                display: generatingCommentsChain ? "none" : "flex",
+              }}
+            >
+              {commentsChain &&
+                commentsChain.length > 0 &&
+                commentsChain.map((comment, index) => (
+                  <CommentBlock
+                    handleCommentCreate={handleCommentCreate}
+                    id={comment.id}
+                    userData={userData}
+                    key={comment.id}
+                    dateCreated={comment.dateCreated}
+                    userName={comment.authorName}
+                    commentContents={comment.text}
+                    replies={comment.replies}
+                    imageURL={comment.imageURL}
+                    amIaReply={false}
+                    depth={0}
+                    isLoggedIn={isLoggedIn}
+                    likedByCurrentUser={
+                      userData?.likedComments
+                        .map(String)
+                        .includes(String(comment.id)) || false
+                    }
+                    dislikedByCurrentUser={
+                      userData?.dislikedComments
+                        .map(String)
+                        .includes(String(comment.id)) || false
+                    }
+                    likes={comment.likes}
+                    dislikes={comment.dislikes}
+                  />
+                ))}
+            </Stack>
+          </Fade>
+          <Fade in={generatingCommentsChain} timeout={1000}>
+            <Stack
+              gap={2}
+              sx={{
+                display: generatingCommentsChain ? "flex" : "none",
+              }}
+            >
+              {post?.comments.length &&
+                [...Array(post?.comments.length)].map((_, index) => (
+                  <CommentSkeletonLoader key={index} />
+                ))}
+              {post?.comments.length === null && <CommentSkeletonLoader />}
+              {post?.comments.length === 0 && (
+                <Stack
+                  width={"100%"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
+                  <TextGlitchEffect
+                    text={`No comments yet`}
+                    speed={60}
+                    letterCase="lowercase"
+                    type="alphanumeric"
+                    className={"no Comments Found"}
+                  />
+                </Stack>
+              )}
+            </Stack>
+          </Fade>
         </Stack>
       </Stack>
       <Footer />

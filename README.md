@@ -82,8 +82,9 @@ Product properties
 31. Better error handeling when post ID in URL is wrong
 32. On Post page, user's profile who posted it needs to be implemented
 33. Loaders for commenting, replying
-34. BUG: post title is clickable on post page
-35. Create post loader keeps going on live for some reason
+34. <del>BUG: post title is clickable on post page</del>
+35. <del>Create post loader keeps going on live for some reason</del>
+36. ThreeJS 404 page after basic exams
 
 ---
 

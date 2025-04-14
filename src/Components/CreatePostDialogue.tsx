@@ -37,6 +37,10 @@ function CreatePostDialogue({
   const handleClose = () => {
     setCreatingPost(false);
     setOpen(false);
+    setTitle("");
+    setResource("");
+    setDescription("");
+    setCategory("");
   };
   const userID: string = userData?.id;
   const handleSubmit = (event) => {

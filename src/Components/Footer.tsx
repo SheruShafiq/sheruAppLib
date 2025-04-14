@@ -22,7 +22,13 @@ function Footer() {
     playMode: "hover",
   });
   return (
-    <Stack px={2} mt={"auto"} direction={"row"} alignItems="center">
+    <Stack
+      className="footer"
+      px={2}
+      mt={"auto"}
+      direction={"row"}
+      alignItems="center"
+    >
       <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-start" }}>
         <img
           style={{ width: "200px" }}

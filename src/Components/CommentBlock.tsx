@@ -320,6 +320,7 @@ function CommentBlock({
                 onChange={(e) => {
                   setNewComment(e.target.value);
                 }}
+                value={newComment}
                 fullWidth
               />
               <Button
@@ -329,6 +330,7 @@ function CommentBlock({
                     replies: replies,
                     comment: newComment,
                   });
+                  setNewComment("");
                   setOpenReply(false);
                 }}
                 disabled={!isLoggedIn || creatingReply || newComment.length < 1}

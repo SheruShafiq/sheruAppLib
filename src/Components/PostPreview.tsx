@@ -328,7 +328,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
       px={pageVariant ? 0 : 2}
     >
       <Stack direction="row" alignItems="center" gap={1} maxWidth={"100%"}>
-        <Link href={`posts/${id}`} rel="noopener" style={{ flex: 1 }}>
+        {pageVariant ? (
           <Typography
             fontSize={16}
             fontWeight="bold"
@@ -339,7 +339,20 @@ const PostPreview: React.FC<PostPreviewProps> = ({
           >
             {pageVariant ? title : formattedTitle}
           </Typography>
-        </Link>
+        ) : (
+          <Link href={`posts/${id}`} rel="noopener" style={{ flex: 1 }}>
+            <Typography
+              fontSize={16}
+              fontWeight="bold"
+              sx={{
+                whiteSpace: "normal",
+                wordBreak: "break-word",
+              }}
+            >
+              {pageVariant ? title : formattedTitle}
+            </Typography>
+          </Link>
+        )}
         <Chip size="small" label={formattedDate} variant="outlined" />
         {isPostAuthoredByCurrentUser && (
           <Chip
