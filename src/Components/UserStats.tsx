@@ -61,7 +61,7 @@ function UserStats({ userData, isLoggedIn, randomGIFIndex, pageVariant }) {
           <Avatar
             className="userProfileAvatarGIF"
             alt={userData?.displayName}
-            src={isLoggedIn ? GIFs[randomGIFIndex] : ""}
+            src={GIFs[randomGIFIndex]}
             sx={{ width: 200, height: 200 }}
           />
         </Link>
@@ -69,7 +69,7 @@ function UserStats({ userData, isLoggedIn, randomGIFIndex, pageVariant }) {
         <Avatar
           className="userProfileAvatarGIF"
           alt={userData?.displayName}
-          src={isLoggedIn ? GIFs[randomGIFIndex] : ""}
+          src={GIFs[randomGIFIndex]}
           sx={{ width: 200, height: 200 }}
         />
       )}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Stack, Divider, IconButton, Button } from "@mui/material";
 import { fetchPostsPaginated, getPostByID } from "../APICalls";
 import { useSnackbar } from "notistack";
@@ -20,6 +20,7 @@ import {
 import { errorProps } from "../../dataTypeDefinitions";
 import Footer from "../Components/Footer";
 import IOSSpinner from "../Components/IOSLoader";
+import { GIFs } from "../assets/GIFs";
 
 function Home({
   isLoggedIn,
@@ -103,7 +104,10 @@ function Home({
   }, [curentPage]);
 
   const isNoPosts = posts.length === 0;
-
+  const randomGIFIndex = useMemo(
+    () => Math.floor(Math.random() * Math.min(GIFs.length, 200)),
+    []
+  );
   const firstPage = Number(metaData?.first?.match(/_page=(\d+)/)?.[1] || 1);
   const prevPage = metaData?.prev?.match(/_page=(\d+)/)?.[1];
   const nextPage = metaData?.next?.match(/_page=(\d+)/)?.[1];
@@ -150,7 +154,7 @@ function Home({
           >
             {Object.keys(posts).map((key) => (
               <PostPreview
-                authorID={posts[key].authorID}
+                randomGIFIndex={randomGIFIndex}
                 categories={categories}
                 pageVariant={false}
                 isPostAuthoredByCurrentUser={userData?.posts

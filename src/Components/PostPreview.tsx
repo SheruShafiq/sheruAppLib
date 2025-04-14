@@ -50,7 +50,7 @@ interface PostPreviewProps {
   isPostAuthoredByCurrentUser: boolean;
   pageVariant?: boolean;
   userData: User;
-  authorData: User | null;
+  authorData?: User | null;
   randomGIFIndex: number;
 }
 

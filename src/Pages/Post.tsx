@@ -258,7 +258,7 @@ function PostPage({
         mx={"auto"}
         gap={8}
       >
-        <Stack minWidth={"100%"}>
+        <Stack flexGrow={1}>
           <Fade in={!loading} timeout={1000}>
             <Stack
               sx={{
