@@ -29,6 +29,7 @@ function CommentBlock({
   dislikedByCurrentUser,
   userData,
   handleCommentCreate,
+  setGeneratingCommentsChain,
 }) {
   const { enqueueSnackbar } = useSnackbar();
   const [expanded, setExpanded] = useState(false);
@@ -325,13 +326,14 @@ function CommentBlock({
               />
               <Button
                 onClick={() => {
+                  setGeneratingCommentsChain(true);
                   handleCommentCreate({
                     reply: id,
                     replies: replies,
                     comment: newComment,
                   });
                   setNewComment("");
-                  setOpenReply(false);
+                  // setOpenReply(false);
                 }}
                 disabled={!isLoggedIn || creatingReply || newComment.length < 1}
                 color="secondary"
@@ -353,6 +355,7 @@ function CommentBlock({
           {replies.map((reply) => (
             <CommentBlock
               handleCommentCreate={handleCommentCreate}
+              setGeneratingCommentsChain={setGeneratingCommentsChain}
               id={reply.id}
               amIaReply={true}
               imageURL={reply.imageURL}
