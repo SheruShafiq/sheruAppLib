@@ -7,7 +7,7 @@
   color: #69717d; /* medium gray for light mode */
 }   
 .spinner.dark  { 
-  color: #ffffff; /* white for dark mode */
+  color: #ffffffcd; /* white for dark mode */
 }   
 
 .spinner .segment {
