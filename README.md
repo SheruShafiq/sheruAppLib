@@ -82,6 +82,8 @@ Product properties
 31. Better error handeling when post ID in URL is wrong
 32. On Post page, user's profile who posted it needs to be implemented
 33. Loaders for commenting, replying
+34. BUG: post title is clickable on post page
+35. Create post loader keeps going on live for some reason
 
 ---
 
@@ -95,6 +97,7 @@ Product properties
   - ENV variables:
     - GITHUB_SYNC (true | false)
     - GITHUB_TOKEN
+    - DB_NAME
 - Vercel Prod URL
   <a href="https://sauce-weld.vercel.app/">https://sauce-weld.vercel.app/</a>
 - Render Backend Prod URL

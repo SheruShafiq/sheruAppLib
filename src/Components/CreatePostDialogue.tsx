@@ -35,6 +35,7 @@ function CreatePostDialogue({
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const handleClose = () => {
+    setCreatingPost(false);
     setOpen(false);
   };
   const userID: string = userData?.id;
