@@ -363,13 +363,13 @@ function CommentBlock({
               isLoggedIn={isLoggedIn}
               likes={reply.likes}
               likedByCurrentUser={
-                userData?.dislikedComments
+                userData?.likedComments
                   .map(String)
                   .includes(String(reply.id)) || false
               }
               dislikes={reply.dislikes}
               dislikedByCurrentUser={
-                userData?.likedComments
+                userData?.dislikedComments
                   .map(String)
                   .includes(String(reply.id)) || false
               }
