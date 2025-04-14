@@ -212,7 +212,7 @@ function PostPage({
           borderColor: "white",
         }}
       />
-      <Stack pb={4} px={2} maxWidth={"600px"}>
+      <Stack mt={2} pb={4} px={2} maxWidth={"600px"}>
         <Fade in={!loading} timeout={1000}>
           <Stack
             sx={{

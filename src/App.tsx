@@ -16,6 +16,7 @@ import { useSnackbar } from "notistack";
 import BadgeMakerHome from "./Pages/BadgeMakerHome.tsx";
 import React from "react";
 import { Buffer } from "buffer";
+import UserProfilePage from "./Pages/UserProfilePage.tsx";
 
 globalThis.Buffer = Buffer;
 const isDesktop = window.innerWidth > 768;
@@ -204,6 +205,18 @@ function App() {
                   categories={categories}
                 />
               </div>
+            }
+          />
+          <Route
+            path="/user/:id"
+            element={
+              <UserProfilePage
+                setIsLoggedIn={setIsLoggedIn}
+                loggedInUserData={userData}
+                setOpen={setLogInDialogue}
+                isLoggedIn={isLoggedIn}
+                categories={categories}
+              />
             }
           />
           <Route

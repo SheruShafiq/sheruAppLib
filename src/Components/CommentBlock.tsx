@@ -10,7 +10,7 @@ import HeartBrokenIcon from "@mui/icons-material/HeartBroken";
 import { patchVoteComment, patchUndoVoteComment, patchUser } from "../APICalls";
 import IOSLoader from "./IOSLoader";
 import SendIcon from "@mui/icons-material/Send";
-import { formatDateRedditStyle } from "./PostPreview";
+import { formatDateRedditStyle } from "../globalFunctions";
 import ReadMore from "./ReadMore";
 
 function CommentBlock({

@@ -28,6 +28,7 @@ import IOSLoader from "./IOSLoader";
 import ReadMore from "./ReadMore";
 import { useNavigate } from "react-router-dom";
 import { GIFs } from "../assets/GIFs";
+import { formatDateRedditStyle } from "../globalFunctions";
 
 interface PostPreviewProps {
   id: string;
@@ -53,32 +54,6 @@ interface PostPreviewProps {
 }
 
 type LoadingAction = "upvote" | "downvote" | "report" | null;
-const formatDateRedditStyle = (date: Date): string => {
-  const now = new Date();
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-  if (diffInSeconds < 60) {
-    return `${diffInSeconds || 1} second${diffInSeconds === 1 ? "" : "s"} ago`;
-  } else if (diffInSeconds < 3600) {
-    const minutes = Math.floor(diffInSeconds / 60);
-    return `${minutes || 1} minute${minutes === 1 ? "" : "s"} ago`;
-  } else if (diffInSeconds < 86400) {
-    const hours = Math.floor(diffInSeconds / 3600);
-    return `${hours || 1} hour${hours === 1 ? "" : "s"} ago`;
-  } else if (diffInSeconds < 604800) {
-    const days = Math.floor(diffInSeconds / 86400);
-    return `${days || 1} day${days === 1 ? "" : "s"} ago`;
-  } else if (diffInSeconds < 2592000) {
-    const weeks = Math.floor(diffInSeconds / 604800);
-    return `${weeks || 1} week${weeks === 1 ? "" : "s"} ago`;
-  } else if (diffInSeconds < 31536000) {
-    const months = Math.floor(diffInSeconds / 2592000);
-    return `${months || 1} month${months === 1 ? "" : "s"} ago`;
-  } else {
-    const years = Math.floor(diffInSeconds / 31536000);
-    return `${years || 1} year${years === 1 ? "" : "s"} ago`;
-  }
-};
 
 const PostPreview: React.FC<PostPreviewProps> = ({
   id,
@@ -355,7 +330,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
       gap={1}
       width={"100%"}
       className={pageVariant ? "" : "standardBorder"}
-      py={2}
+      py={1}
       px={pageVariant ? 0 : 2}
     >
       <Stack direction="row" alignItems="center" gap={1} maxWidth={"100%"}>
@@ -366,7 +341,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
                 sx={{ width: 14, height: 14 }}
                 src={GIFs[randomGIFIndex]}
               />
-              <Link href={`users/${id}`} rel="noopener">
+              <Link href={`/user/${id}`} rel="noopener">
                 <Typography fontSize={14} width={"fit-content"}>
                   {authorData?.displayName === userData?.displayName
                     ? "You"
@@ -387,7 +362,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
             </Typography>
           </Stack>
         ) : (
-          <Link href={`posts/${id}`} rel="noopener" style={{ flex: 1 }}>
+          <Link href={`/posts/${id}`} rel="noopener" style={{ flex: 1 }}>
             <Typography
               fontSize={24}
               fontWeight="bold"
@@ -506,7 +481,12 @@ const PostPreview: React.FC<PostPreviewProps> = ({
         <Button>{categories[Number(categoryID) - 1]?.name}</Button>
         <Button
           onClick={() => {
-            history(`/posts/${id}`);
+            if (!pageVariant) {
+              history(`/posts/${id}`);
+            }
+          }}
+          sx={{
+            pointerEvents: pageVariant ? "none" : "auto",
           }}
           startIcon={<MessageOutlinedIcon color="secondary" />}
         >
@@ -518,7 +498,3 @@ const PostPreview: React.FC<PostPreviewProps> = ({
 };
 
 export default PostPreview;
-export { formatDateRedditStyle };
-function getUserByIdPromise(authorID: any) {
-  throw new Error("Function not implemented.");
-}

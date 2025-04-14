@@ -116,9 +116,7 @@ function Home({
           isLoggedIn={isLoggedIn}
           userData={userData}
           setIsLoggedIn={setIsLoggedIn}
-          setIsCreatePostModalOpen={setIsCreatePostModalOpen}
           categories={categories}
-          isOpen={isCreatePostModalOpen}
           setOpen={setOpen}
           onPostCreated={() => {
             fetchPostsHandeled(curentPage, pageSize);
