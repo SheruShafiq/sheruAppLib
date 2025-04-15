@@ -1,5 +1,5 @@
 import { Stack, Avatar, Chip, Button, Link } from "@mui/material";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { GIFs } from "../assets/GIFs";
 import { formatDateRedditStyle } from "../globalFunctions";
 import { TextGlitchEffect } from "./TextGlitchEffect";
@@ -8,7 +8,11 @@ import BackupTableIcon from "@mui/icons-material/BackupTable";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import HeartBrokenIcon from "@mui/icons-material/HeartBroken";
 import ErrorIcon from "@mui/icons-material/Error";
+import { getRandomGIFBasedOffof } from "../APICalls";
 function UserStats({ userData, isLoggedIn, randomGIFIndex, pageVariant }) {
+  const [profilePicture, setProfilePicture] = React.useState(
+    GIFs[randomGIFIndex]
+  );
   const stats = useMemo(
     () => [
       {
@@ -49,6 +53,18 @@ function UserStats({ userData, isLoggedIn, randomGIFIndex, pageVariant }) {
     ],
     [userData]
   );
+  useEffect(() => {
+    (async () => {
+      const randomPostGIF = await getRandomGIFBasedOffof({
+        keyword: userData?.displayName,
+      });
+      if (randomPostGIF && randomPostGIF !== "") {
+        setProfilePicture(randomPostGIF);
+      } else {
+        setProfilePicture(GIFs[randomGIFIndex]);
+      }
+    })();
+  }, [userData?.displayName]);
   return (
     <Stack
       direction={pageVariant ? "column" : "row"}
@@ -61,7 +77,7 @@ function UserStats({ userData, isLoggedIn, randomGIFIndex, pageVariant }) {
           <Avatar
             className="userProfileAvatarGIF"
             alt={userData?.displayName}
-            src={GIFs[randomGIFIndex]}
+            src={profilePicture}
             sx={{ width: 200, height: 200 }}
           />
         </Link>
@@ -69,7 +85,7 @@ function UserStats({ userData, isLoggedIn, randomGIFIndex, pageVariant }) {
         <Avatar
           className="userProfileAvatarGIF"
           alt={userData?.displayName}
-          src={GIFs[randomGIFIndex]}
+          src={profilePicture}
           sx={{ width: 200, height: 200 }}
         />
       )}

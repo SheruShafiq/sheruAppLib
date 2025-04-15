@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, Box, Button, Fade, IconButton, Stack } from "@mui/material";
 import { TextGlitchEffect } from "./TextGlitchEffect";
 import AddIcon from "@mui/icons-material/Add";
@@ -10,6 +10,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { getRandomGIFBasedOffof } from "../APICalls";
 function Header({
   isLoggedIn,
   userData,
@@ -23,6 +24,7 @@ function Header({
     () => Math.floor(Math.random() * Math.min(GIFs.length, 200)),
     []
   );
+  const [profilePicture, setProfilePicture] = useState(GIFs[randomGIFIndex]);
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -32,6 +34,18 @@ function Header({
   const handleClose = () => {
     setAnchorEl(null);
   };
+  useEffect(() => {
+    (async () => {
+      const randomPostGIF = await getRandomGIFBasedOffof({
+        keyword: userData?.displayName,
+      });
+      if (randomPostGIF && randomPostGIF !== "") {
+        setProfilePicture(randomPostGIF);
+      } else {
+        setProfilePicture(GIFs[randomGIFIndex]);
+      }
+    })();
+  }, [userData?.displayName]);
   return (
     <Box px={2} sx={{ position: "relative", minHeight: "3rem" }} mt={0.5}>
       <CreatePostDialogue
@@ -69,7 +83,7 @@ function Header({
                 <Avatar
                   className="userProfileAvatarGIF"
                   alt={userData?.displayName}
-                  src={isLoggedIn ? GIFs[randomGIFIndex] : ""}
+                  src={isLoggedIn ? profilePicture : ""}
                   sx={{ width: 40, height: 40 }}
                 />
                 <Stack>
@@ -122,7 +136,7 @@ function Header({
               <Avatar
                 className="userProfileAvatarGIF"
                 alt={userData?.displayName}
-                src={isLoggedIn ? GIFs[randomGIFIndex] : ""}
+                src={isLoggedIn ? profilePicture : ""}
                 sx={{ width: 40, height: 40 }}
               />
               <IconButton
