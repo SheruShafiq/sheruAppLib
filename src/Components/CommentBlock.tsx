@@ -7,7 +7,12 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { GIFs } from "../assets/GIFs";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import HeartBrokenIcon from "@mui/icons-material/HeartBroken";
-import { patchVoteComment, patchUndoVoteComment, patchUser } from "../APICalls";
+import {
+  patchVoteComment,
+  patchUndoVoteComment,
+  patchUser,
+  getRandomGIFBasedOffof,
+} from "../APICalls";
 import IOSLoader from "./IOSLoader";
 import SendIcon from "@mui/icons-material/Send";
 import { formatDateRedditStyle } from "../globalFunctions";
@@ -201,7 +206,16 @@ function CommentBlock({
   const [creatingReply, setCreatingReply] = useState(false);
   const [newComment, setNewComment] = useState("");
   const [openReply, setOpenReply] = useState(false);
-
+  useEffect(() => {
+    (async () => {
+      const randomPostGIF = await getRandomGIFBasedOffof({ keyword: userName });
+      if (randomPostGIF && randomPostGIF !== "") {
+        setImageUrl(randomPostGIF);
+      } else {
+        setImageUrl(GIFs[randomGIFIndex]);
+      }
+    })();
+  }, [userName]);
   return (
     <Stack
       sx={{

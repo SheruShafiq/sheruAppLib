@@ -305,7 +305,11 @@ const PostPreview: React.FC<PostPreviewProps> = ({
   useEffect(() => {
     (async () => {
       const randomPostGIF = await getRandomGIFBasedOffof({ keyword: title });
-      setRandomPostGIF(randomPostGIF);
+      if (randomPostGIF && randomPostGIF !== "") {
+        setRandomPostGIF(randomPostGIF);
+      } else {
+        setRandomPostGIF(GIFs[randomGIFIndex]);
+      }
     })();
   }, [title]);
   return (
