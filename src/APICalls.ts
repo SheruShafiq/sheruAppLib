@@ -120,11 +120,23 @@ export async function createPost({
     onError(error);
   }
 }
-export async function fetchUserById(id, onSuccess, onError) {
+interface FetchUserByIdProps {
+  id: string;
+  onSuccess: (user: User) => void;
+  onError: (error: any) => void;
+}
+
+export async function fetchUserById(
+  id: FetchUserByIdProps["id"],
+  onSuccess: FetchUserByIdProps["onSuccess"],
+  onError: FetchUserByIdProps["onError"]
+): Promise<void> {
   try {
     const response = await fetch(`${APIURL}/users/${id}`);
-
-    const data = await response.json();
+    if (response.status === 404) {
+      throw new Error("User not found");
+    }
+    const data: User = await response.json();
     onSuccess(data);
   } catch (error) {
     onError(error);

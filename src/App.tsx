@@ -8,7 +8,7 @@ import CustomSnackbar from "./Components/CustomSnackbar";
 import Post from "./Pages/Post";
 import SignUpAndLogin from "./Components/SignUpAndLogin";
 import { fetchUserById, fetchCategories } from "./APICalls";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { ThemeProvider, alpha, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import CustomErrorSnackBar from "./Components/CustomErrorSnackBar";
 import { Category, errorProps, User } from "../dataTypeDefinitions";
@@ -81,7 +81,7 @@ function App() {
   const notistackRef = createRef<SnackbarProvider>();
   const [userData, setUserData] = useState<User>();
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    return userID || false;
+    false;
   });
   const [loginDialogue, setLogInDialogue] = useState(false);
 
@@ -94,11 +94,14 @@ function App() {
       (error: any) => {
         const err: errorProps = {
           id: "fetching User Data Error",
-          userFreindlyMessage: "An error occurred while fetching user data.",
+          userFreindlyMessage:
+            "An error occurred while fetching user data, try to log in again.",
           errorMessage:
             error instanceof Error ? error.message : "Unknown error",
           error: error instanceof Error ? error : new Error("Unknown error"),
         };
+        document.cookie =
+          "userID=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
         enqueueSnackbar({ variant: "error", ...err });
       }
     );
@@ -122,7 +125,7 @@ function App() {
             error instanceof Error ? error.message : "Unknown error",
           error: error instanceof Error ? error : new Error("Unknown error"),
         };
-        enqueueSnackbar({ variant: "error", ...err });
+        enqueueSnackbar({ variant: "login", ...err });
       }
     );
   }, []);
