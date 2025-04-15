@@ -319,7 +319,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
                 sx={{ width: 14, height: 14 }}
                 src={GIFs[randomGIFIndex]}
               />
-              <Link href={`/user/${id}`} rel="noopener">
+              <Link href={`/user/${authorData?.id}`} rel="noopener">
                 <Typography fontSize={14} width={"fit-content"}>
                   {authorData?.displayName === userData?.displayName
                     ? "You"
