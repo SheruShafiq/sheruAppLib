@@ -33,7 +33,7 @@ function Home({
   const { pageNumber } = useParams();
   const currentDisplayHeight = window.innerHeight;
   const headerHeight = 65;
-  const postPreviewHeight = 170;
+  const postPreviewHeight = 220;
   const pageSize = Math.floor(
     (currentDisplayHeight - headerHeight) / postPreviewHeight
   );
@@ -132,13 +132,13 @@ function Home({
           }}
         />
       </Stack>
-      {/* <Button
+      <Button
         onClick={() => {
           setFetchingPosts(!fetchingInitialPosts);
         }}
       >
         Toggle loading
-      </Button> */}
+      </Button>
       <Stack px={2} maxWidth={"600px"} alignSelf={"center"} width={"100%"}>
         <Fade in={fetchingInitialPosts} timeout={1000}>
           <Stack
