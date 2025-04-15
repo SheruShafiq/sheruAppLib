@@ -9,18 +9,20 @@ function PostPreviewSkeletonLoader({ pageVariant }) {
       py={2}
       className={pageVariant ? "" : "standardBorder"}
     >
-      <Stack gap={1}>
-        <Stack direction={"row"} gap={1} alignItems={"center"}>
-          <Skeleton
-            animation="wave"
-            variant="circular"
-            width={14}
-            height={14}
-          ></Skeleton>
-          <Skeleton animation="wave" variant="text" width={120} height={24} />
+      {pageVariant && (
+        <Stack gap={1}>
+          <Stack direction={"row"} gap={1} alignItems={"center"}>
+            <Skeleton
+              animation="wave"
+              variant="circular"
+              width={14}
+              height={14}
+            ></Skeleton>
+            <Skeleton animation="wave" variant="text" width={120} height={24} />
+          </Stack>
+          <Skeleton animation="wave" variant="text" width={300} height={30} />
         </Stack>
-        <Skeleton animation="wave" variant="text" width={300} height={30} />
-      </Stack>
+      )}
       <Stack gap={1}>
         <Skeleton animation="wave" variant="text" width="100%" />
         <Stack gap={1}>
