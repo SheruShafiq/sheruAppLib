@@ -132,13 +132,13 @@ function Home({
           }}
         />
       </Stack>
-      <Button
+      {/* <Button
         onClick={() => {
           setFetchingPosts(!fetchingInitialPosts);
         }}
       >
         Toggle loading
-      </Button>
+      </Button> */}
       <Stack px={2} maxWidth={"600px"} alignSelf={"center"} width={"100%"}>
         <Fade in={fetchingInitialPosts} timeout={1000}>
           <Stack
