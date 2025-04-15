@@ -21,9 +21,9 @@ import {
   patchVotePost,
   patchUndoVotePost,
   patchUser,
-  fetchUserById,
+  getRandomGIFBasedOffof,
 } from "../APICalls";
-import { Category, errorProps, User } from "../../dataTypeDefinitions";
+import { Category, errorProps, User, Post } from "../../dataTypeDefinitions";
 import IOSLoader from "./IOSLoader";
 import ReadMore from "./ReadMore";
 import { useNavigate } from "react-router-dom";
@@ -84,7 +84,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
   const [loadingAction, setLoadingAction] = useState<LoadingAction>(null);
   const [voteStatus, setVoteStatus] = useState<"up" | "down" | "none">("none");
   const [reported, setReported] = useState(false);
-
+  const [randomPostGIF, setRandomPostGIF] = useState(GIFs[randomGIFIndex]);
   const [localUpvotes, setLocalUpvotes] = useState(upvotes);
   const [localDownvotes, setLocalDownvotes] = useState(downvotes);
   const [localReports, setLocalReports] = useState(reports);
@@ -302,7 +302,12 @@ const PostPreview: React.FC<PostPreviewProps> = ({
       setLoadingAction(null);
     }
   };
-
+  useEffect(() => {
+    (async () => {
+      const randomPostGIF = await getRandomGIFBasedOffof({ keyword: title });
+      setRandomPostGIF(randomPostGIF);
+    })();
+  }, [title]);
   return (
     <Stack
       gap={1}
@@ -381,7 +386,9 @@ const PostPreview: React.FC<PostPreviewProps> = ({
               />
             </Stack>
           </Link>
-
+          <Box>
+            <img src={randomPostGIF} alt="Post" width="100%" />
+          </Box>
           <Box
             sx={{
               position: "relative",

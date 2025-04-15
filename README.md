@@ -86,6 +86,7 @@ Product properties
 35. <del>Create post loader keeps going on live for some reason</del>
 36. ThreeJS 404 page after basic exams
 37. <del> The right section of post page will be "other posts from this user" or something</del>
+38. Now that I have giphy prod I can randomly assign media to posts! based off of post title and description!!
 
 ---
 

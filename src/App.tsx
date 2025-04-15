@@ -80,9 +80,7 @@ function App() {
   const [categories, setCategories] = useState<Category[]>([]);
   const notistackRef = createRef<SnackbarProvider>();
   const [userData, setUserData] = useState<User>();
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    false;
-  });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loginDialogue, setLogInDialogue] = useState(false);
 
   function getUserData(userID: string) {
@@ -90,6 +88,7 @@ function App() {
       userID,
       (userData: User) => {
         setUserData(userData);
+        setIsLoggedIn(true);
       },
       (error: any) => {
         const err: errorProps = {

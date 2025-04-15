@@ -478,3 +478,19 @@ export async function patchComment(
     onError(error);
   }
 }
+
+export async function getRandomGIFBasedOffof({ keyword }: { keyword: string }) {
+  keyword = keyword.replace(/\s+/g, "+");
+  try {
+    const response = await fetch(
+      `https://api.giphy.com/v1/gifs/search?api_key=${
+        import.meta.env.VITE_GIPHY_API_KEY
+      }&q=${keyword}&limit=1&offset=0&rating=g&lang=en`
+    );
+    const data = await response.json();
+    return data.data[0]?.images?.original?.url || "";
+  } catch (error) {
+    console.error("Error fetching GIF:", error);
+    return "";
+  }
+}
