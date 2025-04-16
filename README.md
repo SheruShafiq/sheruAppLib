@@ -59,34 +59,36 @@ Product properties
 8. <del>Once I have the loaders, redo the functionality on system to remove any dependency on localdata and make it completely live only.</del>
 9. <del>Make API URLs dynamic from .env to make it easy to deploy</del>
 10. Sorting functionality on Home
-11. Search functionality on Home
-12. A user screen that shows all of user's posts, and comments
-13. implementing categorisation
-14. <del>An effecienter way of handeling comments chain, where a comments chain is created inside the post as well to save API calls amount.</del>
-15. <del>Add credits in the footer</del>
-16. MUSIC
-17. <del>URL(ise) the paginated home</del>
-18. <del>Comments don't have like and dilike options yet, not even in data structure</del>
-19. <del>The error snackbar needs to have dev details that can be opened optionally.</del>
-20. <del>Move to typescript (API res body(s) are a nightmare right now withou t types habing no idea what the hell to pass on and what to expect.)</del>
-21. <del> For some reason there's a weird temporary empty array for like a second after mutation</del>
-22. Lazy LOAD
-23. look into service workers
-24. Giphy PROD
-25. Move to NextJS if it's a smoother backend and easy enough setup. 26. Need to check for overflows on things like posts, comments, resource description etc on giga long texts. Breaks sometimes on mobile it seems.
-26. Add readmore toggle to descriptions and comments too long. Add a text size limit on displayName
-27. Add a check if username and password already exist
-28. Overflow issues on home
-29. Upvoted posts and downvoted posts in users object doesnt seem to work as intended
-30. Categories PostsID array is also not working as intended
-31. Better error handeling when post ID in URL is wrong
-32. On Post page, user's profile who posted it needs to be implemented
-33. Loaders for commenting, replying
-34. <del>BUG: post title is clickable on post page</del>
-35. <del>Create post loader keeps going on live for some reason</del>
-36. ThreeJS 404 page after basic exams
-37. <del> The right section of post page will be "other posts from this user" or something</del>
-38. Now that I have giphy prod I can randomly assign media to posts! based off of post title and description!!
+11. Search functionality on Home 12.<del> A user screen that shows all of user's posts, and comments</del>
+12. implementing categorisation with category based pages and filtering
+13. <del>An effecienter way of handeling comments chain, where a comments chain is created inside the post as well to save API calls amount.</del>
+14. <del>Add credits in the footer</del>
+15. MUSIC
+16. <del>URL(ise) the paginated home</del>
+17. <del>Comments don't have like and dilike options yet, not even in data structure</del>
+18. <del>The error snackbar needs to have dev details that can be opened optionally.</del>
+19. <del>Move to typescript (API res body(s) are a nightmare right now withou t types habing no idea what the hell to pass on and what to expect.)</del>
+20. <del> For some reason there's a weird temporary empty array for like a second after mutation</del>
+21. Lazy LOAD
+22. look into service workers
+23. <del>Giphy PROD</del>
+24. Move to NextJS if it's a smoother backend and easy enough setup. 26. Need to check for overflows on things like posts, comments, resource description etc on giga long texts. Breaks sometimes on mobile it seems.
+25. <del>Add readmore toggle to descriptions and comments too long. Add a text size limit on displayName</del>
+26. Add a check if username and password already exist
+27. <del>Overflow issues on home</del>
+28. <del>Upvoted posts and downvoted posts in users object doesnt seem to work as intended</del>
+29. Categories PostsID array is also not working as intended
+30. Better error handeling when post ID in URL is wrong
+31. <del>On Post page, user's profile who posted it needs to be implemented</del>
+32. <del>Loaders for commenting, replying</del>
+33. <del>BUG: post title is clickable on post page</del>
+34. <del>Create post loader keeps going on live for some reason</del>
+35. ThreeJS 404 page after basic exams
+36. <del> The right section of post page will be "other posts from this user" or something</del>
+37. <del>Now that I have giphy prod I can randomly assign media to posts! based off of post title and description!!</del>
+38. IN userprofile Page Header is not getting the currentlogged in User data but the user's data of the page
+39. In user profile page Comments are not getting their author's username
+40. Giphy API shouldnt be making fetch calls for GIFs every time, but only on creation endpoints
 
 ---
 

@@ -251,9 +251,7 @@ function UserProfilePage({
       }
     };
   }, []);
-  //TODO: Header is not getting the logged in User data
-  // TODO: Comments are not getting their author's username
-  // TODO: Giphy API shouldnt be making fetch calls for GIFs every time, but only on creation endpoints
+
   return (
     <Stack height="100%" minHeight="100vh" gap={2} pb={2}>
       <Stack>
