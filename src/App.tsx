@@ -221,6 +221,7 @@ function App() {
             path="/user/:id"
             element={
               <UserProfilePage
+                refreshUserData={getUserData}
                 setIsLoggedIn={setIsLoggedIn}
                 loggedInUserData={userData}
                 setOpen={setLogInDialogue}

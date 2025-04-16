@@ -107,9 +107,9 @@ const CustomErrorSnackBar = forwardRef<HTMLDivElement, errorProps>(
               alignItems={"flex-start"}
               textOverflow={"ellipsis"}
             >
-              {error.stack &&
+              {error?.stack &&
                 (() => {
-                  const lines = error.stack?.split("\n");
+                  const lines = error?.stack?.split("\n");
                   return (
                     <>
                       <Typography

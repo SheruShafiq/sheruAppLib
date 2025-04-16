@@ -248,6 +248,13 @@ function PostPage({
           borderColor: "white",
         }}
       />
+      {/* <Button
+        onClick={() => {
+          setLoading(!loading);
+        }}
+      >
+        Toggle loading
+      </Button> */}
       <Stack
         mt={2}
         pb={4}

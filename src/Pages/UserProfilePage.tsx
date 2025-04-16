@@ -2,15 +2,45 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
-import { Stack, Divider, Avatar, Button, Chip } from "@mui/material";
-import { fetchUserById } from "../APICalls";
+import {
+  Stack,
+  Divider,
+  ToggleButtonGroup,
+  ToggleButton,
+  Fade,
+  Button,
+} from "@mui/material";
+import {
+  fetchUserById,
+  getPostByID,
+  getPostsByIds,
+  getCommentsByIDs,
+  createComment,
+  patchUser,
+} from "../APICalls";
 import { GIFs } from "../assets/GIFs";
-import { TextGlitchEffect } from "../Components/TextGlitchEffect";
-import { errorProps, Comment, User } from "../../dataTypeDefinitions";
+import { errorProps, Comment, User, Post } from "../../dataTypeDefinitions";
 import { enqueueSnackbar } from "notistack";
-
-import { formatDateRedditStyle } from "../globalFunctions";
 import UserStats from "../Components/UserStats";
+import PostPreview from "../Components/PostPreview";
+import CommentBlock from "../Components/CommentBlock";
+import PostPreviewSkeletonLoader from "../SkeletonLoaders/PostPreviewSkeletonLoader";
+import CommentSkeletonLoader from "../SkeletonLoaders/CommentSkeletonLoader";
+
+function buildCommentTree(flatComments) {
+  const lookup = new Map();
+  flatComments.forEach((c) => lookup.set(c.id, { ...c, replies: [] }));
+
+  const roots = [];
+  flatComments.forEach((c) => {
+    if (c.replyTo) {
+      lookup.get(c.replyTo)?.replies.push(lookup.get(c.id));
+    } else {
+      roots.push(lookup.get(c.id));
+    }
+  });
+  return roots;
+}
 
 function UserProfilePage({
   isLoggedIn,
@@ -18,19 +48,40 @@ function UserProfilePage({
   setOpen,
   setIsLoggedIn,
   categories,
+  refreshUserData,
 }) {
   const { id } = useParams();
   const [userData, setUserData] = useState<User>(
-    isLoggedIn ? {} : loggedInUserData
+    isLoggedIn ? ({} as User) : loggedInUserData
   );
-  const [isLoading, setIsLoading] = useState(true);
+  const [activeDataTab, setActiveDataTab] = useState("posts");
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [commentsChain, setCommentsChain] = useState<any[]>([]);
+  const [generatingCommentsChain, setGeneratingCommentsChain] = useState(false);
+  const [creatingComment, setCreatingComment] = useState(false);
+  const [newComment, setNewComment] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [fetchedTabs, setFetchedTabs] = useState(new Set());
+
+  const randomGIFIndex = useMemo(
+    () => Math.floor(Math.random() * Math.min(GIFs.length, 200)),
+    []
+  );
+
+  const handleChange = (
+    _event: React.MouseEvent<HTMLElement>,
+    newTab: string
+  ) => {
+    setActiveDataTab(newTab);
+  };
+
   useEffect(() => {
+    if (!id) return;
     fetchUserById(
       id,
-      (userData) => {
-        setUserData(userData);
-      },
-      (error: any) => {
+      (user) => setUserData(user),
+      (error) => {
         const err: errorProps = {
           id: "fetching user data Error",
           userFreindlyMessage: "An error occurred while fetching user data.",
@@ -41,42 +92,288 @@ function UserProfilePage({
         enqueueSnackbar({ variant: "error", ...err });
       }
     );
-  }, []);
-  const randomGIFIndex = useMemo(
-    () => Math.floor(Math.random() * Math.min(GIFs.length, 200)),
-    []
-  );
+  }, [id]);
 
-  // New: useMemo to consolidate stats data
+  useEffect(() => {
+    if (!id || fetchedTabs.has(activeDataTab)) return;
+    const key = activeDataTab as keyof User;
+    const ids = userData?.[key];
+    if (!ids || !Array.isArray(ids)) return;
+
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        if (
+          ["comments", "likedComments", "dislikedComments"].includes(
+            activeDataTab
+          )
+        ) {
+          const fetchedComments = await getCommentsByIDs(ids);
+          setComments(fetchedComments);
+        } else {
+          const fetchedPosts = await getPostsByIds(ids);
+          setPosts(fetchedPosts);
+        }
+        setFetchedTabs((prev) => new Set(prev).add(activeDataTab));
+      } catch (error) {
+        enqueueSnackbar({
+          variant: "error",
+          message: `Failed to fetch data for ${activeDataTab}.`,
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [activeDataTab, userData, id]);
+
+  useEffect(() => {
+    if (activeDataTab === "comments" && comments.length > 0) {
+      setGeneratingCommentsChain(true);
+      try {
+        const tree = buildCommentTree(comments);
+        setCommentsChain(tree);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setGeneratingCommentsChain(false);
+      }
+    }
+  }, [comments, activeDataTab]);
+
+  const handleCommentCreate = ({ reply, comment, replies }) => {
+    if (!reply && !comment && !replies) setCreatingComment(true);
+
+    createComment(
+      userData.id!,
+      userData.id!,
+      reply ? comment : newComment,
+      (createdComment) => {
+        patchUser({
+          userID: userData.id!,
+          field: "comments",
+          newValue: [...(userData.comments || []), createdComment.id],
+          onSuccess: () => {
+            refreshUserData(userData.id!);
+            setCreatingComment(false);
+          },
+          onError: (error) => {
+            enqueueSnackbar({
+              variant: "error",
+              message: error instanceof Error ? error.message : "Unknown error",
+            });
+            setCreatingComment(false);
+          },
+        });
+      },
+      (error) => {
+        const err: errorProps = {
+          id: "failed to create comment",
+          userFreindlyMessage: "Something went wrong when creating comment",
+          errorMessage:
+            error instanceof Error ? error.message : "Unknown error",
+          error: error instanceof Error ? error : new Error("Unknown error"),
+        };
+        enqueueSnackbar({ variant: "error", ...err });
+        setCreatingComment(false);
+      }
+    );
+  };
+
+  const refreshPostById = (postId: string) => {
+    getPostByID(
+      postId,
+      (post) => {
+        setPosts((prev) => prev.map((p) => (p.id === post.id ? post : p)));
+      },
+      (error) => {
+        const err: errorProps = {
+          id: "fetching Post Error",
+          userFreindlyMessage: "An error occurred while fetching posts.",
+          errorMessage:
+            error instanceof Error ? error.message : "Unknown error",
+          error: error instanceof Error ? error : new Error("Unknown error"),
+        };
+        enqueueSnackbar({ variant: "error", ...err });
+      }
+    );
+    refreshUserData(userData.id!);
+  };
 
   return (
-    <Stack height={"100%"} minHeight={"100vh"} gap={2} pb={2}>
+    <Stack height="100%" minHeight="100vh" gap={2} pb={2}>
       <Stack>
         <Header
-          callerIdentifier={"homePage"}
+          callerIdentifier="homePage"
           isLoggedIn={isLoggedIn}
           userData={userData}
           setIsLoggedIn={setIsLoggedIn}
           categories={categories}
           setOpen={setOpen}
-          onPostCreated={() => {
-            window.history.pushState(null, "", `/`);
-          }}
+          onPostCreated={() => window.history.pushState(null, "", "/")}
         />
-        <Divider
-          sx={{
-            borderColor: "white",
-          }}
-        />
+        <Divider sx={{ borderColor: "white" }} />
       </Stack>
-      <Stack px={2}>
+
+      <Stack px={2} gap={2}>
         <UserStats
           userData={userData}
           isLoggedIn={isLoggedIn}
           randomGIFIndex={randomGIFIndex}
           pageVariant={false}
         />
+        <Divider sx={{ borderColor: "white" }} />
+        {/* <Button
+          onClick={() => {
+            setGeneratingCommentsChain(!generatingCommentsChain);
+          }}
+        >
+          togglecomments
+        </Button>
+        <Button
+          onClick={() => {
+            setLoading(!loading);
+          }}
+        >
+          toggle Posts
+        </Button> */}
+        <Stack
+          sx={{
+            overflowX: "auto",
+            "&::-webkit-scrollbar": { display: "none" },
+            msOverflowStyle: "none",
+            scrollbarWidth: "none",
+          }}
+        >
+          <ToggleButtonGroup
+            color="primary"
+            value={activeDataTab}
+            exclusive
+            onChange={handleChange}
+            aria-label="data-view"
+            sx={{
+              mx: "auto",
+              width: "max-content",
+            }}
+          >
+            <ToggleButton value="posts">Posts</ToggleButton>
+            <ToggleButton value="comments">Comments</ToggleButton>
+            <ToggleButton value="upvotedPosts">Liked Posts</ToggleButton>
+            <ToggleButton value="likedComments">Liked Comments</ToggleButton>
+            <ToggleButton value="downVotedPosts">Disliked Posts</ToggleButton>
+            <ToggleButton value="dislikedComments">
+              Disliked Comments
+            </ToggleButton>
+            {/* <ToggleButton value="reportedPosts">Reported Posts</ToggleButton> */}
+          </ToggleButtonGroup>
+        </Stack>
+        {loading && !generatingCommentsChain && (
+          <Stack gap={1}>
+            {[...Array(3)].map((_, index) => (
+              <PostPreviewSkeletonLoader
+                key={`loader-${index}`}
+                pageVariant={false}
+              />
+            ))}
+          </Stack>
+        )}
+        {generatingCommentsChain && (
+          <Stack gap={1}>
+            {[...Array(3)].map((_, index) => (
+              <CommentSkeletonLoader />
+            ))}
+          </Stack>
+        )}
+
+        {!loading &&
+          ["posts", "upvotedPosts", "reportedPosts", "downVotedPosts"].includes(
+            activeDataTab
+          ) && (
+            <Fade in={!loading} timeout={1000}>
+              <Stack
+                gap={1}
+                sx={{
+                  display: !loading ? "flex" : "none",
+                }}
+              >
+                {posts.map(
+                  (post) =>
+                    post.id && (
+                      <PostPreview
+                        key={post.id}
+                        {...post}
+                        commentsCount={post.comments?.length || 0}
+                        randomGIFIndex={randomGIFIndex}
+                        categories={categories}
+                        pageVariant={false}
+                        isPostAuthoredByCurrentUser={userData?.posts?.includes(
+                          post.id
+                        )}
+                        isLoggedIn={isLoggedIn}
+                        fetchPosts={() => refreshPostById(post.id)}
+                        upvotedByCurrentUser={userData?.upvotedPosts?.includes(
+                          post.id
+                        )}
+                        downvotedByCurrentUser={userData?.downVotedPosts?.includes(
+                          post.id
+                        )}
+                        reportedByCurrentUser={userData?.reportedPosts?.includes(
+                          post.id
+                        )}
+                        userData={userData}
+                      />
+                    )
+                )}
+              </Stack>
+            </Fade>
+          )}
+
+        {activeDataTab === "comments" && (
+          <Fade in={!generatingCommentsChain} timeout={1000}>
+            <Stack
+              gap={1}
+              sx={{
+                display: !generatingCommentsChain ? "flex" : "none",
+              }}
+            >
+              {generatingCommentsChain
+                ? [...Array(comments.length || 3)].map((_, idx) => (
+                    <CommentSkeletonLoader key={`comment-skeleton-${idx}`} />
+                  ))
+                : commentsChain
+                    .slice()
+                    .reverse()
+                    .map((comment) => (
+                      <CommentBlock
+                        key={comment.id}
+                        id={comment.id}
+                        dateCreated={comment.dateCreated}
+                        userName={comment.authorName}
+                        commentContents={comment.text}
+                        replies={comment.replies}
+                        imageURL={comment.imageURL}
+                        amIaReply={false}
+                        depth={0}
+                        isLoggedIn={isLoggedIn}
+                        likes={comment.likes}
+                        likedByCurrentUser={userData?.likedComments?.includes(
+                          comment.id
+                        )}
+                        dislikes={comment.dislikes}
+                        dislikedByCurrentUser={userData?.dislikedComments?.includes(
+                          comment.id
+                        )}
+                        userData={userData}
+                        handleCommentCreate={handleCommentCreate}
+                        setGeneratingCommentsChain={setGeneratingCommentsChain}
+                      />
+                    ))}
+            </Stack>
+          </Fade>
+        )}
       </Stack>
+
       <Footer />
     </Stack>
   );

@@ -391,7 +391,16 @@ const PostPreview: React.FC<PostPreviewProps> = ({
             </Stack>
           </Link>
           <Box>
-            <img src={randomPostGIF} alt="Post" width="100%" />
+            <img
+              style={{
+                borderRadius: "6px",
+                maxHeight: "200px",
+                objectFit: "cover",
+              }}
+              src={randomPostGIF}
+              alt="Post"
+              width="100%"
+            />
           </Box>
           <Box
             sx={{
