@@ -25,6 +25,7 @@ import SendIcon from "@mui/icons-material/Send";
 import { formatDateRedditStyle } from "../globalFunctions";
 import ReadMore from "./ReadMore";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import { errorProps } from "../../dataTypeDefinitions";
 function CommentBlock({
   id,
   dateCreated,
