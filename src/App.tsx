@@ -231,7 +231,19 @@ function App() {
               </div>
             }
           />
-          <Route path="*" element={<Four0Four />} />
+          <Route
+            path="*"
+            element={
+              <Four0Four
+                setIsLoggedIn={setIsLoggedIn}
+                userData={userData}
+                setOpen={setLogInDialogue}
+                isLoggedIn={isLoggedIn}
+                refreshUserData={getUserData}
+                categories={categories}
+              />
+            }
+          />
           <Route
             path="/posts/:id"
             element={
