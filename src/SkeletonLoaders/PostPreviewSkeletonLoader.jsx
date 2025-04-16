@@ -9,49 +9,92 @@ function PostPreviewSkeletonLoader({ pageVariant }) {
       py={2}
       className={pageVariant ? "" : "standardBorder"}
     >
-      <Stack direction="row" alignItems="center" gap={1}>
-        <Skeleton animation="wave" variant="text" width={120} height={24} />
-        <Skeleton animation="wave" variant="text" width={60} height={24} />
-      </Stack>
+      {pageVariant && (
+        <Stack gap={0.5} mb={0.5}>
+          <Stack direction={"row"} gap={1} alignItems={"center"}>
+            <Skeleton
+              animation="wave"
+              variant="circular"
+              width={14}
+              height={14}
+            ></Skeleton>
+            <Skeleton animation="wave" variant="text" width={40} height={20} />
+            <Skeleton animation="wave" variant="text" width={100} height={24} />
+          </Stack>
+          <Skeleton animation="wave" variant="text" width={300} height={36} />
+        </Stack>
+      )}
       <Stack gap={1}>
-        <Skeleton animation="wave" variant="text" width="50%" />
+        {!pageVariant && (
+          <Stack
+            direction={"row"}
+            justifyContent={"space-between"}
+            alignItems={"center"}
+          >
+            <Skeleton
+              animation="wave"
+              variant="rounded"
+              width="60%"
+              height={"36px"}
+            />
+
+            <Skeleton
+              animation="wave"
+              variant="rounded"
+              width={"15%"}
+              height={20}
+            />
+          </Stack>
+        )}
+        <Skeleton
+          animation="wave"
+          variant="rounded"
+          width={"40%"}
+          height={20}
+        />
         <Stack gap={1}>
           <Skeleton
             animation="wave"
             variant="rounded"
             width="100%"
-            height={Math.floor(Math.random() * (100 - 20 + 1))}
+            height={200}
           />
-          <Stack direction="row" spacing={2}>
+          <Skeleton
+            animation="wave"
+            variant="rounded"
+            width="100%"
+            height={50}
+          />
+          <Stack direction="row" spacing={3}>
             <Skeleton
               animation="wave"
               variant="rounded"
-              width={40}
-              height={30}
+              width={35}
+              height={25}
+            />
+            <Skeleton
+              animation="wave"
+              variant="rounded"
+              width={35}
+              height={25}
+            />
+            <Skeleton
+              animation="wave"
+              variant="rounded"
+              width={35}
+              height={25}
+            />
+            <Skeleton
+              animation="wave"
+              variant="rounded"
+              width={60}
+              height={25}
             />
             <Skeleton
               animation="wave"
               variant="rounded"
               width={40}
-              height={30}
-            />
-            <Skeleton
-              animation="wave"
-              variant="rounded"
-              width={40}
-              height={30}
-            />
-            <Skeleton
-              animation="wave"
-              variant="rounded"
-              width={40}
-              height={30}
-            />
-            <Skeleton
-              animation="wave"
-              variant="rounded"
-              width={40}
-              height={30}
+              height={25}
             />
           </Stack>
         </Stack>

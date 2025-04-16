@@ -8,7 +8,7 @@ import CustomSnackbar from "./Components/CustomSnackbar";
 import Post from "./Pages/Post";
 import SignUpAndLogin from "./Components/SignUpAndLogin";
 import { fetchUserById, fetchCategories } from "./APICalls";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { ThemeProvider, alpha, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import CustomErrorSnackBar from "./Components/CustomErrorSnackBar";
 import { Category, errorProps, User } from "../dataTypeDefinitions";
@@ -16,6 +16,15 @@ import { useSnackbar } from "notistack";
 import BadgeMakerHome from "./Pages/BadgeMakerHome.tsx";
 import React from "react";
 import { Buffer } from "buffer";
+import UserProfilePage from "./Pages/UserProfilePage.tsx";
+
+// Ensure TypeScript recognizes custom variants declared in main.tsx
+
+declare module "notistack" {
+  interface VariantOverrides {
+    login: true;
+  }
+}
 
 globalThis.Buffer = Buffer;
 const isDesktop = window.innerWidth > 768;
@@ -71,9 +80,7 @@ function App() {
   const [categories, setCategories] = useState<Category[]>([]);
   const notistackRef = createRef<SnackbarProvider>();
   const [userData, setUserData] = useState<User>();
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    return userID || false;
-  });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loginDialogue, setLogInDialogue] = useState(false);
 
   function getUserData(userID: string) {
@@ -81,15 +88,19 @@ function App() {
       userID,
       (userData: User) => {
         setUserData(userData);
+        setIsLoggedIn(true);
       },
       (error: any) => {
         const err: errorProps = {
           id: "fetching User Data Error",
-          userFreindlyMessage: "An error occurred while fetching user data.",
+          userFreindlyMessage:
+            "An error occurred while fetching user data, try to log in again.",
           errorMessage:
             error instanceof Error ? error.message : "Unknown error",
           error: error instanceof Error ? error : new Error("Unknown error"),
         };
+        document.cookie =
+          "userID=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
         enqueueSnackbar({ variant: "error", ...err });
       }
     );
@@ -113,7 +124,7 @@ function App() {
             error instanceof Error ? error.message : "Unknown error",
           error: error instanceof Error ? error : new Error("Unknown error"),
         };
-        enqueueSnackbar({ variant: "error", ...err });
+        enqueueSnackbar({ variant: "login", ...err });
       }
     );
   }, []);
@@ -204,6 +215,19 @@ function App() {
                   categories={categories}
                 />
               </div>
+            }
+          />
+          <Route
+            path="/user/:id"
+            element={
+              <UserProfilePage
+                refreshUserData={getUserData}
+                setIsLoggedIn={setIsLoggedIn}
+                loggedInUserData={userData}
+                setOpen={setLogInDialogue}
+                isLoggedIn={isLoggedIn}
+                categories={categories}
+              />
             }
           />
           <Route

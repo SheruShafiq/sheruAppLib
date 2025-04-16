@@ -1,4 +1,11 @@
-import { Button, Collapse, Stack, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Collapse,
+  Link,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useState, useEffect, useMemo } from "react";
 import { useSnackbar } from "notistack";
 import Chip from "@mui/material/Chip";
@@ -7,13 +14,17 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { GIFs } from "../assets/GIFs";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import HeartBrokenIcon from "@mui/icons-material/HeartBroken";
-import { patchVoteComment, patchUndoVoteComment, patchUser } from "../APICalls";
+import {
+  patchVoteComment,
+  patchUndoVoteComment,
+  patchUser,
+  getRandomGIFBasedOffof,
+} from "../APICalls";
 import IOSLoader from "./IOSLoader";
 import SendIcon from "@mui/icons-material/Send";
-import { formatDateRedditStyle } from "./PostPreview";
+import { formatDateRedditStyle } from "../globalFunctions";
 import ReadMore from "./ReadMore";
-import { errorProps } from "../../dataTypeDefinitions";
-
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 function CommentBlock({
   id,
   dateCreated,
@@ -31,6 +42,9 @@ function CommentBlock({
   userData,
   handleCommentCreate,
   setGeneratingCommentsChain,
+  userPageVariant,
+  postID,
+  authorID,
 }) {
   const { enqueueSnackbar } = useSnackbar();
   const [expanded, setExpanded] = useState(false);
@@ -208,7 +222,16 @@ function CommentBlock({
   const [creatingReply, setCreatingReply] = useState(false);
   const [newComment, setNewComment] = useState("");
   const [openReply, setOpenReply] = useState(false);
-
+  useEffect(() => {
+    (async () => {
+      const randomPostGIF = await getRandomGIFBasedOffof({ keyword: userName });
+      if (randomPostGIF && randomPostGIF !== "") {
+        setImageUrl(randomPostGIF);
+      } else {
+        setImageUrl(GIFs[randomGIFIndex]);
+      }
+    })();
+  }, [userName]);
   return (
     <Stack
       sx={{
@@ -222,14 +245,16 @@ function CommentBlock({
         <Avatar src={imageUrl || GIFs[randomGIFIndex]} alt={userName} />
         <Stack gap={1} width={"100%"}>
           <Stack direction="row" spacing={1} alignItems="center">
-            <Typography
-              fontWeight="bold"
-              color={
-                userData?.displayName === userName ? "secondary" : "primary"
-              }
-            >
-              {userData?.displayName === userName ? "You" : userName}
-            </Typography>
+            <Link href={`/user/${authorID}`}>
+              <Typography
+                fontWeight="bold"
+                color={
+                  userData?.displayName === userName ? "secondary" : "primary"
+                }
+              >
+                {userData?.displayName === userName ? "You" : userName}
+              </Typography>
+            </Link>
             <Chip
               size="small"
               label={formatDateRedditStyle(new Date(dateCreated))}
@@ -248,7 +273,7 @@ function CommentBlock({
                 sx={{
                   cursor: "pointer",
                   width: "fit-content",
-                  p: 0.5,
+                  p: 1,
                   borderRadius: 1,
                 }}
                 spacing={0.5}
@@ -273,7 +298,7 @@ function CommentBlock({
                 e.stopPropagation();
                 handleCommentVote("upvote");
               }}
-              disabled={!!loadingAction}
+              disabled={!!loadingAction || userPageVariant || userPageVariant}
               startIcon={
                 loadingAction === "upvote" ? (
                   <IOSLoader />
@@ -291,7 +316,7 @@ function CommentBlock({
                 e.stopPropagation();
                 handleCommentVote("downvote");
               }}
-              disabled={!!loadingAction}
+              disabled={!!loadingAction || userPageVariant}
               startIcon={
                 loadingAction === "downvote" ? (
                   <IOSLoader />
@@ -304,15 +329,25 @@ function CommentBlock({
             >
               {localDislikes}
             </Button>
-            <Button
-              size="small"
-              onClick={() => {
-                setOpenReply(!openReply);
-                setCreatingReply(false);
-              }}
-            >
-              {openReply ? "Cancel" : "Reply"}
-            </Button>
+            {!userPageVariant ? (
+              <Button
+                onClick={() => {
+                  setOpenReply(!openReply);
+                  setCreatingReply(false);
+                }}
+              >
+                {openReply ? "Cancel" : "Reply"}
+              </Button>
+            ) : (
+              <Button
+                endIcon={<OpenInNewIcon />}
+                onClick={() => {
+                  window.location.href = `/posts/${postID}`;
+                }}
+              >
+                View parent post
+              </Button>
+            )}
           </Stack>
           <Collapse in={openReply} timeout="auto" unmountOnExit>
             <Stack gap={2} width={"100%"}>
@@ -385,6 +420,9 @@ function CommentBlock({
                   .includes(String(reply.id)) || false
               }
               userData={userData}
+              userPageVariant={false}
+              postID={reply.postID}
+              authorID={reply.authorID}
             />
           ))}
         </Collapse>

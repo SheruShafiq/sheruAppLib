@@ -21,13 +21,14 @@ import {
   patchVotePost,
   patchUndoVotePost,
   patchUser,
-  fetchUserById,
+  getRandomGIFBasedOffof,
 } from "../APICalls";
-import { Category, errorProps, User } from "../../dataTypeDefinitions";
+import { Category, errorProps, User, Post } from "../../dataTypeDefinitions";
 import IOSLoader from "./IOSLoader";
 import ReadMore from "./ReadMore";
 import { useNavigate } from "react-router-dom";
 import { GIFs } from "../assets/GIFs";
+import { formatDateRedditStyle } from "../globalFunctions";
 
 interface PostPreviewProps {
   id: string;
@@ -49,36 +50,11 @@ interface PostPreviewProps {
   isPostAuthoredByCurrentUser: boolean;
   pageVariant?: boolean;
   userData: User;
-  authorID: string;
+  authorData?: User | null;
+  randomGIFIndex: number;
 }
 
 type LoadingAction = "upvote" | "downvote" | "report" | null;
-const formatDateRedditStyle = (date: Date): string => {
-  const now = new Date();
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-  if (diffInSeconds < 60) {
-    return `${diffInSeconds || 1} second${diffInSeconds === 1 ? "" : "s"} ago`;
-  } else if (diffInSeconds < 3600) {
-    const minutes = Math.floor(diffInSeconds / 60);
-    return `${minutes || 1} minute${minutes === 1 ? "" : "s"} ago`;
-  } else if (diffInSeconds < 86400) {
-    const hours = Math.floor(diffInSeconds / 3600);
-    return `${hours || 1} hour${hours === 1 ? "" : "s"} ago`;
-  } else if (diffInSeconds < 604800) {
-    const days = Math.floor(diffInSeconds / 86400);
-    return `${days || 1} day${days === 1 ? "" : "s"} ago`;
-  } else if (diffInSeconds < 2592000) {
-    const weeks = Math.floor(diffInSeconds / 604800);
-    return `${weeks || 1} week${weeks === 1 ? "" : "s"} ago`;
-  } else if (diffInSeconds < 31536000) {
-    const months = Math.floor(diffInSeconds / 2592000);
-    return `${months || 1} month${months === 1 ? "" : "s"} ago`;
-  } else {
-    const years = Math.floor(diffInSeconds / 31536000);
-    return `${years || 1} year${years === 1 ? "" : "s"} ago`;
-  }
-};
 
 const PostPreview: React.FC<PostPreviewProps> = ({
   id,
@@ -97,10 +73,10 @@ const PostPreview: React.FC<PostPreviewProps> = ({
   upvotedByCurrentUser,
   downvotedByCurrentUser,
   reportedByCurrentUser,
-  isPostAuthoredByCurrentUser,
   pageVariant,
   userData,
-  authorID,
+  authorData,
+  randomGIFIndex,
 }) => {
   const history = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -108,11 +84,10 @@ const PostPreview: React.FC<PostPreviewProps> = ({
   const [loadingAction, setLoadingAction] = useState<LoadingAction>(null);
   const [voteStatus, setVoteStatus] = useState<"up" | "down" | "none">("none");
   const [reported, setReported] = useState(false);
-
+  const [randomPostGIF, setRandomPostGIF] = useState(GIFs[randomGIFIndex]);
   const [localUpvotes, setLocalUpvotes] = useState(upvotes);
   const [localDownvotes, setLocalDownvotes] = useState(downvotes);
   const [localReports, setLocalReports] = useState(reports);
-  const [authorData, setAuthorData] = useState<User | null>(null);
   const descRef = useRef<HTMLDivElement>(null);
   const [isOverflow, setIsOverflow] = useState(false);
 
@@ -327,35 +302,22 @@ const PostPreview: React.FC<PostPreviewProps> = ({
       setLoadingAction(null);
     }
   };
-  const randomGIFIndex = useMemo(
-    () => Math.floor(Math.random() * Math.min(GIFs.length, 200)),
-    []
-  );
   useEffect(() => {
-    fetchUserById(
-      authorID,
-      (userData) => {
-        setAuthorData(userData);
-      },
-      (error: any) => {
-        const err: errorProps = {
-          id: "fetching author data Error",
-          userFreindlyMessage:
-            "An error occurred while fetching post's author data.",
-          errorMessage:
-            error instanceof Error ? error.message : "Unknown error",
-          error: error instanceof Error ? error : new Error("Unknown error"),
-        };
-        enqueueSnackbar({ variant: "error", ...err });
+    (async () => {
+      const randomPostGIF = await getRandomGIFBasedOffof({ keyword: title });
+      if (randomPostGIF && randomPostGIF !== "") {
+        setRandomPostGIF(randomPostGIF);
+      } else {
+        setRandomPostGIF(GIFs[randomGIFIndex]);
       }
-    );
-  }, [authorID]);
+    })();
+  }, [title]);
   return (
     <Stack
       gap={1}
       width={"100%"}
       className={pageVariant ? "" : "standardBorder"}
-      py={2}
+      py={1}
       px={pageVariant ? 0 : 2}
     >
       <Stack direction="row" alignItems="center" gap={1} maxWidth={"100%"}>
@@ -366,7 +328,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
                 sx={{ width: 14, height: 14 }}
                 src={GIFs[randomGIFIndex]}
               />
-              <Link href={`users/${id}`} rel="noopener">
+              <Link href={`/user/${authorData?.id}`} rel="noopener">
                 <Typography fontSize={14} width={"fit-content"}>
                   {authorData?.displayName === userData?.displayName
                     ? "You"
@@ -387,7 +349,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
             </Typography>
           </Stack>
         ) : (
-          <Link href={`posts/${id}`} rel="noopener" style={{ flex: 1 }}>
+          <Link href={`/posts/${id}`} rel="noopener" style={{ flex: 1 }}>
             <Typography
               fontSize={24}
               fontWeight="bold"
@@ -428,16 +390,34 @@ const PostPreview: React.FC<PostPreviewProps> = ({
               />
             </Stack>
           </Link>
-
+          <Box>
+            <img
+              style={{
+                borderRadius: "6px",
+                maxHeight: pageVariant ? "100%" : "200px",
+                objectFit: "cover",
+              }}
+              src={randomPostGIF}
+              alt="Post"
+              width="100%"
+            />
+          </Box>
           <Box
             sx={{
               position: "relative",
-              maxHeight: pageVariant ? "100%" : "100px",
+              maxHeight: pageVariant ? "500px" : "100px",
               overflow: "hidden",
             }}
             ref={descRef}
           >
-            <Box py={1}>
+            <Box
+              py={1}
+              width={"100%"}
+              sx={{
+                wordBreak: "break-word",
+                overflowWrap: "break-word",
+              }}
+            >
               <ReadMore
                 text={description}
                 maxLength={pageVariant ? 300 : 1000}
@@ -503,7 +483,12 @@ const PostPreview: React.FC<PostPreviewProps> = ({
         <Button>{categories[Number(categoryID) - 1]?.name}</Button>
         <Button
           onClick={() => {
-            history(`/posts/${id}`);
+            if (!pageVariant) {
+              history(`/posts/${id}`);
+            }
+          }}
+          sx={{
+            pointerEvents: pageVariant ? "none" : "auto",
           }}
           startIcon={<MessageOutlinedIcon color="secondary" />}
         >
@@ -515,7 +500,3 @@ const PostPreview: React.FC<PostPreviewProps> = ({
 };
 
 export default PostPreview;
-export { formatDateRedditStyle };
-function getUserByIdPromise(authorID: any) {
-  throw new Error("Function not implemented.");
-}

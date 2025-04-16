@@ -3,7 +3,10 @@ import "../Styles/IOSLoader.css";
 
 function IOSLoader({ size = 20, theme = "dark" }) {
   const themeClass = theme === "dark" ? "spinner dark" : "spinner light";
-  const style = { width: size, height: size };
+  const style = {
+    width: size,
+    height: size,
+  };
   return (
     <div
       className={themeClass}

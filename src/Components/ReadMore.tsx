@@ -23,7 +23,17 @@ const ReadMore: React.FC<ReadMoreProps> = ({ text, maxLength }) => {
 
   return (
     <Stack direction={"row"} sx={{ transition: "all 0.3s ease-in-out" }}>
-      <Typography variant="body1" component="div">
+      <Typography
+        variant="body1"
+        component="div"
+        width={"100%"}
+        sx={{
+          wordBreak: "break-word",
+          overflowWrap: "break-word",
+          WebkitHyphens: "auto",
+          hyphens: "auto",
+        }}
+      >
         {firstPart}
         <Collapse in={expanded} timeout="auto" unmountOnExit component="div">
           {remainingPart}

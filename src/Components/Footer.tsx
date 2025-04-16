@@ -58,7 +58,7 @@ function Footer() {
             style={{ textDecoration: "none", color: "inherit" }}
           >
             <TextGlitchEffect
-              text="Sheru Shafiq"
+              text="Sheru"
               speed={40}
               letterCase="lowercase"
               className={"footerDevName"}

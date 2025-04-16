@@ -120,11 +120,23 @@ export async function createPost({
     onError(error);
   }
 }
-export async function fetchUserById(id, onSuccess, onError) {
+interface FetchUserByIdProps {
+  id: string;
+  onSuccess: (user: User) => void;
+  onError: (error: any) => void;
+}
+
+export async function fetchUserById(
+  id: FetchUserByIdProps["id"],
+  onSuccess: FetchUserByIdProps["onSuccess"],
+  onError: FetchUserByIdProps["onError"]
+): Promise<void> {
   try {
     const response = await fetch(`${APIURL}/users/${id}`);
-
-    const data = await response.json();
+    if (response.status === 404) {
+      throw new Error("User not found");
+    }
+    const data: User = await response.json();
     onSuccess(data);
   } catch (error) {
     onError(error);
@@ -184,7 +196,7 @@ export async function patchUser({
     const response = await fetch(`${APIURL}/users/${userID}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ [field]: newValue }), // Updated here
+      body: JSON.stringify({ [field]: newValue, dateModified: now }), // Updated here
     });
 
     if (!response.ok) {
@@ -278,6 +290,22 @@ export async function getPostByID(
   }
 }
 
+// Helper to wrap getPostByID in a Promise
+function getPostByIdPromise(postId: string): Promise<Post> {
+  return new Promise((resolve, reject) => {
+    getPostByID(
+      postId,
+      (post: Post) => resolve(post),
+      (error: any) => reject(error)
+    );
+  });
+}
+
+// Function to get multiple posts by their IDs (e.g., from a user's "Liked Posts" array)
+export async function getPostsByIds(ids: string[]): Promise<Post[]> {
+  return Promise.all(ids.map((id) => getPostByIdPromise(id)));
+}
+
 export async function fetchCategories(
   onSuccess: (categories: Category[]) => void,
   onError: (error: any) => void
@@ -367,7 +395,18 @@ function getUserByIdPromise(userId: string): Promise<any> {
     fetchUserById(userId, resolve, reject);
   });
 }
-
+export async function getCommentsByIDs(ids: string[]): Promise<Comment[]> {
+  return Promise.all(
+    ids.map(async (id) => {
+      try {
+        return await getCommentByIdPromise(id);
+      } catch (error) {
+        console.error(`Error fetching comment: ${error}`);
+        throw error; // Re-throw error to propagate it
+      }
+    })
+  );
+}
 async function getFullComment(commentId: string): Promise<FullComment> {
   const comment = await getCommentByIdPromise(commentId);
   const user = await getUserByIdPromise(comment.authorID);
@@ -464,5 +503,24 @@ export async function patchComment(
     onSuccess(data);
   } catch (error) {
     onError(error);
+  }
+}
+
+export async function getRandomGIFBasedOffof({ keyword }: { keyword: string }) {
+  if (APIURL === "http://localhost:3000") {
+    return "";
+  }
+  keyword = keyword?.replace(/\s+/g, "+");
+  try {
+    const response = await fetch(
+      `https://api.giphy.com/v1/gifs/search?api_key=${
+        import.meta.env.VITE_GIPHY_API_KEY
+      }&q=${keyword}&limit=1&offset=0&rating=g&lang=en`
+    );
+    const data = await response.json();
+    return data.data[0]?.images?.original?.url || "";
+  } catch (error) {
+    console.error("Error fetching GIF:", error);
+    return "";
   }
 }
