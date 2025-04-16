@@ -62,7 +62,7 @@ function UserProfilePage({
   const [creatingComment, setCreatingComment] = useState(false);
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
-  const [fetchedTabs, setFetchedTabs] = useState(new Set());
+  const [fetchedData, setFetchedData] = useState<Record<string, any>>({});
 
   const randomGIFIndex = useMemo(
     () => Math.floor(Math.random() * Math.min(GIFs.length, 200)),
@@ -95,10 +95,26 @@ function UserProfilePage({
   }, [id]);
 
   useEffect(() => {
-    if (!id || fetchedTabs.has(activeDataTab)) return;
+    if (!id || !activeDataTab) return;
+
     const key = activeDataTab as keyof User;
     const ids = userData?.[key];
+
     if (!ids || !Array.isArray(ids)) return;
+
+    const cached = fetchedData[activeDataTab];
+    if (cached) {
+      if (
+        ["comments", "likedComments", "dislikedComments"].includes(
+          activeDataTab
+        )
+      ) {
+        setComments(cached);
+      } else {
+        setPosts(cached);
+      }
+      return;
+    }
 
     const fetchData = async () => {
       if (
@@ -110,6 +126,7 @@ function UserProfilePage({
       } else {
         setLoading(true);
       }
+
       try {
         if (
           ["comments", "likedComments", "dislikedComments"].includes(
@@ -118,11 +135,18 @@ function UserProfilePage({
         ) {
           const fetchedComments = await getCommentsByIDs(ids);
           setComments(fetchedComments);
+          setFetchedData((prev) => ({
+            ...prev,
+            [activeDataTab]: fetchedComments,
+          }));
         } else {
           const fetchedPosts = await getPostsByIds(ids);
           setPosts(fetchedPosts);
+          setFetchedData((prev) => ({
+            ...prev,
+            [activeDataTab]: fetchedPosts,
+          }));
         }
-        setFetchedTabs((prev) => new Set(prev).add(activeDataTab));
       } catch (error) {
         enqueueSnackbar({
           variant: "error",
@@ -135,7 +159,7 @@ function UserProfilePage({
     };
 
     fetchData();
-  }, [activeDataTab, userData, id]);
+  }, [activeDataTab, userData, id, fetchedData]);
 
   useEffect(() => {
     if (
