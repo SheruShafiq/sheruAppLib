@@ -67,6 +67,36 @@ const darkTheme = createTheme({
         },
       },
     },
+    MuiSelect: {
+      styleOverrides: {
+        select: {
+          backgroundColor: alpha("#000", 0.5),
+          color: "#fff",
+          "&:focus": {
+            backgroundColor: alpha("#000", 0.5),
+          },
+        },
+        icon: {
+          color: "#fff",
+        },
+      },
+    },
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          backgroundColor: alpha("#000", 0.5),
+          color: "#fff",
+        },
+      },
+    },
+    MuiList: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "black",
+          color: "#fff",
+        },
+      },
+    },
   },
 });
 function App() {
