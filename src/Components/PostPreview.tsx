@@ -80,8 +80,12 @@ const PostPreview: React.FC<PostPreviewProps> = ({
 }) => {
   const history = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const formattedTitle =
-    title?.length > 20 ? `${title?.slice(0, 20)}...` : title;
+  const formattedTitle = useMemo(() => {
+    const maxLength = Math.floor((window.innerWidth * 0.5) / 10); // Assuming 10px per character as an approximation
+    return title?.length > maxLength
+      ? `${title?.slice(0, maxLength)}...`
+      : title;
+  }, [title]);
   const [loadingAction, setLoadingAction] = useState<LoadingAction>(null);
   const [voteStatus, setVoteStatus] = useState<"up" | "down" | "none">("none");
   const [reported, setReported] = useState(false);

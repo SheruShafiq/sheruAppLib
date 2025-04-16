@@ -102,7 +102,7 @@ function Home({
       sortOrder: userSortPrefrences?.sortOrder || "desc",
     } as fetchPostsPaginatedProps);
   };
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string | undefined>(undefined);
   function refreshPostById(id: string) {
     getPostByID(
       id,
@@ -147,30 +147,32 @@ function Home({
     };
   }, [pendingSearchTerm]);
   useEffect(() => {
-    if (searchTerm === "") {
+    if (searchTerm === "" || searchTerm === undefined) {
       fetchPostsHandeled;
     }
-    (async () => {
-      setFetchingPosts(true);
-      searchPosts(
-        searchTerm,
-        (data) => {
-          setPosts(data);
-          setFetchingPosts(false);
-        },
-        (error) => {
-          const err: errorProps = {
-            id: "searchinh Post Error",
-            userFreindlyMessage: "An error occurred while searching posts.",
-            errorMessage:
-              error instanceof Error ? error.message : "Unknown error",
-            error: error instanceof Error ? error : new Error("Unknown error"),
-          };
-          enqueueSnackbar({ variant: "error", ...err });
-          setFetchingPosts(false);
-        }
-      );
-    })();
+    if (searchTerm)
+      (async () => {
+        setFetchingPosts(true);
+        searchPosts(
+          searchTerm,
+          (data) => {
+            setPosts(data);
+            setFetchingPosts(false);
+          },
+          (error) => {
+            const err: errorProps = {
+              id: "searchinh Post Error",
+              userFreindlyMessage: "An error occurred while searching posts.",
+              errorMessage:
+                error instanceof Error ? error.message : "Unknown error",
+              error:
+                error instanceof Error ? error : new Error("Unknown error"),
+            };
+            enqueueSnackbar({ variant: "error", ...err });
+            setFetchingPosts(false);
+          }
+        );
+      })();
   }, [searchTerm]);
   return (
     <Stack height={"100%"} minHeight={"100vh"} gap={2} pb={2}>
