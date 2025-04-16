@@ -1,6 +1,16 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Stack, Divider, IconButton, Button } from "@mui/material";
-import { fetchPostsPaginated, getPostByID } from "../APICalls";
+import {
+  Stack,
+  Divider,
+  IconButton,
+  Button,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
+import { fetchPostsPaginated, getPostByID, searchPosts } from "../APICalls";
 import { useSnackbar } from "notistack";
 import PostPreview from "../Components/PostPreview";
 import Header from "../Components/Header";
@@ -21,6 +31,8 @@ import { errorProps } from "../../dataTypeDefinitions";
 import Footer from "../Components/Footer";
 import IOSSpinner from "../Components/IOSLoader";
 import { GIFs } from "../assets/GIFs";
+import HomeInteractions from "../Components/HomeInteractions";
+import IOSLoader from "../Components/IOSLoader";
 
 function Home({
   isLoggedIn,
@@ -77,7 +89,7 @@ function Home({
       pageSize,
     } as fetchPostsPaginatedProps);
   };
-
+  const [searchTerm, setSearchTerm] = useState<string>("");
   function refreshPostById(id: string) {
     getPostByID(
       id,
@@ -112,6 +124,41 @@ function Home({
   const prevPage = metaData?.prev?.match(/_page=(\d+)/)?.[1];
   const nextPage = metaData?.next?.match(/_page=(\d+)/)?.[1];
   const lastPage = Number(metaData?.last?.match(/_page=(\d+)/)?.[1] || 1);
+  const [pendingSearchTerm, setPendingSearchTerm] = useState<string>("");
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setSearchTerm(pendingSearchTerm);
+    }, 500);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [pendingSearchTerm]);
+  useEffect(() => {
+    if (searchTerm === "") {
+      fetchPostsHandeled;
+    }
+    (async () => {
+      setFetchingPosts(true);
+      searchPosts(
+        searchTerm,
+        (data) => {
+          setPosts(data);
+          setFetchingPosts(false);
+        },
+        (error) => {
+          const err: errorProps = {
+            id: "searchinh Post Error",
+            userFreindlyMessage: "An error occurred while searching posts.",
+            errorMessage:
+              error instanceof Error ? error.message : "Unknown error",
+            error: error instanceof Error ? error : new Error("Unknown error"),
+          };
+          enqueueSnackbar({ variant: "error", ...err });
+          setFetchingPosts(false);
+        }
+      );
+    })();
+  }, [searchTerm]);
   return (
     <Stack height={"100%"} minHeight={"100vh"} gap={2} pb={2}>
       <Stack>
@@ -139,7 +186,67 @@ function Home({
       >
         Toggle loading
       </Button> */}
-      <Stack px={2} maxWidth={"600px"} alignSelf={"center"} width={"100%"}>
+      <Stack
+        px={2}
+        maxWidth={"1200px"}
+        alignSelf={"center"}
+        width={"100%"}
+        gap={2}
+      >
+        <Stack
+          direction={"row"}
+          justifyContent={"space-between"}
+          alignItems={"flex-end"}
+        >
+          <TextField
+            variant="standard"
+            onChange={(e) => {
+              setPendingSearchTerm(e.target.value);
+            }}
+            sx={{
+              width: "25%",
+              maxWidth: "400px",
+              minWidth: "200px",
+            }}
+            label="Search"
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <React.Fragment>
+                    {fetchingInitialPosts ? <IOSLoader /> : null}
+                  </React.Fragment>
+                ),
+              },
+            }}
+          />
+          <FormControl
+            sx={{ width: "25%", maxWidth: "400px", minWidth: "200px" }}
+            size="small"
+          >
+            <InputLabel
+              sx={{
+                left: "-15px",
+                top: "8px",
+              }}
+              id="select-sorting"
+            >
+              Sort
+            </InputLabel>
+            <Select
+              defaultValue={"dateCreated"}
+              labelId="select-sorting"
+              id="elect-sorting"
+              // value={age}
+              label="Age"
+              // onChange={handleChange}
+              variant="standard"
+            >
+              <MenuItem value={"dateCreated"}>Date Created</MenuItem>
+              <MenuItem value={"upVotedPosts"}>Upvotes</MenuItem>
+              <MenuItem value={"downVotedPost"}>Downvotes</MenuItem>
+            </Select>
+          </FormControl>
+        </Stack>
         <Fade in={fetchingInitialPosts} timeout={1000}>
           <Stack
             gap={2}
@@ -166,31 +273,31 @@ function Home({
                 pageVariant={false}
                 isPostAuthoredByCurrentUser={userData?.posts
                   ?.map(Number)
-                  .includes(Number(posts[key].id))}
+                  .includes(Number(posts[key]?.id))}
                 isLoggedIn={isLoggedIn}
                 fetchPosts={() => {
-                  refreshPostById(posts[key].id);
+                  refreshPostById(posts[key]?.id);
                 }}
-                title={posts[key].title}
-                resource={posts[key].resource}
-                description={posts[key].description}
-                upvotes={posts[key].upvotes}
-                downvotes={posts[key].downvotes}
-                reports={posts[key].reports}
-                categoryID={posts[key].categoryID}
-                commentsCount={posts[key].comments.length}
+                title={posts[key]?.title}
+                resource={posts[key]?.resource}
+                description={posts[key]?.description}
+                upvotes={posts[key]?.upvotes}
+                downvotes={posts[key]?.downvotes}
+                reports={posts[key]?.reports}
+                categoryID={posts[key]?.categoryID}
+                commentsCount={posts[key]?.comments?.length}
                 key={key}
-                id={posts[key].id}
-                dateCreated={posts[key].dateCreated}
+                id={posts[key]?.id}
+                dateCreated={posts[key]?.dateCreated}
                 upvotedByCurrentUser={userData?.upvotedPosts
                   ?.map(String)
-                  .includes(String(posts[key].id))}
+                  .includes(String(posts[key]?.id))}
                 downvotedByCurrentUser={userData?.downVotedPosts
                   ?.map(String)
-                  .includes(String(posts[key].id))}
+                  .includes(String(posts[key]?.id))}
                 reportedByCurrentUser={userData?.reportedPosts
                   ?.map(String)
-                  .includes(String(posts[key].id))}
+                  .includes(String(posts[key]?.id))}
                 userData={userData}
               />
             ))}

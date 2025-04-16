@@ -524,3 +524,25 @@ export async function getRandomGIFBasedOffof({ keyword }: { keyword: string }) {
     return "";
   }
 }
+
+export async function searchPosts(
+  searchTerm: string,
+  onSuccess: (posts: Post[]) => void,
+  onError: (error: any) => void
+) {
+  try {
+    const response = await fetch(
+      `${APIURL}/posts?title_like=${encodeURIComponent(
+        searchTerm
+      )}&_limit=3&_sort=title&_order=desc`
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch posts");
+    }
+    const data = await response.json();
+    const posts = data.posts;
+    onSuccess(posts);
+  } catch (error) {
+    onError(error);
+  }
+}

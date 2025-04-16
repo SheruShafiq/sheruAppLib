@@ -10,7 +10,7 @@ const ReadMore: React.FC<ReadMoreProps> = ({ text, maxLength }) => {
   const [expanded, setExpanded] = useState(false);
 
   // If text is short, render normally
-  if (text.length <= maxLength) {
+  if (text?.length <= maxLength) {
     return (
       <Typography variant="body1" component="div">
         {text}
@@ -18,8 +18,8 @@ const ReadMore: React.FC<ReadMoreProps> = ({ text, maxLength }) => {
     );
   }
 
-  const firstPart = text.slice(0, maxLength);
-  const remainingPart = text.slice(maxLength);
+  const firstPart = text?.slice(0, maxLength);
+  const remainingPart = text?.slice(maxLength);
 
   return (
     <Stack direction={"row"} sx={{ transition: "all 0.3s ease-in-out" }}>
