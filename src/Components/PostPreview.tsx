@@ -395,8 +395,9 @@ const PostPreview: React.FC<PostPreviewProps> = ({
             <img
               style={{
                 borderRadius: "6px",
-                maxHeight: pageVariant ? "100%" : "200px",
+                maxHeight: pageVariant ? "400px" : "200px",
                 objectFit: "cover",
+                height: "100%",
               }}
               src={randomPostGIF}
               alt="Post"
