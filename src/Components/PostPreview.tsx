@@ -394,7 +394,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
             <img
               style={{
                 borderRadius: "6px",
-                maxHeight: "200px",
+                maxHeight: pageVariant ? "100%" : "200px",
                 objectFit: "cover",
               }}
               src={randomPostGIF}
@@ -405,7 +405,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
           <Box
             sx={{
               position: "relative",
-              maxHeight: pageVariant ? "100%" : "100px",
+              maxHeight: pageVariant ? "500px" : "100px",
               overflow: "hidden",
             }}
             ref={descRef}

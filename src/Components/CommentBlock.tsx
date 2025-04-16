@@ -1,4 +1,11 @@
-import { Button, Collapse, Stack, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Collapse,
+  Link,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useState, useEffect, useMemo } from "react";
 import { useSnackbar } from "notistack";
 import Chip from "@mui/material/Chip";
@@ -37,6 +44,7 @@ function CommentBlock({
   setGeneratingCommentsChain,
   userPageVariant,
   postID,
+  authorID,
 }) {
   const { enqueueSnackbar } = useSnackbar();
   const [expanded, setExpanded] = useState(false);
@@ -231,14 +239,16 @@ function CommentBlock({
         <Avatar src={imageUrl || GIFs[randomGIFIndex]} alt={userName} />
         <Stack gap={1} width={"100%"}>
           <Stack direction="row" spacing={1} alignItems="center">
-            <Typography
-              fontWeight="bold"
-              color={
-                userData?.displayName === userName ? "secondary" : "primary"
-              }
-            >
-              {userData?.displayName === userName ? "You" : userName}
-            </Typography>
+            <Link href={`/user/${authorID}`}>
+              <Typography
+                fontWeight="bold"
+                color={
+                  userData?.displayName === userName ? "secondary" : "primary"
+                }
+              >
+                {userData?.displayName === userName ? "You" : userName}
+              </Typography>
+            </Link>
             <Chip
               size="small"
               label={formatDateRedditStyle(new Date(dateCreated))}
@@ -406,6 +416,7 @@ function CommentBlock({
               userData={userData}
               userPageVariant={false}
               postID={reply.postID}
+              authorID={reply.authorID}
             />
           ))}
         </Collapse>

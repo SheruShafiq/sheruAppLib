@@ -266,7 +266,7 @@ function UserProfilePage({
         <Divider sx={{ borderColor: "white" }} />
       </Stack>
 
-      <Stack px={2} gap={2}>
+      <Stack px={2} gap={2} maxWidth={"1200px"} mx="auto">
         <UserStats
           userData={userData}
           isLoggedIn={isLoggedIn}
@@ -425,6 +425,7 @@ function UserProfilePage({
                     .reverse()
                     .map((comment) => (
                       <CommentBlock
+                        authorID={comment.authorID}
                         postID={comment.postID}
                         userPageVariant={true}
                         key={comment.id}

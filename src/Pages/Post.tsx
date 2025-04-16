@@ -378,6 +378,7 @@ function PostPage({
                     .reverse()
                     .map((comment, index) => (
                       <CommentBlock
+                        authorID={comment.authorID}
                         handleCommentCreate={handleCommentCreate}
                         id={comment.id}
                         userData={userData}
