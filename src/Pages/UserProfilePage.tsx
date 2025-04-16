@@ -232,7 +232,25 @@ function UserProfilePage({
     );
     refreshUserData(userData?.id!);
   };
+  const handleWheel = (e) => {
+    if (!containerRef.current) return;
 
+    e.preventDefault();
+
+    containerRef.current.scrollLeft += e.deltaY;
+  };
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener("wheel", handleWheel, { passive: false });
+    }
+    return () => {
+      if (container) {
+        container.removeEventListener("wheel", handleWheel);
+      }
+    };
+  }, []);
   return (
     <Stack height="100%" minHeight="100vh" gap={2} pb={2}>
       <Stack>
@@ -278,6 +296,7 @@ function UserProfilePage({
             msOverflowStyle: "none",
             scrollbarWidth: "none",
           }}
+          ref={containerRef}
         >
           <ToggleButtonGroup
             color="primary"
@@ -369,7 +388,7 @@ function UserProfilePage({
                           post.id
                         )}
                         isLoggedIn={isLoggedIn}
-                        fetchPosts={() => refreshPostById(post.id)}
+                        fetchPosts={() => refreshPostById(post.id!)}
                         upvotedByCurrentUser={userData?.upvotedPosts?.includes(
                           post.id
                         )}
