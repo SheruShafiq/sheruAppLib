@@ -266,7 +266,7 @@ function UserProfilePage({
         <Divider sx={{ borderColor: "white" }} />
       </Stack>
 
-      <Stack px={2} gap={2} maxWidth={"1200px"} mx="auto">
+      <Stack px={2} gap={2} maxWidth={"1200px"} mx="auto" width={"100%"}>
         <UserStats
           userData={userData}
           isLoggedIn={isLoggedIn}
