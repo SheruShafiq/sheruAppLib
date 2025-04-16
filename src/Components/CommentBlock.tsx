@@ -17,7 +17,7 @@ import IOSLoader from "./IOSLoader";
 import SendIcon from "@mui/icons-material/Send";
 import { formatDateRedditStyle } from "../globalFunctions";
 import ReadMore from "./ReadMore";
-
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 function CommentBlock({
   id,
   dateCreated,
@@ -35,6 +35,8 @@ function CommentBlock({
   userData,
   handleCommentCreate,
   setGeneratingCommentsChain,
+  userPageVariant,
+  postID,
 }) {
   const { enqueueSnackbar } = useSnackbar();
   const [expanded, setExpanded] = useState(false);
@@ -280,7 +282,7 @@ function CommentBlock({
                 e.stopPropagation();
                 handleCommentVote("upvote");
               }}
-              disabled={!!loadingAction}
+              disabled={!!loadingAction || userPageVariant || userPageVariant}
               startIcon={
                 loadingAction === "upvote" ? (
                   <IOSLoader />
@@ -298,7 +300,7 @@ function CommentBlock({
                 e.stopPropagation();
                 handleCommentVote("downvote");
               }}
-              disabled={!!loadingAction}
+              disabled={!!loadingAction || userPageVariant}
               startIcon={
                 loadingAction === "downvote" ? (
                   <IOSLoader />
@@ -311,14 +313,25 @@ function CommentBlock({
             >
               {localDislikes}
             </Button>
-            <Button
-              onClick={() => {
-                setOpenReply(!openReply);
-                setCreatingReply(false);
-              }}
-            >
-              {openReply ? "Cancel" : "Reply"}
-            </Button>
+            {!userPageVariant ? (
+              <Button
+                onClick={() => {
+                  setOpenReply(!openReply);
+                  setCreatingReply(false);
+                }}
+              >
+                {openReply ? "Cancel" : "Reply"}
+              </Button>
+            ) : (
+              <Button
+                endIcon={<OpenInNewIcon />}
+                onClick={() => {
+                  window.location.href = `/posts/${postID}`;
+                }}
+              >
+                View parent post
+              </Button>
+            )}
           </Stack>
           <Collapse in={openReply} timeout="auto" unmountOnExit>
             <Stack gap={2} width={"100%"}>

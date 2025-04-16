@@ -73,7 +73,7 @@ function UserProfilePage({
     _event: React.MouseEvent<HTMLElement>,
     newTab: string
   ) => {
-    setActiveDataTab(newTab);
+    if (newTab !== activeDataTab) setActiveDataTab(newTab);
   };
 
   useEffect(() => {
@@ -101,7 +101,15 @@ function UserProfilePage({
     if (!ids || !Array.isArray(ids)) return;
 
     const fetchData = async () => {
-      setLoading(true);
+      if (
+        ["comments", "likedComments", "dislikedComments"].includes(
+          activeDataTab
+        )
+      ) {
+        setGeneratingCommentsChain(true);
+      } else {
+        setLoading(true);
+      }
       try {
         if (
           ["comments", "likedComments", "dislikedComments"].includes(
@@ -122,6 +130,7 @@ function UserProfilePage({
         });
       } finally {
         setLoading(false);
+        setGeneratingCommentsChain(false);
       }
     };
 
@@ -130,14 +139,12 @@ function UserProfilePage({
 
   useEffect(() => {
     if (activeDataTab === "comments" && comments.length > 0) {
-      setGeneratingCommentsChain(true);
       try {
         const tree = buildCommentTree(comments);
         setCommentsChain(tree);
       } catch (err) {
         console.error(err);
       } finally {
-        setGeneratingCommentsChain(false);
       }
     }
   }, [comments, activeDataTab]);
@@ -146,16 +153,16 @@ function UserProfilePage({
     if (!reply && !comment && !replies) setCreatingComment(true);
 
     createComment(
-      userData.id!,
-      userData.id!,
+      userData?.id!,
+      userData?.id!,
       reply ? comment : newComment,
       (createdComment) => {
         patchUser({
-          userID: userData.id!,
+          userID: userData?.id!,
           field: "comments",
-          newValue: [...(userData.comments || []), createdComment.id],
+          newValue: [...(userData?.comments || []), createdComment.id],
           onSuccess: () => {
-            refreshUserData(userData.id!);
+            refreshUserData(userData?.id!);
             setCreatingComment(false);
           },
           onError: (error) => {
@@ -198,7 +205,7 @@ function UserProfilePage({
         enqueueSnackbar({ variant: "error", ...err });
       }
     );
-    refreshUserData(userData.id!);
+    refreshUserData(userData?.id!);
   };
 
   return (
@@ -230,7 +237,8 @@ function UserProfilePage({
           }}
         >
           togglecomments
-        </Button>
+        </Button> */}
+        {/*
         <Button
           onClick={() => {
             setLoading(!loading);
@@ -257,13 +265,38 @@ function UserProfilePage({
               width: "max-content",
             }}
           >
-            <ToggleButton value="posts">Posts</ToggleButton>
-            <ToggleButton value="comments">Comments</ToggleButton>
-            <ToggleButton value="upvotedPosts">Liked Posts</ToggleButton>
-            <ToggleButton value="likedComments">Liked Comments</ToggleButton>
-            <ToggleButton value="downVotedPosts">Disliked Posts</ToggleButton>
-            <ToggleButton value="dislikedComments">
-              Disliked Comments
+            <ToggleButton disabled={userData?.posts.length === 0} value="posts">
+              Posts ({userData?.posts.length})
+            </ToggleButton>
+            <ToggleButton
+              disabled={userData?.comments.length === 0}
+              value="comments"
+            >
+              Comments ({userData?.comments.length})
+            </ToggleButton>
+            <ToggleButton
+              disabled={userData?.upvotedPosts.length === 0}
+              value="upvotedPosts"
+            >
+              Liked Posts ({userData?.upvotedPosts.length})
+            </ToggleButton>
+            <ToggleButton
+              disabled={userData?.likedComments.length === 0}
+              value="likedComments"
+            >
+              Liked Comments ({userData?.likedComments.length})
+            </ToggleButton>
+            <ToggleButton
+              disabled={userData?.downVotedPosts.length === 0}
+              value="downVotedPosts"
+            >
+              Disliked Posts ({userData?.downVotedPosts.length})
+            </ToggleButton>
+            <ToggleButton
+              disabled={userData?.dislikedComments.length === 0}
+              value="dislikedComments"
+            >
+              Disliked Comments ({userData?.dislikedComments.length})
             </ToggleButton>
             {/* <ToggleButton value="reportedPosts">Reported Posts</ToggleButton> */}
           </ToggleButtonGroup>
@@ -346,10 +379,12 @@ function UserProfilePage({
                     .reverse()
                     .map((comment) => (
                       <CommentBlock
+                        postID={comment.postID}
+                        userPageVariant={true}
                         key={comment.id}
                         id={comment.id}
                         dateCreated={comment.dateCreated}
-                        userName={comment.authorName}
+                        userName={"You"}
                         commentContents={comment.text}
                         replies={comment.replies}
                         imageURL={comment.imageURL}

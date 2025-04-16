@@ -65,10 +65,11 @@ function UserStats({ userData, isLoggedIn, randomGIFIndex, pageVariant }) {
       }
     })();
   }, [userData?.displayName]);
+  const isDesktop = window.innerWidth > 768;
   return (
     <Stack
-      direction={pageVariant ? "column" : "row"}
-      gap={pageVariant ? 0 : 6}
+      direction={pageVariant || !isDesktop ? "column" : "row"}
+      gap={pageVariant || !isDesktop ? 0 : 6}
       alignItems={"center"}
       width={pageVariant ? "fit-content" : "100%"}
     >
@@ -90,11 +91,11 @@ function UserStats({ userData, isLoggedIn, randomGIFIndex, pageVariant }) {
         />
       )}
 
-      <Stack gap={pageVariant ? 2 : 0}>
+      <Stack gap={pageVariant || !isDesktop ? 2 : 0}>
         <Stack
-          direction={pageVariant ? "column" : "row"}
+          direction={pageVariant || !isDesktop ? "column" : "row"}
           alignItems={"center"}
-          gap={pageVariant ? 0 : 2}
+          gap={pageVariant || !isDesktop ? 0 : 2}
         >
           {pageVariant ? (
             <Link underline="always" href={`/user/${userData?.id}`}>
@@ -132,29 +133,31 @@ function UserStats({ userData, isLoggedIn, randomGIFIndex, pageVariant }) {
             />
           </Stack>
         </Stack>
-        <Stack
-          direction={pageVariant ? "column" : "row"}
-          flexWrap={"wrap"}
-          gap={2}
-        >
-          {stats.map((stat) => (
-            <Button
-              key={stat.label}
-              variant="outlined"
-              sx={{ pointerEvents: "none" }}
-              startIcon={stat.icon}
-            >
-              <TextGlitchEffect
-                text={stat.label}
-                speed={40}
-                letterCase="lowercase"
-                className="userProfilePageUserStats"
-                type="alphanumeric"
-              />
-              <strong> {stat.count}</strong>
-            </Button>
-          ))}
-        </Stack>
+        {pageVariant && (
+          <Stack
+            direction={pageVariant || !isDesktop ? "column" : "row"}
+            flexWrap={"wrap"}
+            gap={2}
+          >
+            {stats.map((stat) => (
+              <Button
+                key={stat.label}
+                variant="outlined"
+                sx={{ pointerEvents: "none" }}
+                startIcon={stat.icon}
+              >
+                <TextGlitchEffect
+                  text={stat.label}
+                  speed={40}
+                  letterCase="lowercase"
+                  className="userProfilePageUserStats"
+                  type="alphanumeric"
+                />
+                <strong> {stat.count}</strong>
+              </Button>
+            ))}
+          </Stack>
+        )}
       </Stack>
     </Stack>
   );
