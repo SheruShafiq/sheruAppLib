@@ -33,7 +33,7 @@ import IOSSpinner from "../Components/IOSLoader";
 import { GIFs } from "../assets/GIFs";
 import HomeInteractions from "../Components/HomeInteractions";
 import IOSLoader from "../Components/IOSLoader";
-
+import SwapVertIcon from "@mui/icons-material/SwapVert";
 function Home({
   isLoggedIn,
   userData,
@@ -49,6 +49,10 @@ function Home({
   const pageSize = Math.floor(
     (currentDisplayHeight - headerHeight) / postPreviewHeight
   );
+  const [userSortPrefrences, setUserSortPrefrences] = useState({
+    sortBy: "dateCreated",
+    sortOrder: "desc",
+  });
   const [fetchingInitialPosts, setFetchingPosts] = useState(true);
   const [curentPage, setCuurentPage] = useState(
     pageNumber ? Number(pageNumber) : 1
@@ -61,7 +65,14 @@ function Home({
     null
   );
 
-  const fetchPostsHandeled = (page?: number, pageSize?: number) => {
+  const fetchPostsHandeled = (
+    page?: number,
+    pageSize?: number,
+    userSortPrefrences?: {
+      sortBy: string;
+      sortOrder: string;
+    }
+  ) => {
     setFetchingPosts(true);
     fetchPostsPaginated({
       onSuccess: (data) => {
@@ -87,6 +98,8 @@ function Home({
       },
       page,
       pageSize,
+      sortBy: userSortPrefrences?.sortBy || "dateCreated",
+      sortOrder: userSortPrefrences?.sortOrder || "desc",
     } as fetchPostsPaginatedProps);
   };
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -112,8 +125,8 @@ function Home({
     refreshUserData(userData.id);
   }
   useEffect(() => {
-    fetchPostsHandeled(curentPage, pageSize);
-  }, [curentPage]);
+    fetchPostsHandeled(curentPage, pageSize, userSortPrefrences);
+  }, [curentPage, userSortPrefrences]);
 
   const isNoPosts = posts.length === 0;
   const randomGIFIndex = useMemo(
@@ -219,33 +232,56 @@ function Home({
               },
             }}
           />
-          <FormControl
+          <Stack
             sx={{ width: "25%", maxWidth: "400px", minWidth: "200px" }}
-            size="small"
+            direction={"row"}
+            gap={1}
           >
-            <InputLabel
+            <IconButton
+              disabled={searchTerm !== ""}
               sx={{
-                left: "-15px",
-                top: "8px",
+                width: "40px",
               }}
-              id="select-sorting"
+              onClick={() => {
+                setUserSortPrefrences((prev) => ({
+                  ...prev,
+                  sortOrder: prev.sortOrder === "asc" ? "desc" : "asc",
+                }));
+              }}
             >
-              Sort
-            </InputLabel>
-            <Select
-              defaultValue={"dateCreated"}
-              labelId="select-sorting"
-              id="elect-sorting"
-              // value={age}
-              label="Age"
-              // onChange={handleChange}
-              variant="standard"
-            >
-              <MenuItem value={"dateCreated"}>Date Created</MenuItem>
-              <MenuItem value={"upVotedPosts"}>Upvotes</MenuItem>
-              <MenuItem value={"downVotedPost"}>Downvotes</MenuItem>
-            </Select>
-          </FormControl>
+              <SwapVertIcon />
+            </IconButton>
+            <FormControl size="small" fullWidth>
+              <InputLabel
+                sx={{
+                  left: "-15px",
+                  top: "8px",
+                }}
+                id="select-sorting"
+              >
+                Sort
+              </InputLabel>
+              <Select
+                disabled={searchTerm !== ""}
+                defaultValue={"dateCreated"}
+                labelId="select-sorting"
+                id="elect-sorting"
+                // value={age}
+                label="Age"
+                onChange={(e) => {
+                  setUserSortPrefrences((prev) => ({
+                    ...prev,
+                    sortBy: e.target.value,
+                  }));
+                }}
+                variant="standard"
+              >
+                <MenuItem value={"dateCreated"}>Date Created</MenuItem>
+                <MenuItem value={"upVotedPosts"}>Upvotes</MenuItem>
+                <MenuItem value={"downVotedPost"}>Downvotes</MenuItem>
+              </Select>
+            </FormControl>
+          </Stack>
         </Stack>
         <Fade in={fetchingInitialPosts} timeout={1000}>
           <Stack

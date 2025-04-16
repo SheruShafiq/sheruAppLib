@@ -84,6 +84,8 @@ export type fetchPostsPaginatedProps = {
   onError: (error: any) => void;
   page: number;
   pageSize: number;
+  sortBy: string;
+  sortOrder: string;
 };
 
 export type standardFetchByIDProps = {

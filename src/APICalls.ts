@@ -49,10 +49,12 @@ export async function fetchPostsPaginated({
   onError,
   page = 1,
   pageSize = 3,
+  sortBy = "dateCreated",
+  sortOrder = "desc",
 }: fetchPostsPaginatedProps) {
   try {
     const response = await fetch(
-      `${APIURL}/posts?_sort=dateCreated&_order=desc&_page=${page}&_limit=${pageSize}`
+      `${APIURL}/posts?_sort=${sortBy}&_order=${sortOrder}&_page=${page}&_limit=${pageSize}`
     );
     const data = await response.json();
     onSuccess(data);
