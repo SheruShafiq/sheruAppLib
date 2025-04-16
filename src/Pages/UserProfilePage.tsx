@@ -251,6 +251,8 @@ function UserProfilePage({
       }
     };
   }, []);
+  //TODO: Header is not getting the logged in User data
+  // TODO: Comments are not getting their author's username
   return (
     <Stack height="100%" minHeight="100vh" gap={2} pb={2}>
       <Stack>
@@ -431,7 +433,7 @@ function UserProfilePage({
                         key={comment.id}
                         id={comment.id}
                         dateCreated={comment.dateCreated}
-                        userName={"You"}
+                        userName={comment.userName}
                         commentContents={comment.text}
                         replies={comment.replies}
                         imageURL={comment.imageURL}
