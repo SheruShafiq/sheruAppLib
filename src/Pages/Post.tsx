@@ -403,6 +403,8 @@ function PostPage({
                         likes={comment.likes}
                         dislikes={comment.dislikes}
                         setGeneratingCommentsChain={setGeneratingCommentsChain}
+                        userPageVariant={false}
+                        postID={comment.postID}
                       />
                     ))}
               </Stack>

@@ -404,6 +404,8 @@ function CommentBlock({
                   .includes(String(reply.id)) || false
               }
               userData={userData}
+              userPageVariant={false}
+              postID={reply.postID}
             />
           ))}
         </Collapse>

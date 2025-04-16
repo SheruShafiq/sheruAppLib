@@ -138,13 +138,14 @@ function UserProfilePage({
   }, [activeDataTab, userData, id]);
 
   useEffect(() => {
-    if (activeDataTab === "comments" && comments.length > 0) {
+    if (
+      ["comments", "likedComments", "dislikedComments"].includes(activeDataTab)
+    ) {
       try {
         const tree = buildCommentTree(comments);
         setCommentsChain(tree);
       } catch (err) {
         console.error(err);
-      } finally {
       }
     }
   }, [comments, activeDataTab]);
@@ -362,7 +363,9 @@ function UserProfilePage({
             </Fade>
           )}
 
-        {activeDataTab === "comments" && (
+        {["comments", "likedComments", "dislikedComments"].includes(
+          activeDataTab
+        ) && (
           <Fade in={!generatingCommentsChain} timeout={1000}>
             <Stack
               gap={1}
