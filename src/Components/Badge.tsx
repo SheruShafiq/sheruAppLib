@@ -1,9 +1,10 @@
+import React, { useRef, useState, useLayoutEffect } from "react";
 import { Box, Stack, Typography } from "@mui/material";
+import Minara from "../assets/Minara.png";
 import Flower from "../assets/bgFlower.png";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AhmadiyyaFlag from "../assets/ahmadiyyaFlag.png";
-import React from "react";
 
 export type badgeProps = {
   role: string;
@@ -12,20 +13,83 @@ export type badgeProps = {
 };
 
 function TwentyFive({ role, name, preview }: badgeProps) {
+  const roleRef = useRef<HTMLDivElement>(null);
+  const [roleFontSize, setRoleFontSize] = useState(40);
+  const nameRef = useRef<HTMLDivElement>(null);
+  const [nameFontSize, setNameFontSize] = useState(24);
+
+  // define bounds
+  const ROLE_MIN = 12,
+    ROLE_MAX = 40;
+  const NAME_MIN = 12,
+    NAME_MAX = 24;
+
+  // adjust role size to fit container (shrink + grow)
+  useLayoutEffect(() => {
+    if (!roleRef.current) return;
+    const parentW = roleRef.current.parentElement?.clientWidth || 0;
+    let size = Math.min(Math.max(roleFontSize, ROLE_MIN), ROLE_MAX);
+    roleRef.current.style.fontSize = `${size}px`;
+    let w = roleRef.current.scrollWidth;
+
+    // shrink if overflow
+    while (w > parentW && size > ROLE_MIN) {
+      size--;
+      roleRef.current.style.fontSize = `${size}px`;
+      w = roleRef.current.scrollWidth;
+    }
+    // grow if space available
+    while (w < parentW && size < ROLE_MAX) {
+      const next = size + 1;
+      roleRef.current.style.fontSize = `${next}px`;
+      const nextW = roleRef.current.scrollWidth;
+      if (nextW <= parentW) {
+        size = next;
+        w = nextW;
+      } else break;
+    }
+    setRoleFontSize(size);
+  }, [role, roleFontSize]);
+
+  // adjust name size to fit container (shrink + grow)
+  useLayoutEffect(() => {
+    if (!nameRef.current) return;
+    const parentW = nameRef.current.parentElement?.clientWidth || 0;
+    let size = Math.min(Math.max(nameFontSize, NAME_MIN), NAME_MAX);
+    nameRef.current.style.fontSize = `${size}px`;
+    let w = nameRef.current.scrollWidth;
+
+    while (w > parentW && size > NAME_MIN) {
+      size--;
+      nameRef.current.style.fontSize = `${size}px`;
+      w = nameRef.current.scrollWidth;
+    }
+    while (w < parentW && size < NAME_MAX) {
+      const next = size + 1;
+      nameRef.current.style.fontSize = `${next}px`;
+      const nextW = nameRef.current.scrollWidth;
+      if (nextW <= parentW) {
+        size = next;
+        w = nextW;
+      } else break;
+    }
+    setNameFontSize(size);
+  }, [name, nameFontSize]);
+
   return (
     <Stack
-      maxWidth={"660px"}
+      // maxWidth={"660px"}
       mx={"auto"}
-      width={"100%"}
-      height={"100%"}
+      width={"660px"}
+      height={"350px"}
       bgcolor={"white"}
     >
       <Stack
         sx={{
-          background: `linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)), url(${Flower})`,
-          backgroundSize: "600px 600px",
+          background: `linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)), url(${Minara}), url(${Flower})`,
+          backgroundSize: "560px 500px ,110px 200px",
           backgroundRepeat: "no-repeat",
-          backgroundPosition: "50% 30px",
+          backgroundPosition: "50% -50%, 105% 90px",
         }}
         width={"100%"}
         height={"100%"}
@@ -86,24 +150,31 @@ function TwentyFive({ role, name, preview }: badgeProps) {
           justifyContent={"center"}
           alignItems={"center"}
         >
-          <Box
-            py={2}
-            bgcolor={"#fddfe094"}
-            width={"100%"}
-            justifyItems={"center"}
-          >
+          <Box py={2} bgcolor={"#fddfe094"} width={"100%"} overflow={"hidden"}>
             <Typography
-              width={"fit-content"}
-              mx={"auto"}
-              fontWeight={500}
-              color="black"
-              fontSize={"5rem"}
+              ref={roleRef}
+              sx={{
+                whiteSpace: "nowrap",
+                fontWeight: 500,
+                color: "black",
+                fontSize: `${roleFontSize}px`,
+                textAlign: "center",
+              }}
             >
               {role}
             </Typography>
           </Box>
-          <Box>
-            <Typography fontWeight={500} color="black" fontSize={"3rem"}>
+          <Box width="100%" overflow="hidden">
+            <Typography
+              ref={nameRef}
+              sx={{
+                whiteSpace: "nowrap",
+                fontWeight: 500,
+                color: "black",
+                fontSize: `${nameFontSize}px`,
+                textAlign: "center",
+              }}
+            >
               {name}
             </Typography>
           </Box>
@@ -130,8 +201,8 @@ function TwentyFive({ role, name, preview }: badgeProps) {
                 pb: 0.2,
               }}
               fontSize="small"
-            />{" "}
-            Mei 2,3,4 2025
+            />
+            2,3,4 Mei 2025
           </Typography>
           <Typography
             sx={{
