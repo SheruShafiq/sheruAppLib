@@ -273,7 +273,7 @@ function App() {
             }
           />
           <Route
-            path="/sheru/appLibrary/BadgeMaker"
+            path="/sheru/appLibrary/badgeMaker"
             element={
               <div className="APP_BadgeMaker">
                 <BadgeMakerHome />
