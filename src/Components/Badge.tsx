@@ -12,108 +12,107 @@ export type badgeProps = {
   preview?: boolean;
 };
 
+// Hook to dynamically fit text within its container
+function useDynamicFont(
+  ref: React.RefObject<HTMLElement | null>,
+  dependencies: any[],
+  minSize: number,
+  maxSize: number
+) {
+  const [fontSize, setFontSize] = useState(maxSize);
+
+  useLayoutEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+    const parent = element.parentElement;
+    if (!parent) return;
+
+    const resizeText = () => {
+      const parentWidth = parent.clientWidth;
+      let size = maxSize;
+      element.style.fontSize = `${size}px`;
+      let contentWidth = element.scrollWidth;
+
+      // Shrink until it fits
+      while (contentWidth > parentWidth && size > minSize) {
+        size -= 1;
+        element.style.fontSize = `${size}px`;
+        contentWidth = element.scrollWidth;
+      }
+
+      // Grow if there's extra space
+      while (contentWidth < parentWidth && size < maxSize) {
+        const nextSize = size + 1;
+        element.style.fontSize = `${nextSize}px`;
+        if (element.scrollWidth <= parentWidth) {
+          size = nextSize;
+          contentWidth = element.scrollWidth;
+        } else break;
+      }
+
+      setFontSize(size);
+    };
+
+    // Initial adjustment
+    resizeText();
+
+    // Observe parent size changes
+    const observer = new ResizeObserver(resizeText);
+    observer.observe(parent);
+    window.addEventListener("resize", resizeText);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", resizeText);
+    };
+  }, dependencies);
+
+  return fontSize;
+}
+
+// bounds for dynamic text fitting
+const ROLE_MIN = 12;
+const ROLE_MAX = 70;
+const NAME_MIN = 12;
+const NAME_MAX = 30;
+
 function TwentyFive({ role, name, preview }: badgeProps) {
   const roleRef = useRef<HTMLDivElement>(null);
-  const [roleFontSize, setRoleFontSize] = useState(40);
   const nameRef = useRef<HTMLDivElement>(null);
-  const [nameFontSize, setNameFontSize] = useState(24);
 
-  // define bounds
-  const ROLE_MIN = 12,
-    ROLE_MAX = 40;
-  const NAME_MIN = 12,
-    NAME_MAX = 24;
-
-  // adjust role size to fit container (shrink + grow)
-  useLayoutEffect(() => {
-    if (!roleRef.current) return;
-    const parentW = roleRef.current.parentElement?.clientWidth || 0;
-    let size = Math.min(Math.max(roleFontSize, ROLE_MIN), ROLE_MAX);
-    roleRef.current.style.fontSize = `${size}px`;
-    let w = roleRef.current.scrollWidth;
-
-    // shrink if overflow
-    while (w > parentW && size > ROLE_MIN) {
-      size--;
-      roleRef.current.style.fontSize = `${size}px`;
-      w = roleRef.current.scrollWidth;
-    }
-    // grow if space available
-    while (w < parentW && size < ROLE_MAX) {
-      const next = size + 1;
-      roleRef.current.style.fontSize = `${next}px`;
-      const nextW = roleRef.current.scrollWidth;
-      if (nextW <= parentW) {
-        size = next;
-        w = nextW;
-      } else break;
-    }
-    setRoleFontSize(size);
-  }, [role, roleFontSize]);
-
-  // adjust name size to fit container (shrink + grow)
-  useLayoutEffect(() => {
-    if (!nameRef.current) return;
-    const parentW = nameRef.current.parentElement?.clientWidth || 0;
-    let size = Math.min(Math.max(nameFontSize, NAME_MIN), NAME_MAX);
-    nameRef.current.style.fontSize = `${size}px`;
-    let w = nameRef.current.scrollWidth;
-
-    while (w > parentW && size > NAME_MIN) {
-      size--;
-      nameRef.current.style.fontSize = `${size}px`;
-      w = nameRef.current.scrollWidth;
-    }
-    while (w < parentW && size < NAME_MAX) {
-      const next = size + 1;
-      nameRef.current.style.fontSize = `${next}px`;
-      const nextW = nameRef.current.scrollWidth;
-      if (nextW <= parentW) {
-        size = next;
-        w = nextW;
-      } else break;
-    }
-    setNameFontSize(size);
-  }, [name, nameFontSize]);
+  const roleFontSize = useDynamicFont(roleRef, [role], ROLE_MIN, ROLE_MAX);
+  const nameFontSize = useDynamicFont(nameRef, [name], NAME_MIN, NAME_MAX);
 
   return (
-    <Stack
-      // maxWidth={"660px"}
-      mx={"auto"}
-      width={"660px"}
-      height={"350px"}
-      bgcolor={"white"}
-    >
+    <Stack mx="auto" width="660px" height="350px" bgcolor="white">
       <Stack
         sx={{
           background: `linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)), url(${Minara}), url(${Flower})`,
-          backgroundSize: "560px 500px ,110px 200px",
+          backgroundSize: "560px 500px, 110px 200px",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "50% -50%, 105% 90px",
         }}
-        width={"100%"}
-        height={"100%"}
-        justifyContent={"center"}
-        alignItems={"center"}
+        width="100%"
+        height="100%"
+        justifyContent="center"
+        alignItems="center"
       >
+        {/* Header with flags and title */}
         <Stack
-          direction={"row"}
-          width={"100%"}
-          justifyContent={"space-between"}
-          alignItems={"flex-start"}
+          direction="row"
+          width="100%"
+          justifyContent="space-between"
+          alignItems="flex-start"
         >
           <Box sx={{ width: "150px", height: "75px", backgroundColor: "red" }}>
             <img
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "contain",
-              }}
+              style={{ width: "100%", height: "100%", objectFit: "contain" }}
               src={AhmadiyyaFlag}
+              alt="Ahmadiyya flag"
             />
           </Box>
-          <Stack px={2} mt={1} alignItems={"center"}>
-            <Typography color={"#AF1623"}>
+          <Stack px={2} mt={1} alignItems="center">
+            <Typography color="#AF1623">
               Ahmadiyya Moslim Gemeenschap
             </Typography>
             <Typography
@@ -124,11 +123,11 @@ function TwentyFive({ role, name, preview }: badgeProps) {
               }}
               fontWeight={500}
               color="black"
-              fontSize={"3rem"}
+              fontSize="3rem"
             >
               JALSA SALANA
             </Typography>
-            <Typography mt={1} fontWeight={200} color="black" fontSize={"1em"}>
+            <Typography mt={1} fontWeight={200} color="black" fontSize="1em">
               43
               <sup style={{ fontSize: "9px", verticalAlign: "super" }}>
                 ste
@@ -136,21 +135,22 @@ function TwentyFive({ role, name, preview }: badgeProps) {
               JAARLIJKSE BIJEENKOMST
             </Typography>
           </Stack>
-
           <Stack width={150} height={75}>
-            <Box width={"100%"} height={"100%"} bgcolor={"#AF1623"}></Box>
-            <Box bgcolor={"#FFFF"} width={"100%"} height={"100%"}></Box>
-            <Box bgcolor={"#1B448C"} width={"100%"} height={"100%"}></Box>
+            <Box width="100%" height="100%" bgcolor="#AF1623" />
+            <Box width="100%" height="100%" bgcolor="#FFFF" />
+            <Box width="100%" height="100%" bgcolor="#1B448C" />
           </Stack>
         </Stack>
+
+        {/* Dynamic role and name sections */}
         <Stack
           gap={2}
-          width={"100%"}
-          height={"100%"}
-          justifyContent={"center"}
-          alignItems={"center"}
+          width="100%"
+          height="100%"
+          justifyContent="center"
+          alignItems="center"
         >
-          <Box py={2} bgcolor={"#fddfe094"} width={"100%"} overflow={"hidden"}>
+          <Box py={2} bgcolor="#fddfe094" width="100%" overflow="hidden">
             <Typography
               ref={roleRef}
               sx={{
@@ -179,46 +179,30 @@ function TwentyFive({ role, name, preview }: badgeProps) {
             </Typography>
           </Box>
         </Stack>
+
+        {/* Footer with date and location */}
         <Stack
-          boxSizing={"border-box"}
+          boxSizing="border-box"
           pb={0.5}
           px={1}
-          direction={"row"}
-          justifyContent={"space-between"}
-          width={"100%"}
-          alignItems={"center"}
+          direction="row"
+          justifyContent="space-between"
+          width="100%"
+          alignItems="center"
         >
           <Typography
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
+            sx={{ display: "flex", alignItems: "center" }}
             color="black"
           >
-            <CalendarMonthIcon
-              sx={{
-                pb: 0.2,
-              }}
-              fontSize="small"
-            />
-            2,3,4 Mei 2025
+            <CalendarMonthIcon sx={{ pb: 0.2 }} fontSize="small" /> 2,3,4 Mei
+            2025
           </Typography>
           <Typography
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
+            sx={{ display: "flex", alignItems: "center" }}
             color="black"
           >
-            <LocationOnIcon
-              sx={{
-                pb: 0.2,
-              }}
-              fontSize="small"
-            />{" "}
-            't Frusselt 30, 8076 RE Vierhouten, Nederland
+            <LocationOnIcon sx={{ pb: 0.2 }} fontSize="small" /> 't Frusselt 30,
+            8076 RE Vierhouten, Nederland
           </Typography>
         </Stack>
       </Stack>
