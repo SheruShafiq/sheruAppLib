@@ -7,7 +7,7 @@ import { styled } from "@mui/material/styles";
 import Badge, { badgeProps } from "../Components/Badge";
 import ExcelInput from "../Components/ExcelInput";
 import Papa from "papaparse";
-import { toBlob } from "html-to-image";
+import { toCanvas } from "html-to-image";
 import { jsPDF } from "jspdf";
 import Logo from "../Components/Logo";
 import IOSLoader from "../Components/IOSLoader";
@@ -23,14 +23,16 @@ function Home() {
   const [dataInputMode, setDataInputMode] = useState<"csv" | "manual">("csv");
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
+  const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const exportRefs = useRef<(HTMLDivElement | null)[]>([]);
   const isDesktop = window.innerWidth > 768;
 
-  // reset refs whenever data changes
+  // reset refs & clear previous PDF URL when badgesData changes
   useEffect(() => {
     exportRefs.current = [];
+    setPdfBlobUrl(null);
   }, [badgesData]);
 
   // parse CSV into badgesData
@@ -58,28 +60,27 @@ function Home() {
     setDataInputMode(newMode);
   };
 
-  // non-blocking, chunked PDF export with CORS-safe font link handling
+  // non-blocking, chunked PDF export using canvas directly to avoid huge Base64 strings
   const handleExportPDF = async () => {
     setIsExporting(true);
     setExportProgress(0);
+    setPdfBlobUrl(null);
 
-    // // Temporarily remove Google Fonts links to avoid CORS cssRules errors
-    // const head = document.head;
-    // const removedLinks: Array<{
-    //   link: HTMLLinkElement;
-    //   next: ChildNode | null;
-    // }> = [];
-    // head
-    //   .querySelectorAll('link[href*="fonts.googleapis.com"]')
-    //   .forEach((node) => {
-    //     if (node instanceof HTMLLinkElement) {
-    //       removedLinks.push({ link: node, next: node.nextSibling });
-    //       head.removeChild(node);
-    //     }
-    //   });
+    // Remove Google Fonts link nodes to avoid CORS/cssRules issues during snapshot
+    const head = document.head;
+    const removed: Array<{ link: HTMLLinkElement; next: ChildNode | null }> =
+      [];
+    head
+      .querySelectorAll('link[href*="fonts.googleapis.com"]')
+      .forEach((node) => {
+        if (node instanceof HTMLLinkElement) {
+          removed.push({ link: node, next: node.nextSibling });
+          head.removeChild(node);
+        }
+      });
 
     const doc = new jsPDF({
-      orientation: "landscape",
+      orientation: isDesktop ? "landscape" : "portrait",
       unit: "px",
       format: [660, 350],
     });
@@ -89,38 +90,47 @@ function Home() {
         const node = exportRefs.current[i];
         if (!node) continue;
         try {
-          const blob = await toBlob(node, { pixelRatio: 2 });
-          const dataUrl = await new Promise<string>((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result as string);
-            reader.onerror = (e) => reject(e);
-            reader.readAsDataURL(blob!);
-          });
-
+          // snapshot DOM to offscreen canvas at 2x resolution for crispness
+          const canvas = await toCanvas(node, { pixelRatio: 2 });
           if (i > 0) doc.addPage();
-          doc.addImage(dataUrl, "PNG", 0, 0, 660, 350);
+          doc.addImage(canvas, "PNG", 0, 0, 660, 350);
         } catch (err) {
-          console.error("Snapshot failed", err);
+          console.error("Canvas snapshot failed", err);
         }
 
+        // update progress and yield to event loop
         setExportProgress(
           Math.round(((i + 1) / exportRefs.current.length) * 100)
         );
-        // yield to browser
         await new Promise((r) => setTimeout(r, 0));
       }
 
-      doc.save("badges.pdf");
+      // generate blob PDF and trigger download
+      const pdfBlob = doc.output("blob");
+      const url = URL.createObjectURL(pdfBlob);
+      setPdfBlobUrl(url);
+
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = "badges.pdf";
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
     } catch (error) {
       console.error("PDF export error:", error);
     } finally {
-      // Restore removed font links
-      // removedLinks.forEach(({ link, next }) => {
-      //   head.insertBefore(link, next);
-      // });
+      // restore removed font links
+      removed.forEach(({ link, next }) => {
+        head.insertBefore(link, next);
+      });
       setIsExporting(false);
+      // revoke after a minute
+      if (pdfBlobUrl) setTimeout(() => URL.revokeObjectURL(pdfBlobUrl), 60000);
     }
   };
+
+  // preview height based on device
+  const previewHeight = window.innerHeight * (isDesktop ? 0.7 : 0.5);
 
   return (
     <Stack
@@ -137,7 +147,7 @@ function Home() {
         mt={generate ? "2vh" : "25vh"}
         sx={{ transition: "all .3s ease-in-out" }}
       >
-        {/* Top controls */}
+        {/* Top Controls */}
         <Stack
           direction="row"
           width="100%"
@@ -153,6 +163,7 @@ function Home() {
                 setGenerate(false);
                 setCSV(null);
                 setExportProgress(0);
+                setPdfBlobUrl(null);
                 if (fileInputRef.current) fileInputRef.current.value = "";
               }}
             >
@@ -173,29 +184,38 @@ function Home() {
             </Button>
           </Fade>
         </Stack>
+
+        {/* Progress Indicator */}
         <Fade in={isExporting}>
           <Stack width="80%" maxWidth="600px">
             <Typography align="center">Exporting {exportProgress}%</Typography>
             <LinearProgress variant="determinate" value={exportProgress} />
           </Stack>
         </Fade>
-        {/* Virtualized Preview */}
-        {badgesData?.map((item, index) => (
-          <Fade key={index} in={generate}>
+
+        {/* Preview & Off-screen Rendering */}
+        {generate && (
+          <Fade in={generate}>
             <div
               style={{
-                display: generate ? "block" : "none",
-                scale: isDesktop ? "1" : "0.5",
+                height: previewHeight,
+                width: "100%",
+                overflowY: "auto",
               }}
             >
-              <Badge
-                preview={!generate} // When not in export mode, use preview mode settings.
-                role={item.role}
-                name={item.name}
-              />
+              <Stack gap={2} alignItems="center">
+                {badgesData.map((item, index) => (
+                  <div
+                    key={index}
+                    ref={(el) => (exportRefs.current[index] = el)}
+                  >
+                    <Badge preview role={item.role} name={item.name} />
+                  </div>
+                ))}
+              </Stack>
             </div>
           </Fade>
-        ))}
+        )}
 
         {/* Input Mode Toggle */}
         <Fade in={!generate}>
@@ -261,25 +281,23 @@ function Home() {
         </Stack>
       </Fade>
 
-      {/* Export Progress */}
-
-      {/* Off-screen Export Container */}
-      {generate && (
-        <div
-          style={{
-            position: "fixed",
-            top: -10000,
-            left: -10000,
-            width: 660,
-            height: 350,
-          }}
-        >
-          {badgesData.map((item, i) => (
-            <div key={i} ref={(el) => (exportRefs.current[i] = el)}>
-              <Badge preview={false} role={item.role} name={item.name} />
-            </div>
-          ))}
-        </div>
+      {/* Download Button Fallback */}
+      {!isExporting && pdfBlobUrl && (
+        <Fade in={!isExporting}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              const link = document.createElement("a");
+              link.href = pdfBlobUrl;
+              link.download = "badges.pdf";
+              document.body.appendChild(link);
+              link.click();
+              link.remove();
+            }}
+          >
+            Download PDF
+          </Button>
+        </Fade>
       )}
     </Stack>
   );
