@@ -132,9 +132,9 @@ length. So thank lord, some guy in the tickets made a fork with a fix cuz the ba
 - I do need to double check some logic, there's too much of "Why would u do that" going on in functions for sauce app
 
 ---
-> #Future
+> # Future
 
-I far too happy with the setup of this website, the frontend I mean. So happy in fact that I want to make it an Apps library. Where sauce and badgeMaker are one of the apps.
+I am far too happy with the setup of this website, the frontend I mean. So happy in fact that I want to make it an Apps library. Where sauce and badgeMaker are one of the apps.
 I want to be able to host all sorts of apps here, my own CV with a GIF for a pfp like those harry potter newspapers, any tool I need like a pasteBin or something?
 Or just anything cool really, whatever tools I use on a  regular basis, and then make a full fledged little web app store of apps of my own. 
 ---
