@@ -10,7 +10,7 @@
  * This script:
  *  1. Detects file extension.
  *  2. Reads an Excel sheet or CSV.
- *  3. Treats row 2 as headers (Functie / Naam).
+ *  3. Tries to locate "Functie"/"Naam" headers; if not found, falls back to columns 2 & 3.
  *  4. Maps to Role / Name, trims values.
  *  5. Drops rows where both Role & Name are empty.
  *  6. Writes out a clean CSV with columns Role,Name.
@@ -28,7 +28,6 @@ if (!inputPath || !outputPath) {
 }
 
 const ext = path.extname(inputPath).toLowerCase();
-
 let records = [];
 
 try {
@@ -40,21 +39,30 @@ try {
 
         // Convert to array of arrays, defval="" ensures no undefined
         const raw = XLSX.utils.sheet_to_json(ws, { header: 1, defval: "" });
-        if (raw.length < 2) {
-            throw new Error("Excel file has fewer than 2 rows; cannot find headers.");
+        if (raw.length === 0) {
+            throw new Error("Excel file is empty.");
         }
 
-        // Row 1 (index 0) is blank; Row 2 (index 1) has headers
-        const headers = raw[1].map(h => h.toString().trim());
-        const idxRole = headers.findIndex(h => /^Functie$/i.test(h));
-        const idxName = headers.findIndex(h => /^Naam$/i.test(h));
+        // Try to find header row containing both Functie and Naam
+        let headerRowIndex = raw.findIndex(
+            row => row.some(cell => /^Functie$/i.test(cell.toString().trim()))
+                && row.some(cell => /^Naam$/i.test(cell.toString().trim()))
+        );
 
-        if (idxRole < 0 || idxName < 0) {
-            throw new Error("Could not find 'Functie' or 'Naam' columns in header row.");
+        let idxRole, idxName, dataStart;
+        if (headerRowIndex >= 0) {
+            const headers = raw[headerRowIndex].map(h => h.toString().trim());
+            idxRole = headers.findIndex(h => /^Functie$/i.test(h));
+            idxName = headers.findIndex(h => /^Naam$/i.test(h));
+            dataStart = headerRowIndex + 1;
+        } else {
+            console.warn("⚠️ 'Functie' or 'Naam' headers not found; defaulting to columns 2 & 3");
+            idxRole = 1;
+            idxName = 2;
+            dataStart = 0;
         }
 
-        // Data rows start from index 2
-        raw.slice(2).forEach(row => {
+        raw.slice(dataStart).forEach(row => {
             const role = row[idxRole]?.toString().trim() || "";
             const name = row[idxName]?.toString().trim() || "";
             if (role || name) records.push({ Role: role, Name: name });
@@ -66,23 +74,34 @@ try {
         const lines = text.split(/\r?\n/);
 
         if (lines.length < 2) {
-            throw new Error("CSV has fewer than 2 lines; cannot find headers.");
+            throw new Error("CSV has fewer than 2 lines; cannot parse content.");
         }
 
-        // Drop first (empty) line, rejoin
-        const sliced = lines.slice(1).join("\n");
+        // Drop first empty line if present
+        const sliced = lines[0].trim() === "" ? lines.slice(1).join("\n") : lines.join("\n");
         const { data, errors } = Papa.parse(sliced, {
             header: true,
             skipEmptyLines: true
         });
         if (errors.length) {
-            console.warn("Warnings while parsing CSV:", errors);
+            console.warn("⚠️ Warnings while parsing CSV:", errors);
         }
 
+        // Detect if headers exist
+        const hasFuncHeader = data.length > 0 && Object.prototype.hasOwnProperty.call(data[0], 'Functie');
+        const hasNameHeader = data.length > 0 && Object.prototype.hasOwnProperty.call(data[0], 'Naam');
+
         data.forEach(row => {
-            // Papa gave you keys based on row 2
-            const role = (row["Functie"] || row["functie"] || "").trim();
-            const name = (row["Naam"] || row["naam"] || "").trim();
+            let role, name;
+            if (hasFuncHeader && hasNameHeader) {
+                role = (row['Functie'] || row['functie'] || '').trim();
+                name = (row['Naam'] || row['naam'] || '').trim();
+            } else {
+                // Fallback to positional columns
+                const keys = Object.keys(row);
+                role = (row[keys[1]] || '').trim();
+                name = (row[keys[2]] || '').trim();
+            }
             if (role || name) records.push({ Role: role, Name: name });
         });
 
