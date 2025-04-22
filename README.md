@@ -3,9 +3,10 @@
 > _A community driven resource sharing application_
 
 **Sauce** is a simple application developed solely for research purposes. **Sauce** aims to provide it's users
-with a convinient access to resources that may be harder to find via manual browsing.
-The application's prominent features are:
+with a convinient access to resources that may be harder to find via manual browsing. The reason I started this project was 
+for the frontend exam at Uni. Hence the funny backend, that will be replaced with a proper one when I get to backend exam.
 
+The application's prominent features are:
 1. Convinient sharing using shortened links
 2. Stellar and blazing fast resource searching
 3. Points system to promote legitmacy
@@ -23,15 +24,16 @@ Product properties
 1. SHARE DATA (WHAT IS DATA? DATA: {Resource Name, Resource Value, Resource Description})
 2. Data can be evalunted by other users on its legitimacy.
    if (Resource === legit) ? upvote : downvote
-3. Home feed based off of uprotes.
+3. Home feed based off of upvotes.
 4. A report button to report inactive resources that were active before
-5. No accounts system. Anyone can make a post without any signup and comment on it as well. Username will be generated automatically and kept track of locally via cookies.
-   > Nice to have
+5. <del>No accounts system. Anyone can make a post without any signup and comment on it as well. Username will be generated automatically and kept track of locally via cookies.</del>
+
+> Nice to have
 6. Topic based filtering to be able to look up resources with specific assosciations.
 7. Resource requesting.
 8. Feedbased off "Sauces" where audio based is mustard, more explicit is chili etc
 
-#### _Will use JSON server till I get to the backend part._
+#### _Will use JSON server till I get to the backend exam._
 
 ---
 
@@ -44,10 +46,14 @@ Product properties
 5. for some messed up reason, iOS (as far as I can tell only iOS) scales your website to make font be 16px. In result destroying every formating. Need to put a meta tag on top to stop that.
 6. GitHUB is an excellent file storage system API, it's free, rate limit of 1K and its fast and easy. So db.json is going there.
 7. Render also doesnt persists for free (bitch), so github api it is.
+8. Node has a maximum string length
+9. What are webworkers, progressive web apps and how to do a loading bar
+10. I might not be as good of a dev as I thought I was
+11. I know very little in the grand scheme of things of web app development and should send a formal appology to both Rein and Erik
 
 ---
 
-## Make shift JIRA Board:
+## Make shift JIRA Board cuz why would a single dev make a whole ass board:
 
 2. <del>Creating a post formulier</del>
 3. <del>Post page</del>
@@ -94,6 +100,8 @@ Product properties
 15. [Feature] Infinite scroll on posts and comments
 16. [Feature] Left bar on home
 17. [Expansion] Sheru app library
+18. [Feature] Shareable links of posts
+19. [Security] Backend LIVE server only accepts requests from frontend LIVE server
  
 ---
 
@@ -123,5 +131,11 @@ length. So thank lord, some guy in the tickets made a fork with a fix cuz the ba
 - ALSO HOLY SHIT I MANAGED TO MOVE THE WHOLE THING TO TYPESCRIPT
 - I do need to double check some logic, there's too much of "Why would u do that" going on in functions for sauce app
 
+---
+> #Future
+I far too happy with the setup of this website, the frontend I mean. So happy in fact that I want to make it an Apps library. Where sauce and badgeMaker are one of the apps.
+I want to be able to host all sorts of apps here, my own CV with a GIF for a pfp like those harry potter newspapers, any tool I need like a pasteBin or something?
+Or just anything cool really, whatever tools I use on a  regular basis, and then make a full fledged little web app store of apps of my own. 
+---
 
 #### Yes. Sauce is inspired from the 6 digit sauce.
