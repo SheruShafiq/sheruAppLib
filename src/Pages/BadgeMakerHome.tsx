@@ -1,5 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Stack, Button, Fade, Typography, LinearProgress } from "@mui/material";
+import {
+  Stack,
+  Button,
+  Fade,
+  Typography,
+  LinearProgress,
+  Box,
+} from "@mui/material";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -20,7 +27,9 @@ function Home() {
   const [badgesData, setBadgesData] = useState<badgeProps[]>([]);
   const [rows, setRows] = useState<RowData[]>([{ col1: "", col2: "" }]);
   const [generate, setGenerate] = useState(false);
-  const [dataInputMode, setDataInputMode] = useState<"csv" | "manual">("csv");
+  const [dataInputMode, setDataInputMode] = useState<"csv" | "manual">(
+    "manual"
+  );
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
   const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
@@ -28,12 +37,6 @@ function Home() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const exportRefs = useRef<(HTMLDivElement | null)[]>([]);
   const isDesktop = window.innerWidth > 768;
-
-  // reset refs & clear previous PDF URL when badgesData changes
-  useEffect(() => {
-    exportRefs.current = [];
-    setPdfBlobUrl(null);
-  }, [badgesData]);
 
   // parse CSV into badgesData
   useEffect(() => {
@@ -93,7 +96,7 @@ function Home() {
           // snapshot DOM to offscreen canvas at 2x resolution for crispness
           const canvas = await toCanvas(node, { pixelRatio: 2 });
           if (i > 0) doc.addPage();
-          doc.addImage(canvas, "PNG", 0, 0, 660, 350);
+          doc.addImage(canvas, "JPEG", 0, 0, 660, 350);
         } catch (err) {
           console.error("Canvas snapshot failed", err);
         }
@@ -166,6 +169,9 @@ function Home() {
                 setPdfBlobUrl(null);
                 if (fileInputRef.current) fileInputRef.current.value = "";
               }}
+              sx={{
+                display: generate ? "flex" : "none",
+              }}
             >
               Reset
             </Button>
@@ -178,9 +184,27 @@ function Home() {
               loading={isExporting}
               loadingIndicator={<IOSLoader />}
               color="secondary"
-              onClick={handleExportPDF}
+              onClick={() => {
+                if (!pdfBlobUrl) {
+                  handleExportPDF();
+                } else {
+                  const link = document.createElement("a");
+                  link.href = pdfBlobUrl;
+                  link.download = "badges.pdf";
+                  document.body.appendChild(link);
+                  link.click();
+                  link.remove();
+                }
+              }}
+              sx={{
+                display: generate ? "flex" : "none",
+              }}
             >
-              Export PDF
+              {isExporting
+                ? "Processing..."
+                : pdfBlobUrl
+                ? "Download PDF"
+                : "Export PDF"}
             </Button>
           </Fade>
         </Stack>
@@ -196,14 +220,27 @@ function Home() {
         {/* Preview & Off-screen Rendering */}
         {generate && (
           <Fade in={generate}>
-            <div
+            <Box
               style={{
-                height: previewHeight,
-                width: "100%",
+                height: "88vh",
+                width: "fit-content",
                 overflowY: "auto",
+                display: generate ? "flex" : "none",
               }}
+              px={1}
             >
               <Stack gap={2} alignItems="center">
+                <Box
+                  sx={{
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "50vh",
+                    pointerEvents: "none",
+                    background: "linear-gradient(transparent, black)",
+                  }}
+                />
                 {badgesData.map((item, index) => (
                   <div
                     key={index}
@@ -213,7 +250,7 @@ function Home() {
                   </div>
                 ))}
               </Stack>
-            </div>
+            </Box>
           </Fade>
         )}
 
@@ -225,6 +262,9 @@ function Home() {
             exclusive
             onChange={handleChange}
             aria-label="inputMode"
+            sx={{
+              display: generate ? "none" : "flex",
+            }}
           >
             <ToggleButton value="csv">Upload CSV</ToggleButton>
             <ToggleButton value="manual">Manual Data</ToggleButton>
@@ -234,15 +274,39 @@ function Home() {
 
       {/* Data Input Section */}
       <Fade in={!generate}>
-        <Stack gap={1} maxWidth="600px">
+        <Stack
+          gap={2}
+          maxWidth="600px"
+          sx={{
+            display: generate ? "none" : "flex",
+          }}
+        >
           {dataInputMode === "manual" && (
             <ExcelInput rows={rows} setRows={setRows} />
           )}
           {dataInputMode === "csv" && (
-            <Stack gap={1}>
-              <Typography variant="body1">
-                <strong>Upload a CSV file:</strong>
+            <Stack gap={2}>
+              <Typography variant="h6" align="center">
+                <strong>Upload a CSV file</strong>
               </Typography>
+              <Typography
+                sx={{
+                  backgroundColor: "background.paper",
+                  padding: "1rem",
+                  borderRadius: "4px",
+                  fontWeight: 200,
+                }}
+                variant="h6"
+              >
+                Role,Name
+                <br />
+                Manager,John Doe
+                <br />
+                Developer,Jane Smith
+                <br />
+                Designer,Emily Johnson
+              </Typography>
+
               <Button
                 component="label"
                 variant="outlined"
@@ -280,25 +344,6 @@ function Home() {
           </Button>
         </Stack>
       </Fade>
-
-      {/* Download Button Fallback */}
-      {!isExporting && pdfBlobUrl && (
-        <Fade in={!isExporting}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              const link = document.createElement("a");
-              link.href = pdfBlobUrl;
-              link.download = "badges.pdf";
-              document.body.appendChild(link);
-              link.click();
-              link.remove();
-            }}
-          >
-            Download PDF
-          </Button>
-        </Fade>
-      )}
     </Stack>
   );
 }
