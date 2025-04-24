@@ -102,6 +102,8 @@ Product properties
 17. [Expansion] Sheru app library
 18. [Feature] Shareable links of posts
 19. [Security] Backend LIVE server only accepts requests from frontend LIVE server
+20. [Bug not bug?] Posts should technically scroll backup on pagination change, but then again the final idea is infinite scroll so..... idk?
+21. [DB Error] On prod, one of the user's(dev) liked posts array contains ID: 0. Which is non existing. I'll try to see if thats new or always been there. Also the error snckbar is blanco, gotta look into that as well.
  
 ---
 
