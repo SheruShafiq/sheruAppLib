@@ -1,16 +1,10 @@
 import React, { useRef, useState, useLayoutEffect } from "react";
 import { Box, Stack, Typography } from "@mui/material";
-import Minara from "../assets/Minara.png";
-import Flower from "../assets/bgFlower.png";
+import MinaraLogo from "../../../assets/minaraLogo.png";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import AhmadiyyaFlag from "../assets/ahmadiyyaFlag.png";
-
-export type badgeProps = {
-  role: string;
-  name: string;
-  preview?: boolean;
-};
+import JalsaLogo from "../../../assets/jalsaLogo.png";
+import { badgeProps } from "./Badge";
 
 // Hook to dynamically fit text within its container
 function useDynamicFont(
@@ -72,26 +66,20 @@ function useDynamicFont(
 
 // bounds for dynamic text fitting
 const ROLE_MIN = 12;
-const ROLE_MAX = 70;
+const ROLE_MAX = 120;
 const NAME_MIN = 12;
 const NAME_MAX = 30;
 
-function TwentyFive({ role, name, preview }: badgeProps) {
+function CarPass({ role, name, preview }: badgeProps) {
   const roleRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLDivElement>(null);
 
   const roleFontSize = useDynamicFont(roleRef, [role], ROLE_MIN, ROLE_MAX);
   const nameFontSize = useDynamicFont(nameRef, [name], NAME_MIN, NAME_MAX);
-
   return (
     <Stack mx="auto" width="660px" height="350px" bgcolor="white">
       <Stack
-        sx={{
-          background: `linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)), url(${Minara}), url(${Flower})`,
-          backgroundSize: "560px 500px, 110px 200px",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "50% -50%, 105% 90px",
-        }}
+        bgcolor={Number(name) === 2 ? "#ff000054" : "yellow"}
         width="100%"
         height="100%"
         justifyContent="center"
@@ -102,85 +90,70 @@ function TwentyFive({ role, name, preview }: badgeProps) {
           direction="row"
           width="100%"
           justifyContent="space-between"
-          alignItems="flex-start"
+          alignItems="center"
+          my={2}
+          px={1}
         >
-          <Box sx={{ width: "150px", height: "75px", backgroundColor: "red" }}>
+          <Box sx={{ width: "100px", height: "100px" }}>
             <img
               style={{ width: "100%", height: "100%", objectFit: "contain" }}
-              src={AhmadiyyaFlag}
+              src={MinaraLogo}
               alt="Ahmadiyya flag"
             />
           </Box>
-          <Stack px={2} mt={1} alignItems="center">
-            <Typography color="#AF1623">
-              Ahmadiyya Moslim Gemeenschap
+          <Stack
+            alignItems="center"
+            sx={{
+              placeContent: "center",
+              width: "160px",
+              height: "160px",
+              border: "8px solid rgb(255, 0, 21)",
+              borderRadius: "100%",
+            }}
+          >
+            <Typography lineHeight={0} fontSize={150} color="rgb(255, 0, 21)">
+              P
             </Typography>
-            <Typography
-              sx={{
-                borderBottom: "2px solid #AF1623",
-                lineHeight: "40px",
-                mt: "6px",
+          </Stack>
+          <Box sx={{ width: "100px", height: "100px" }}>
+            <img
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+                WebkitFilter: "drop-shadow(5px 5px 5px #222)",
+                filter: "drop-shadow(5px 5px 5px #222)",
               }}
-              fontWeight={500}
-              color="black"
-              fontSize="3rem"
-            >
-              JALSA SALANA
-            </Typography>
-            <Typography mt={1} fontWeight={200} color="black" fontSize="1em">
-              43
-              <sup style={{ fontSize: "9px", verticalAlign: "super" }}>
-                ste
-              </sup>{" "}
-              JAARLIJKSE BIJEENKOMST
-            </Typography>
-          </Stack>
-          <Stack width={150} height={75}>
-            <Box width="100%" height="100%" bgcolor="#AF1623" />
-            <Box width="100%" height="100%" bgcolor="#FFFF" />
-            <Box width="100%" height="100%" bgcolor="#1B448C" />
-          </Stack>
+              src={JalsaLogo}
+              alt="Ahmadiyya flag"
+            />
+          </Box>
         </Stack>
 
-        {/* Dynamic role and name sections */}
+        {/* Dynamic role and  sections */}
         <Stack
-          gap={2}
           width="100%"
           height="100%"
           justifyContent="center"
           alignItems="center"
         >
-          <Box py={2} bgcolor="#fddfe094" width="100%" overflow="hidden">
+          <Box width="100%" overflow="hidden"></Box>
+          <Box width="100%" overflow="hidden">
             <Typography
               ref={roleRef}
               sx={{
+                lineHeight: 1,
                 whiteSpace: "nowrap",
-                fontWeight: 500,
+                fontWeight: 800,
                 color: "black",
-                fontSize: `${roleFontSize}px`,
+                fontSize: `${name}px`,
                 textAlign: "center",
               }}
             >
               {role}
             </Typography>
           </Box>
-          <Box width="100%" overflow="hidden">
-            <Typography
-              ref={nameRef}
-              sx={{
-                whiteSpace: "nowrap",
-                fontWeight: 500,
-                color: "black",
-                fontSize: `${nameFontSize}px`,
-                textAlign: "center",
-              }}
-            >
-              {name}
-            </Typography>
-          </Box>
         </Stack>
-
-        {/* Footer with date and location */}
         <Stack
           boxSizing="border-box"
           pb={0.5}
@@ -210,4 +183,4 @@ function TwentyFive({ role, name, preview }: badgeProps) {
   );
 }
 
-export default TwentyFive;
+export default CarPass;

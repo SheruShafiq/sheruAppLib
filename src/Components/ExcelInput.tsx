@@ -12,7 +12,11 @@ import {
 } from "@mui/material";
 import { ExcelInputProps, RowData } from "../Pages/BadgeMakerHome"; // Adjust the import path as necessary
 
-const ExcelLikeTable: React.FC<ExcelInputProps> = ({ rows, setRows }) => {
+const ExcelLikeTable: React.FC<ExcelInputProps> = ({
+  rows,
+  setRows,
+  badgeVariant,
+}) => {
   // Start with one blank row
 
   // Update row data and auto append new row when needed
@@ -41,13 +45,13 @@ const ExcelLikeTable: React.FC<ExcelInputProps> = ({ rows, setRows }) => {
           <TableRow>
             <TableCell>
               <Typography variant="h6" fontWeight={600}>
-                Role
+                {badgeVariant == 2 ? "Role" : "Licensce Number"}
               </Typography>
             </TableCell>
             <TableCell>
               {" "}
               <Typography variant="h6" fontWeight={600}>
-                Name
+                {badgeVariant == 2 ? "Name" : "Pass Level"}
               </Typography>
             </TableCell>
           </TableRow>
@@ -69,7 +73,9 @@ const ExcelLikeTable: React.FC<ExcelInputProps> = ({ rows, setRows }) => {
                   }
                   fullWidth
                   variant="standard"
-                  placeholder="Nazim"
+                  placeholder={
+                    badgeVariant == 2 ? "Nazim Jalsa Food" : "XTCAS-ASD1A"
+                  }
                 />
               </TableCell>
               <TableCell sx={{ borderBottom: "none" }}>
@@ -81,7 +87,11 @@ const ExcelLikeTable: React.FC<ExcelInputProps> = ({ rows, setRows }) => {
                   }
                   fullWidth
                   variant="standard"
-                  placeholder="Ali"
+                  placeholder={
+                    badgeVariant == 2
+                      ? "Ahmad Ali Abbas"
+                      : "1 = Standard, 2 = Full Access"
+                  }
                 />
               </TableCell>
             </TableRow>

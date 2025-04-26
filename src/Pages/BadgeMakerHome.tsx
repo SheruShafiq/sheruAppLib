@@ -6,12 +6,16 @@ import {
   Typography,
   LinearProgress,
   Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
 } from "@mui/material";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
-import Badge, { badgeProps } from "../Components/Badge";
+import Badge, { badgeProps } from "../Components/BadgeVariants/2025/Badge";
 import ExcelInput from "../Components/ExcelInput";
 import Papa from "papaparse";
 import { toCanvas } from "html-to-image";
@@ -19,6 +23,7 @@ import { jsPDF } from "jspdf";
 import Logo from "../Components/Logo";
 import IOSLoader from "../Components/IOSLoader";
 import "../Styles/BadgeMakerMain.css";
+import CarPass from "../Components/BadgeVariants/2025/CarPass";
 
 export type RowData = { col1: string; col2: string };
 
@@ -33,7 +38,8 @@ function Home() {
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
   const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
-
+  // 1 = car pass, 2 = badge
+  const [badgeVariant, setBadgeVariant] = useState<Number>(1);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const exportRefs = useRef<(HTMLDivElement | null)[]>([]);
   const isDesktop = window.innerWidth > 768;
@@ -48,10 +54,11 @@ function Home() {
     Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
+      transformHeader: (h) => h.trim(), // ← trim whitespace from " name"
       complete: (results) => {
         const data = (results.data as any[]).map((row) => ({
           role: row["Role"] || row["role"] || "",
-          name: row["Name"] || row["name"] || "",
+          name: row["Name"] || row["name"] || "", // now "name" will exist
         }));
         setBadgesData(data);
       },
@@ -246,7 +253,11 @@ function Home() {
                     key={index}
                     ref={(el) => (exportRefs.current[index] = el)}
                   >
-                    <Badge preview role={item.role} name={item.name} />
+                    {badgeVariant === 1 ? (
+                      <CarPass role={item.role} name={item.name} preview />
+                    ) : (
+                      <Badge role={item.role} name={item.name} preview />
+                    )}
                   </div>
                 ))}
               </Stack>
@@ -256,19 +267,36 @@ function Home() {
 
         {/* Input Mode Toggle */}
         <Fade in={!generate}>
-          <ToggleButtonGroup
-            color="primary"
-            value={dataInputMode}
-            exclusive
-            onChange={handleChange}
-            aria-label="inputMode"
-            sx={{
-              display: generate ? "none" : "flex",
-            }}
-          >
-            <ToggleButton value="csv">Upload CSV</ToggleButton>
-            <ToggleButton value="manual">Manual Data</ToggleButton>
-          </ToggleButtonGroup>
+          <Stack gap={2}>
+            <ToggleButtonGroup
+              color="primary"
+              value={dataInputMode}
+              exclusive
+              onChange={handleChange}
+              aria-label="inputMode"
+              sx={{
+                display: generate ? "none" : "flex",
+              }}
+            >
+              <ToggleButton value="csv">Upload CSV</ToggleButton>
+              <ToggleButton value="manual">Manual Data</ToggleButton>
+            </ToggleButtonGroup>
+
+            <FormControl fullWidth>
+              <InputLabel>Badge Variant</InputLabel>
+              <Select
+                size="small"
+                value={badgeVariant}
+                label="Badge Variant"
+                onChange={(e) => {
+                  setBadgeVariant(Number(e.target.value));
+                }}
+              >
+                <MenuItem value={1}>Car Pass</MenuItem>
+                <MenuItem value={2}>Standard Badge</MenuItem>
+              </Select>
+            </FormControl>
+          </Stack>
         </Fade>
       </Stack>
 
@@ -282,30 +310,56 @@ function Home() {
           }}
         >
           {dataInputMode === "manual" && (
-            <ExcelInput rows={rows} setRows={setRows} />
+            <ExcelInput
+              badgeVariant={badgeVariant}
+              rows={rows}
+              setRows={setRows}
+            />
           )}
           {dataInputMode === "csv" && (
             <Stack gap={2}>
               <Typography variant="h6" align="center">
                 <strong>Upload a CSV file</strong>
               </Typography>
-              <Typography
-                sx={{
-                  backgroundColor: "background.paper",
-                  padding: "1rem",
-                  borderRadius: "4px",
-                  fontWeight: 200,
-                }}
-                variant="h6"
-              >
-                Role,Name
-                <br />
-                Manager,John Doe
-                <br />
-                Developer,Jane Smith
-                <br />
-                Designer,Emily Johnson
-              </Typography>
+              {badgeVariant === 2 ? (
+                <Typography
+                  sx={{
+                    backgroundColor: "background.paper",
+                    padding: "1rem",
+                    borderRadius: "4px",
+                    fontWeight: 200,
+                  }}
+                  variant="h6"
+                >
+                  Role,Name
+                  <br />
+                  Manager,John Doe
+                  <br />
+                  Developer,Jane Smith
+                  <br />
+                  Designer,Emily Johnson
+                </Typography>
+              ) : (
+                <Typography
+                  sx={{
+                    backgroundColor: "background.paper",
+                    padding: "1rem",
+                    borderRadius: "4px",
+                    fontWeight: 200,
+                  }}
+                  variant="h6"
+                >
+                  CarNumber,PassLevel
+                  <br />
+                  XTC-ASDASD-12,1
+                  <br />
+                  XTC-ASDASD,2
+                  <br />
+                  <strong>Note!</strong>
+                  <br />1 = Standard Entry
+                  <br />2 = Complete Access
+                </Typography>
+              )}
 
               <Button
                 component="label"
