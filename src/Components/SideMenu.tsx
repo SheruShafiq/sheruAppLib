@@ -5,7 +5,7 @@ import { Category } from "../../dataTypeDefinitions";
 function SideMenu({ categories }: { categories: Category[] }) {
   return (
     <Stack
-      gap={1}
+      gap={2}
       width={"100%"}
       maxWidth={300}
       className={"standardBorder"}

@@ -548,3 +548,27 @@ export async function searchPosts(
     onError(error);
   }
 }
+
+export async function updateCateogories(
+  id: string,
+  field: string,
+  newValue: any,
+  onSuccess: (category: Category) => void,
+  onError: (error: any) => void
+) {
+  try {
+    const now = new Date().toISOString();
+    const response = await fetch(`${APIURL}/categories/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ [field]: newValue, dateModified: now }),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to update category");
+    }
+    const data = await response.json();
+    onSuccess(data);
+  } catch (error) {
+    onError(error);
+  }
+}

@@ -13,7 +13,7 @@ import {
   FormControl,
 } from "@mui/material";
 import { useState } from "react";
-import { createPost, patchUser } from "../APICalls";
+import { createPost, patchUser, updateCateogories } from "../APICalls";
 import { TextGlitchEffect } from "./TextGlitchEffect";
 import { useSnackbar } from "notistack";
 import { Category, errorProps } from "../../dataTypeDefinitions";
@@ -60,15 +60,41 @@ function CreatePostDialogue({
             field: "posts",
             newValue: [...userData.posts, data.id],
             onSuccess: () => {
-              if (callerIdentifier === "postPage") {
-                onPostCreated(data.id);
-                setCreatingPost(false);
-              } else {
-                onPostCreated();
-              }
-              enqueueSnackbar("Post created successfully!", {
-                variant: "success",
-              });
+              updateCateogories(
+                category, // id
+                "posts", // field
+                [
+                  ...(categories.find((cat) => cat.id === category)?.posts ||
+                    []),
+                  data.id,
+                ], // newValue
+                () => {
+                  if (callerIdentifier === "postPage") {
+                    onPostCreated(data.id);
+                    setCreatingPost(false);
+                  } else {
+                    onPostCreated();
+                  }
+                  enqueueSnackbar("Post created successfully!", {
+                    variant: "success",
+                  });
+                },
+                (error) => {
+                  const err: errorProps = {
+                    id: "failed to add post to category",
+                    userFreindlyMessage:
+                      "An error occurred while updating the category.",
+                    errorMessage:
+                      error instanceof Error ? error.message : "Unknown error",
+                    error:
+                      error instanceof Error
+                        ? error
+                        : new Error("Unknown error"),
+                  };
+                  enqueueSnackbar({ variant: "error", ...err });
+                  setCreatingPost(false);
+                }
+              );
             },
             onError: (error) => {
               const err: errorProps = {
