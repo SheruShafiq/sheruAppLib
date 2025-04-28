@@ -1,48 +1,88 @@
-import { Button, IconButton, Stack, Typography } from "@mui/material";
+import { Button, Divider, IconButton, Stack, Typography } from "@mui/material";
 import React from "react";
 import { Category } from "../../dataTypeDefinitions";
-
+import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 function SideMenu({ categories }: { categories: Category[] }) {
   return (
     <Stack
-      gap={2}
+      gap={4}
       width={"100%"}
       maxWidth={300}
       className={"standardBorder"}
       py={2}
       px={2}
     >
-      <Typography fontWeight={"bold"} variant="h4">
-        Categories
-      </Typography>
-      <Stack flexWrap={"wrap"} direction="row" gap={2}>
-        {categories.map((category) => (
-          <IconButton
-            key={category.id}
-            color="primary"
-            onClick={() => {
-              // Handle category click
-              console.log(`Clicked on category: ${category.name}`);
-            }}
-            sx={{
-              width: "fit-content",
-              backgroundColor: "#000",
-              borderRadius: "100%",
-            }}
-          >
-            <img
-              style={{
-                width: "50px",
-                height: "50px",
-                borderRadius: "100%",
+      <Stack gap={2}>
+        <Typography fontWeight={"bold"} variant="h4">
+          Categories
+        </Typography>
+        <Stack flexWrap={"wrap"} direction="row" gap={2}>
+          {categories.map((category) => (
+            <Button
+              key={category.id}
+              color="primary"
+              onClick={() => {
+                // Handle category click
+                console.log(`Clicked on category: ${category.name}`);
               }}
-              src={category.iconPath}
-            />
-            <Typography fontSize={16} textAlign={"center"}>
-              {category.posts.length}
-            </Typography>
-          </IconButton>
-        ))}
+              sx={{
+                width: "fit-content",
+                backgroundColor: "#000",
+              }}
+            >
+              <img
+                style={{
+                  width: "50px",
+                  height: "50px",
+                  borderRadius: "100%",
+                }}
+                src={category.iconPath}
+              />
+              <Typography fontSize={16} textAlign={"center"}>
+                {category.posts.length}
+              </Typography>
+            </Button>
+          ))}
+        </Stack>
+      </Stack>
+      <Divider
+        sx={{
+          borderColor: "white",
+        }}
+      />
+      <Stack gap={2}>
+        <Typography fontWeight={"bold"} variant="h5">
+          Sheru's App Library
+        </Typography>
+        <Stack gap={1}>
+          <Button
+            sx={{
+              justifyContent: "space-between",
+            }}
+            fullWidth
+          >
+            <span>Badge Maker</span>
+            <ArrowOutwardIcon />
+          </Button>
+          <Button
+            sx={{
+              justifyContent: "space-between",
+            }}
+            fullWidth
+          >
+            <span>CV</span>
+            <ArrowOutwardIcon />
+          </Button>
+          <Button
+            sx={{
+              justifyContent: "space-between",
+            }}
+            fullWidth
+          >
+            <span>Sauce</span>
+            <ArrowOutwardIcon />
+          </Button>
+        </Stack>
       </Stack>
     </Stack>
   );
