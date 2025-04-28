@@ -48,6 +48,7 @@ Product properties
 9. What are webworkers, progressive web apps and how to do a loading bar
 10. I might not be as good of a dev as I thought I was
 11. I know very little in the grand scheme of things of web app development and should send a formal appology to both Rein and Erik
+12. position sticky requires top to defined
 
 ---
 
