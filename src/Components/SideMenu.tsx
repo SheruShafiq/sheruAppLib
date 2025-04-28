@@ -11,9 +11,12 @@ function SideMenu({ categories }: { categories: Category[] }) {
       className={"standardBorder"}
       py={2}
       px={2}
+      height={"fit-content"}
+      position={"sticky"}
+      top={16}
     >
       <Stack gap={2}>
-        <Typography fontWeight={"bold"} variant="h4">
+        <Typography fontSize={20} fontWeight={"bold"}>
           Categories
         </Typography>
         <Stack flexWrap={"wrap"} direction="row" gap={2}>
