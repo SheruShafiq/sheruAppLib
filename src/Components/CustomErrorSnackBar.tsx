@@ -13,6 +13,7 @@ import { errorProps } from "../../dataTypeDefinitions";
 const CustomErrorSnackBar = forwardRef<HTMLDivElement, errorProps>(
   ({ id, ...props }, ref) => {
     const { userFreindlyMessage, error } = props;
+    console.log("Error SnackBar", props);
     const { closeSnackbar } = useSnackbar();
     const [expanded, setExpanded] = useState(false);
 

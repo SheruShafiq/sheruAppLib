@@ -84,8 +84,8 @@ Product properties
 29. <del>Create post loader keeps going on live for some reason</del>
 30. <del> The right section of post page will be "other posts from this user" or something</del>
 31. <del>Now that I have giphy prod I can randomly assign media to posts! based off of post title and description!!</del>
-32. [BUG] IN userprofile Page Header is not getting the currentlogged in User data but the user's data of the page
-33. [BUG] In user profile page Comments are not getting their author's username
+32. <del>[BUG] IN userprofile Page Header is not getting the currentlogged in User data but the user's data of the page</del>
+33. <del>[BUG] In user profile page Comments are not getting their author's username</del>
 34. [Refactor] Giphy API shouldnt be making fetch calls for GIFs every time, but only on creation endpoints
 35. [Feature] Are you sure and provide a reason dialogue on report post.
 36. [Feature] ThreeJS 404 page after basic exams

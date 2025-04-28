@@ -297,10 +297,10 @@ const PostPreview: React.FC<PostPreviewProps> = ({
       await fetchPosts();
     } catch (error: any) {
       const err: errorProps = {
-        id: "fetching Paginated Posts Error",
-        userFreindlyMessage: "An error occurred while fetching posts.",
-        errorMessage: error instanceof Error ? error.message : "Unknown error",
-        error: error instanceof Error ? error : new Error("Unknown error"),
+        id: "Voting Error",
+        userFreindlyMessage: "An error occurred while voting",
+        errorMessage: error.message,
+        error: error,
       };
       enqueueSnackbar({ variant: "error", ...err });
     } finally {

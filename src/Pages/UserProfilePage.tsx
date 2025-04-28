@@ -258,7 +258,7 @@ function UserProfilePage({
         <Header
           callerIdentifier="homePage"
           isLoggedIn={isLoggedIn}
-          userData={userData}
+          userData={loggedInUserData}
           setIsLoggedIn={setIsLoggedIn}
           categories={categories}
           setOpen={setOpen}
