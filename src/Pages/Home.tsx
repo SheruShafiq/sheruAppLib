@@ -34,6 +34,7 @@ import { GIFs } from "../assets/GIFs";
 import HomeInteractions from "../Components/HomeInteractions";
 import IOSLoader from "../Components/IOSLoader";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
+import SideMenu from "../Components/SideMenu";
 function Home({
   isLoggedIn,
   userData,
@@ -64,7 +65,6 @@ function Home({
   const [metaData, setmetaData] = useState<paginatedPostsMetaDataType | null>(
     null
   );
-
   const fetchPostsHandeled = (
     page?: number,
     pageSize?: number,
@@ -209,9 +209,10 @@ function Home({
         gap={2}
       >
         <Stack
-          direction={"row"}
+          direction={globalThis.isDesktop ? "row" : "column"}
+          gap={2}
+          alignItems={"center"}
           justifyContent={"space-between"}
-          alignItems={"flex-end"}
         >
           <TextField
             variant="standard"
@@ -219,8 +220,8 @@ function Home({
               setPendingSearchTerm(e.target.value);
             }}
             sx={{
-              width: "25%",
-              maxWidth: "400px",
+              width: globalThis.isDesktop ? "25%" : "100%",
+              maxWidth: globalThis.isDesktop ? "400px" : "100%",
               minWidth: "200px",
             }}
             label="Search"
@@ -235,7 +236,11 @@ function Home({
             }}
           />
           <Stack
-            sx={{ width: "25%", maxWidth: "400px", minWidth: "200px" }}
+            sx={{
+              width: globalThis.isDesktop ? "25%" : "100%",
+              maxWidth: globalThis.isDesktop ? "400px" : "100%",
+              minWidth: "200px",
+            }}
             direction={"row"}
             gap={1}
           >
@@ -251,7 +256,13 @@ function Home({
                 }));
               }}
             >
-              <SwapVertIcon />
+              <SwapVertIcon
+                color={
+                  userSortPrefrences.sortOrder === "asc"
+                    ? "primary"
+                    : "secondary"
+                }
+              />
             </IconButton>
             <FormControl size="small" fullWidth>
               <InputLabel
@@ -285,73 +296,79 @@ function Home({
             </FormControl>
           </Stack>
         </Stack>
-        <Fade in={fetchingInitialPosts} timeout={1000}>
-          <Stack
-            gap={2}
-            width={"100%"}
-            display={fetchingInitialPosts ? "flex" : "none"}
-          >
-            {[...Array(pageSize)].map((_, index) => (
-              <PostPreviewSkeletonLoader key={index} pageVariant={false} />
-            ))}
-          </Stack>
-        </Fade>
+        <Stack direction={"row"} gap={2}>
+          {globalThis.isDesktop && <SideMenu categories={categories} />}
+          <Stack direction={"row"} gap={2} alignItems={"center"} width={"100%"}>
+            <Fade in={fetchingInitialPosts} timeout={1000}>
+              <Stack
+                gap={2}
+                width={"100%"}
+                display={fetchingInitialPosts ? "flex" : "none"}
+              >
+                {[...Array(pageSize)].map((_, index) => (
+                  <PostPreviewSkeletonLoader key={index} pageVariant={false} />
+                ))}
+              </Stack>
+            </Fade>
 
-        <Fade in={!fetchingInitialPosts} timeout={1000}>
-          <Stack
-            gap={2}
-            sx={{
-              display: fetchingInitialPosts ? "none" : "flex",
-            }}
-          >
-            {Object.keys(posts).map((key) => (
-              <PostPreview
-                randomGIFIndex={randomGIFIndex}
-                categories={categories}
-                pageVariant={false}
-                isPostAuthoredByCurrentUser={userData?.posts
-                  ?.map(Number)
-                  .includes(Number(posts[key]?.id))}
-                isLoggedIn={isLoggedIn}
-                fetchPosts={() => {
-                  refreshPostById(posts[key]?.id);
+            <Fade in={!fetchingInitialPosts} timeout={1000}>
+              <Stack
+                gap={2}
+                sx={{
+                  display: fetchingInitialPosts ? "none" : "flex",
                 }}
-                title={posts[key]?.title}
-                resource={posts[key]?.resource}
-                description={posts[key]?.description}
-                upvotes={posts[key]?.upvotes}
-                downvotes={posts[key]?.downvotes}
-                reports={posts[key]?.reports}
-                categoryID={posts[key]?.categoryID}
-                commentsCount={posts[key]?.comments?.length}
-                key={key}
-                id={posts[key]?.id}
-                dateCreated={posts[key]?.dateCreated}
-                upvotedByCurrentUser={userData?.upvotedPosts
-                  ?.map(String)
-                  .includes(String(posts[key]?.id))}
-                downvotedByCurrentUser={userData?.downVotedPosts
-                  ?.map(String)
-                  .includes(String(posts[key]?.id))}
-                reportedByCurrentUser={userData?.reportedPosts
-                  ?.map(String)
-                  .includes(String(posts[key]?.id))}
-                userData={userData}
-              />
-            ))}
+                width={"100%"}
+              >
+                {Object.keys(posts).map((key) => (
+                  <PostPreview
+                    randomGIFIndex={randomGIFIndex}
+                    categories={categories}
+                    pageVariant={false}
+                    isPostAuthoredByCurrentUser={userData?.posts
+                      ?.map(Number)
+                      .includes(Number(posts[key]?.id))}
+                    isLoggedIn={isLoggedIn}
+                    fetchPosts={() => {
+                      refreshPostById(posts[key]?.id);
+                    }}
+                    title={posts[key]?.title}
+                    resource={posts[key]?.resource}
+                    description={posts[key]?.description}
+                    upvotes={posts[key]?.upvotes}
+                    downvotes={posts[key]?.downvotes}
+                    reports={posts[key]?.reports}
+                    categoryID={posts[key]?.categoryID}
+                    commentsCount={posts[key]?.comments?.length}
+                    key={key}
+                    id={posts[key]?.id}
+                    dateCreated={posts[key]?.dateCreated}
+                    upvotedByCurrentUser={userData?.upvotedPosts
+                      ?.map(String)
+                      .includes(String(posts[key]?.id))}
+                    downvotedByCurrentUser={userData?.downVotedPosts
+                      ?.map(String)
+                      .includes(String(posts[key]?.id))}
+                    reportedByCurrentUser={userData?.reportedPosts
+                      ?.map(String)
+                      .includes(String(posts[key]?.id))}
+                    userData={userData}
+                  />
+                ))}
+              </Stack>
+            </Fade>
+            {isNoPosts && !fetchingInitialPosts && (
+              <Stack
+                width={"100%"}
+                height={"100%"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                gap={2}
+              >
+                <h2>No posts available</h2>
+              </Stack>
+            )}
           </Stack>
-        </Fade>
-        {isNoPosts && !fetchingInitialPosts && (
-          <Stack
-            width={"100%"}
-            height={"100%"}
-            justifyContent={"center"}
-            alignItems={"center"}
-            gap={2}
-          >
-            <h2>No posts available</h2>
-          </Stack>
-        )}
+        </Stack>
       </Stack>
       <Stack
         width={"100%"}

@@ -53,6 +53,7 @@ export type Category = {
   dateCreated: string;
   dateModified: string;
   dateDeleted: string;
+  iconPath: string;
 };
 export type Report = {
   id: string;

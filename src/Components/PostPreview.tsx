@@ -486,7 +486,15 @@ const PostPreview: React.FC<PostPreviewProps> = ({
         >
           {localReports}
         </Button>
-        <Button>{categories[Number(categoryID) - 1]?.name}</Button>
+        <Button>
+          <img
+            style={{
+              width: "40px",
+              height: "40px",
+            }}
+            src={categories[Number(categoryID) - 1]?.iconPath}
+          />
+        </Button>
         <Button
           onClick={() => {
             if (!pageVariant) {

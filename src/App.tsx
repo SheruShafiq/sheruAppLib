@@ -27,7 +27,7 @@ declare module "notistack" {
 }
 
 globalThis.Buffer = Buffer;
-const isDesktop = window.innerWidth > 768;
+globalThis.isDesktop = window.innerWidth > 768;
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
