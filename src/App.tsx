@@ -17,6 +17,7 @@ import BadgeMakerHome from "./Pages/BadgeMakerHome.tsx";
 import React from "react";
 import { Buffer } from "buffer";
 import UserProfilePage from "./Pages/UserProfilePage.tsx";
+import { Global } from "@emotion/react";
 
 // Ensure TypeScript recognizes custom variants declared in main.tsx
 
@@ -63,7 +64,7 @@ const darkTheme = createTheme({
         },
         container: {
           background: "#00000096",
-          alignItems: isDesktop ? "center" : "flex-start", // Apply alignItems to MuiDialog-container
+          alignItems: globalThis.isDesktop ? "center" : "flex-start", // Apply alignItems to MuiDialog-container
         },
       },
     },
