@@ -48,7 +48,6 @@ function Header({
       }
     })();
   }, [userData?.displayName]);
-  if (!deferredPrompt) return null;
 
   return (
     <Box px={2} sx={{ position: "relative", minHeight: "3rem" }} mt={0.5}>
