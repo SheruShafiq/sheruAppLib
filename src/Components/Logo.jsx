@@ -23,6 +23,7 @@ const Logo = ({ logoName, URL }) => {
         justifyItems: "center",
         cursor: "pointer",
         width: "fit-content",
+        zIndex: 100,
       }}
       onClick={() => {
         window.location.href = URL;
