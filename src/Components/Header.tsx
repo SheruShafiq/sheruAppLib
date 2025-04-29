@@ -164,14 +164,11 @@ function Header({
         <Box flex={1} display="flex" justifyContent="center">
           <Logo logoName={"Sauce"} URL={"/"} />
         </Box>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={promptInstall}
-          sx={{ position: "fixed", bottom: 16, right: 16, zIndex: 1000 }}
-        >
-          Install App
-        </Button>
+        {deferredPrompt ? (
+          <Button variant="contained" onClick={promptInstall}>
+            Install App
+          </Button>
+        ) : null}
         <Box flex={1} display="flex" justifyContent="flex-end">
           <Fade in={isLoggedIn}>
             <Stack direction={"row"}>
