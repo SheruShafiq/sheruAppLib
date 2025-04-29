@@ -449,10 +449,7 @@ export default defineConfig({
           "src": "ios/128.png",
           "sizes": "128x128"
         },
-        {
-          "src": "ios/144.png",
-          "sizes": "144x144"
-        },
+
         {
           "src": "ios/152.png",
           "sizes": "152x152"
