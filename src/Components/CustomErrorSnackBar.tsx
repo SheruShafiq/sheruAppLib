@@ -55,7 +55,6 @@ const CustomErrorSnackBar = forwardRef<HTMLDivElement, errorProps>(
       }
       return line;
     };
-
     return (
       <SnackbarContent ref={ref} key={id}>
         <Alert

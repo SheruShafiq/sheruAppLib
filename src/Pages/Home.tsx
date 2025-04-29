@@ -13,7 +13,7 @@ import {
 import { fetchPostsPaginated, getPostByID, searchPosts } from "../APICalls";
 import { useSnackbar } from "notistack";
 import PostPreview from "../Components/PostPreview";
-import Header from "../Components/Header";
+import AppLayout from "../Layouts/AppLayout";
 import PostPreviewSkeletonLoader from "../SkeletonLoaders/PostPreviewSkeletonLoader";
 import Fade from "@mui/material/Fade";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
@@ -28,7 +28,6 @@ import {
   Category,
 } from "../../dataTypeDefinitions";
 import { errorProps } from "../../dataTypeDefinitions";
-import Footer from "../Components/Footer";
 import IOSSpinner from "../Components/IOSLoader";
 import { GIFs } from "../assets/GIFs";
 import HomeInteractions from "../Components/HomeInteractions";
@@ -175,198 +174,194 @@ function Home({
       })();
   }, [searchTerm]);
   return (
-    <Stack height={"100%"} minHeight={"100vh"} gap={2} pb={2}>
-      <Stack>
-        <Header
-          callerIdentifier={"homePage"}
-          isLoggedIn={isLoggedIn}
-          userData={userData}
-          setIsLoggedIn={setIsLoggedIn}
-          categories={categories}
-          setOpen={setOpen}
-          onPostCreated={() => {
-            fetchPostsHandeled(curentPage, pageSize);
-          }}
-        />
-        <Divider
-          sx={{
-            borderColor: "white",
-          }}
-        />
-      </Stack>
-      {/* <Button
-        onClick={() => {
-          setFetchingPosts(!fetchingInitialPosts);
-        }}
-      >
-        Toggle loading
-      </Button> */}
-      <Stack
-        px={2}
-        maxWidth={"1200px"}
-        alignSelf={"center"}
-        width={"100%"}
-        gap={2}
-      >
+    <AppLayout
+      callerIdentifier="homePage"
+      isLoggedIn={isLoggedIn}
+      userData={userData}
+      setOpen={setOpen}
+      setIsLoggedIn={setIsLoggedIn}
+      categories={categories}
+      onPostCreated={() => {
+        fetchPostsHandeled(curentPage, pageSize);
+      }}
+    >
+      <Stack height={"100%"} minHeight={"100vh"} gap={2} pb={2}>
+        <Divider sx={{ borderColor: "white" }} />
         <Stack
-          direction={globalThis.isDesktop ? "row" : "column"}
+          px={2}
+          maxWidth={"1200px"}
+          alignSelf={"center"}
+          width={"100%"}
           gap={2}
-          alignItems={"center"}
-          justifyContent={"space-between"}
         >
-          <TextField
-            variant="standard"
-            onChange={(e) => {
-              setPendingSearchTerm(e.target.value);
-            }}
-            sx={{
-              width: globalThis.isDesktop ? "25%" : "100%",
-              maxWidth: globalThis.isDesktop ? "400px" : "100%",
-              minWidth: "200px",
-            }}
-            label="Search"
-            slotProps={{
-              input: {
-                endAdornment: (
-                  <React.Fragment>
-                    {fetchingInitialPosts ? <IOSLoader /> : null}
-                  </React.Fragment>
-                ),
-              },
-            }}
-          />
           <Stack
-            sx={{
-              width: globalThis.isDesktop ? "25%" : "100%",
-              maxWidth: globalThis.isDesktop ? "400px" : "100%",
-              minWidth: "200px",
-            }}
-            direction={"row"}
-            gap={1}
+            direction={globalThis.isDesktop ? "row" : "column"}
+            gap={2}
+            alignItems={"center"}
+            justifyContent={"space-between"}
           >
-            <IconButton
-              disabled={searchTerm !== ""}
+            <TextField
+              variant="standard"
+              onChange={(e) => {
+                setPendingSearchTerm(e.target.value);
+              }}
               sx={{
-                width: "40px",
+                width: globalThis.isDesktop ? "25%" : "100%",
+                maxWidth: globalThis.isDesktop ? "400px" : "100%",
+                minWidth: "200px",
               }}
-              onClick={() => {
-                setUserSortPrefrences((prev) => ({
-                  ...prev,
-                  sortOrder: prev.sortOrder === "asc" ? "desc" : "asc",
-                }));
+              label="Search"
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <React.Fragment>
+                      {fetchingInitialPosts ? <IOSLoader /> : null}
+                    </React.Fragment>
+                  ),
+                },
               }}
+            />
+            <Stack
+              sx={{
+                width: globalThis.isDesktop ? "25%" : "100%",
+                maxWidth: globalThis.isDesktop ? "400px" : "100%",
+                minWidth: "200px",
+              }}
+              direction={"row"}
+              gap={1}
             >
-              <SwapVertIcon
-                color={
-                  userSortPrefrences.sortOrder === "asc"
-                    ? "primary"
-                    : "secondary"
-                }
-              />
-            </IconButton>
-            <FormControl size="small" fullWidth>
-              <InputLabel
-                sx={{
-                  left: "-15px",
-                  top: "8px",
-                }}
-                id="select-sorting"
-              >
-                Sort
-              </InputLabel>
-              <Select
+              <IconButton
                 disabled={searchTerm !== ""}
-                defaultValue={"dateCreated"}
-                labelId="select-sorting"
-                id="elect-sorting"
-                // value={age}
-                label="Age"
-                onChange={(e) => {
+                sx={{
+                  width: "40px",
+                }}
+                onClick={() => {
                   setUserSortPrefrences((prev) => ({
                     ...prev,
-                    sortBy: e.target.value,
+                    sortOrder: prev.sortOrder === "asc" ? "desc" : "asc",
                   }));
                 }}
-                variant="standard"
               >
-                <MenuItem value={"dateCreated"}>Date Created</MenuItem>
-                <MenuItem value={"upVotedPosts"}>Upvotes</MenuItem>
-                <MenuItem value={"downVotedPost"}>Downvotes</MenuItem>
-              </Select>
-            </FormControl>
+                <SwapVertIcon
+                  color={
+                    userSortPrefrences.sortOrder === "asc"
+                      ? "primary"
+                      : "secondary"
+                  }
+                />
+              </IconButton>
+              <FormControl size="small" fullWidth>
+                <InputLabel
+                  sx={{
+                    left: "-15px",
+                    top: "8px",
+                  }}
+                  id="select-sorting"
+                >
+                  Sort
+                </InputLabel>
+                <Select
+                  disabled={searchTerm !== ""}
+                  defaultValue={"dateCreated"}
+                  labelId="select-sorting"
+                  id="elect-sorting"
+                  // value={age}
+                  label="Age"
+                  onChange={(e) => {
+                    setUserSortPrefrences((prev) => ({
+                      ...prev,
+                      sortBy: e.target.value,
+                    }));
+                  }}
+                  variant="standard"
+                >
+                  <MenuItem value={"dateCreated"}>Date Created</MenuItem>
+                  <MenuItem value={"upVotedPosts"}>Upvotes</MenuItem>
+                  <MenuItem value={"downVotedPost"}>Downvotes</MenuItem>
+                </Select>
+              </FormControl>
+            </Stack>
           </Stack>
-        </Stack>
-        <Stack direction={"row"} gap={2}>
-          {globalThis.isDesktop && <SideMenu categories={categories} />}
-          <Stack direction={"row"} gap={2} alignItems={"center"} width={"100%"}>
-            <Fade in={fetchingInitialPosts} timeout={1000}>
-              <Stack
-                gap={2}
-                width={"100%"}
-                display={fetchingInitialPosts ? "flex" : "none"}
-              >
-                {[...Array(pageSize)].map((_, index) => (
-                  <PostPreviewSkeletonLoader key={index} pageVariant={false} />
-                ))}
-              </Stack>
-            </Fade>
+          <Stack direction={"row"} gap={2}>
+            {globalThis.isDesktop && <SideMenu categories={categories} />}
+            <Stack
+              direction={"row"}
+              gap={2}
+              alignItems={"center"}
+              width={"100%"}
+            >
+              <Fade in={fetchingInitialPosts} timeout={1000}>
+                <Stack
+                  gap={2}
+                  width={"100%"}
+                  display={fetchingInitialPosts ? "flex" : "none"}
+                >
+                  {[...Array(pageSize)].map((_, index) => (
+                    <PostPreviewSkeletonLoader
+                      key={index}
+                      pageVariant={false}
+                    />
+                  ))}
+                </Stack>
+              </Fade>
 
-            <Fade in={!fetchingInitialPosts} timeout={1000}>
-              <Stack
-                gap={2}
-                sx={{
-                  display: fetchingInitialPosts ? "none" : "flex",
-                }}
-                width={"100%"}
-              >
-                {Object.keys(posts).map((key) => (
-                  <PostPreview
-                    randomGIFIndex={randomGIFIndex}
-                    categories={categories}
-                    pageVariant={false}
-                    isPostAuthoredByCurrentUser={userData?.posts
-                      ?.map(Number)
-                      .includes(Number(posts[key]?.id))}
-                    isLoggedIn={isLoggedIn}
-                    fetchPosts={() => {
-                      refreshPostById(posts[key]?.id);
-                    }}
-                    title={posts[key]?.title}
-                    resource={posts[key]?.resource}
-                    description={posts[key]?.description}
-                    upvotes={posts[key]?.upvotes}
-                    downvotes={posts[key]?.downvotes}
-                    reports={posts[key]?.reports}
-                    categoryID={posts[key]?.categoryID}
-                    commentsCount={posts[key]?.comments?.length}
-                    key={key}
-                    id={posts[key]?.id}
-                    dateCreated={posts[key]?.dateCreated}
-                    upvotedByCurrentUser={userData?.upvotedPosts
-                      ?.map(String)
-                      .includes(String(posts[key]?.id))}
-                    downvotedByCurrentUser={userData?.downVotedPosts
-                      ?.map(String)
-                      .includes(String(posts[key]?.id))}
-                    reportedByCurrentUser={userData?.reportedPosts
-                      ?.map(String)
-                      .includes(String(posts[key]?.id))}
-                    userData={userData}
-                  />
-                ))}
-              </Stack>
-            </Fade>
-            {isNoPosts && !fetchingInitialPosts && (
-              <Stack
-                width={"100%"}
-                height={"100%"}
-                justifyContent={"center"}
-                alignItems={"center"}
-                gap={2}
-              >
-                <h2>No posts available</h2>
-              </Stack>
-            )}
+              <Fade in={!fetchingInitialPosts} timeout={1000}>
+                <Stack
+                  gap={2}
+                  sx={{
+                    display: fetchingInitialPosts ? "none" : "flex",
+                  }}
+                  width={"100%"}
+                >
+                  {Object.keys(posts).map((key) => (
+                    <PostPreview
+                      randomGIFIndex={randomGIFIndex}
+                      categories={categories}
+                      pageVariant={false}
+                      isPostAuthoredByCurrentUser={userData?.posts
+                        ?.map(Number)
+                        .includes(Number(posts[key]?.id))}
+                      isLoggedIn={isLoggedIn}
+                      fetchPosts={() => {
+                        refreshPostById(posts[key]?.id);
+                      }}
+                      title={posts[key]?.title}
+                      resource={posts[key]?.resource}
+                      description={posts[key]?.description}
+                      upvotes={posts[key]?.upvotes}
+                      downvotes={posts[key]?.downvotes}
+                      reports={posts[key]?.reports}
+                      categoryID={posts[key]?.categoryID}
+                      commentsCount={posts[key]?.comments?.length}
+                      key={key}
+                      id={posts[key]?.id}
+                      dateCreated={posts[key]?.dateCreated}
+                      upvotedByCurrentUser={userData?.upvotedPosts
+                        ?.map(String)
+                        .includes(String(posts[key]?.id))}
+                      downvotedByCurrentUser={userData?.downVotedPosts
+                        ?.map(String)
+                        .includes(String(posts[key]?.id))}
+                      reportedByCurrentUser={userData?.reportedPosts
+                        ?.map(String)
+                        .includes(String(posts[key]?.id))}
+                      userData={userData}
+                    />
+                  ))}
+                </Stack>
+              </Fade>
+              {isNoPosts && !fetchingInitialPosts && (
+                <Stack
+                  width={"100%"}
+                  height={"100%"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                  gap={2}
+                >
+                  <h2>No posts available</h2>
+                </Stack>
+              )}
+            </Stack>
           </Stack>
         </Stack>
       </Stack>
@@ -419,8 +414,7 @@ function Home({
           </IconButton>
         </Stack>
       </Stack>
-      <Footer />
-    </Stack>
+    </AppLayout>
   );
 }
 

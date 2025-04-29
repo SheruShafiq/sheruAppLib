@@ -98,6 +98,13 @@ const darkTheme = createTheme({
         },
       },
     },
+    MuiAlert: {
+      styleOverrides: {
+        root: {
+          backgroundColor: alpha("#000", 1),
+        },
+      },
+    },
   },
 });
 function App() {

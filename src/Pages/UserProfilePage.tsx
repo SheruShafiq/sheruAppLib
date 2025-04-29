@@ -1,7 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import Header from "../Components/Header";
-import Footer from "../Components/Footer";
 import {
   Stack,
   Divider,
@@ -26,18 +24,30 @@ import PostPreview from "../Components/PostPreview";
 import CommentBlock from "../Components/CommentBlock";
 import PostPreviewSkeletonLoader from "../SkeletonLoaders/PostPreviewSkeletonLoader";
 import CommentSkeletonLoader from "../SkeletonLoaders/CommentSkeletonLoader";
+import AppLayout from "../Layouts/AppLayout";
 
-function buildCommentTree(flatComments) {
-  const lookup = new Map();
-  flatComments.forEach((c) => lookup.set(c.id, { ...c, replies: [] }));
-
-  const roots = [];
+function buildCommentTree(
+  flatComments: Comment[]
+): (Comment & { replies: any[] })[] {
+  const lookup = new Map<string, Comment & { replies: any[] }>();
   flatComments.forEach((c) => {
-    if (c.replyTo) {
-      lookup.get(c.replyTo)?.replies.push(lookup.get(c.id));
-    } else {
-      roots.push(lookup.get(c.id));
+    if (c.id) lookup.set(c.id, { ...c, replies: [] });
+  });
+  const childIds = new Set<string>();
+  flatComments.forEach((c) => {
+    const id = c.id;
+    if (c.replies && id) {
+      c.replies.forEach((replyId) => {
+        childIds.add(replyId);
+        const parent = lookup.get(id);
+        const child = lookup.get(replyId);
+        if (parent && child) parent.replies.push(child);
+      });
     }
+  });
+  const roots: (Comment & { replies: any[] })[] = [];
+  lookup.forEach((node, id) => {
+    if (!childIds.has(id)) roots.push(node);
   });
   return roots;
 }
@@ -148,10 +158,20 @@ function UserProfilePage({
           }));
         }
       } catch (error) {
-        enqueueSnackbar({
-          variant: "error",
-          message: `Failed to fetch data for ${activeDataTab}.`,
-        });
+        const isCommentTab = [
+          "comments",
+          "likedComments",
+          "dislikedComments",
+        ].includes(activeDataTab);
+        const resource = isCommentTab ? "comments" : "posts";
+        const err: errorProps = {
+          id: `fetch-${resource}-error`,
+          userFreindlyMessage: `An error occurred while fetching ${resource}.`,
+          errorMessage:
+            error instanceof Error ? error.message : "Unknown error",
+          error: error instanceof Error ? error : new Error("Unknown error"),
+        };
+        enqueueSnackbar({ variant: "error", ...err });
       } finally {
         setLoading(false);
         setGeneratingCommentsChain(false);
@@ -185,16 +205,22 @@ function UserProfilePage({
         patchUser({
           userID: userData?.id!,
           field: "comments",
-          newValue: [...(userData?.comments || []), createdComment.id],
+          newValue: [...(userData?.comments || []), createdComment.id!],
           onSuccess: () => {
             refreshUserData(userData?.id!);
             setCreatingComment(false);
           },
           onError: (error) => {
-            enqueueSnackbar({
-              variant: "error",
-              message: error instanceof Error ? error.message : "Unknown error",
-            });
+            const err: errorProps = {
+              id: "patch-user-error",
+              userFreindlyMessage:
+                "An error occurred while updating user comments.",
+              errorMessage:
+                error instanceof Error ? error.message : "Unknown error",
+              error:
+                error instanceof Error ? error : new Error("Unknown error"),
+            };
+            enqueueSnackbar({ variant: "error", ...err });
             setCreatingComment(false);
           },
         });
@@ -221,8 +247,8 @@ function UserProfilePage({
       },
       (error) => {
         const err: errorProps = {
-          id: "fetching Post Error",
-          userFreindlyMessage: "An error occurred while fetching posts.",
+          id: "fetch-post-error",
+          userFreindlyMessage: "An error occurred while fetching the post.",
           errorMessage:
             error instanceof Error ? error.message : "Unknown error",
           error: error instanceof Error ? error : new Error("Unknown error"),
@@ -253,28 +279,24 @@ function UserProfilePage({
   }, []);
 
   return (
-    <Stack height="100%" minHeight="100vh" gap={2} pb={2}>
-      <Stack>
-        <Header
-          callerIdentifier="homePage"
-          isLoggedIn={isLoggedIn}
-          userData={loggedInUserData}
-          setIsLoggedIn={setIsLoggedIn}
-          categories={categories}
-          setOpen={setOpen}
-          onPostCreated={() => window.history.pushState(null, "", "/")}
-        />
-        <Divider sx={{ borderColor: "white" }} />
-      </Stack>
-
-      <Stack px={2} gap={2} maxWidth={"1200px"} mx="auto" width={"100%"}>
+    <AppLayout
+      callerIdentifier="userProfilePage"
+      isLoggedIn={isLoggedIn}
+      userData={loggedInUserData}
+      setOpen={setOpen}
+      setIsLoggedIn={setIsLoggedIn}
+      categories={categories}
+      onPostCreated={() => {}}
+    >
+      <Divider sx={{ borderColor: "white" }} />
+      <Stack mt={2} px={2} gap={2} maxWidth="1200px" mx="auto" width="100%">
         <UserStats
           userData={userData}
           isLoggedIn={isLoggedIn}
           randomGIFIndex={randomGIFIndex}
           pageVariant={false}
         />
-        <Divider sx={{ borderColor: "white" }} />
+        {/* <Divider sx={{ borderColor: "white" }} /> */}
         {/* <Button
           onClick={() => {
             setGeneratingCommentsChain(!generatingCommentsChain);
@@ -369,18 +391,13 @@ function UserProfilePage({
             activeDataTab
           ) && (
             <Fade in={!loading} timeout={1000}>
-              <Stack
-                gap={1}
-                sx={{
-                  display: !loading ? "flex" : "none",
-                }}
-              >
+              <Stack gap={1} sx={{ display: !loading ? "flex" : "none" }}>
                 {posts.map(
                   (post) =>
                     post.id && (
                       <PostPreview
                         key={post.id}
-                        {...post}
+                        {...(post as any)}
                         commentsCount={post.comments?.length || 0}
                         randomGIFIndex={randomGIFIndex}
                         categories={categories}
@@ -399,6 +416,7 @@ function UserProfilePage({
                         reportedByCurrentUser={userData?.reportedPosts?.includes(
                           post.id
                         )}
+                        id={post.id!}
                         userData={userData}
                       />
                     )
@@ -456,9 +474,7 @@ function UserProfilePage({
           </Fade>
         )}
       </Stack>
-
-      <Footer />
-    </Stack>
+    </AppLayout>
   );
 }
 

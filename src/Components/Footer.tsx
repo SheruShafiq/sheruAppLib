@@ -23,6 +23,8 @@ function Footer() {
   });
   return (
     <Stack
+      pt={4}
+      pb={1}
       className="footer"
       px={2}
       mt={"auto"}

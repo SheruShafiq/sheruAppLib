@@ -12,7 +12,7 @@ import {
 import { useParams } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import PostPreview from "../Components/PostPreview";
-import Header from "../Components/Header";
+import AppLayout from "../Layouts/AppLayout";
 import Divider from "@mui/material/Divider";
 import PostPreviewSkeletonLoader from "../SkeletonLoaders/PostPreviewSkeletonLoader";
 import Fade from "@mui/material/Fade";
@@ -20,7 +20,6 @@ import { TextGlitchEffect } from "../Components/TextGlitchEffect";
 import { Post, Comment, errorProps, User } from "../../dataTypeDefinitions";
 import CommentBlock from "../Components/CommentBlock";
 import { useNavigate } from "react-router-dom";
-import Footer from "../Components/Footer";
 import IOSLoader from "../Components/IOSLoader";
 import SendIcon from "@mui/icons-material/Send";
 import CommentSkeletonLoader from "../SkeletonLoaders/CommentSkeletonLoader";
@@ -231,23 +230,16 @@ function PostPage({
     };
   }, [isDesktop]);
   return (
-    <Stack pb={2} width={"100%"} minHeight={"100vh"} height={"100%"}>
-      <Header
-        isLoggedIn={isLoggedIn}
-        userData={userData}
-        setIsLoggedIn={setIsLoggedIn}
-        categories={categories}
-        setOpen={setOpen}
-        callerIdentifier={"postPage"}
-        onPostCreated={(id: string) => {
-          navigate(`/posts/${id}`);
-        }}
-      />
-      <Divider
-        sx={{
-          borderColor: "white",
-        }}
-      />
+    <AppLayout
+      callerIdentifier="postPage"
+      isLoggedIn={isLoggedIn}
+      userData={userData}
+      setOpen={setOpen}
+      setIsLoggedIn={setIsLoggedIn}
+      categories={categories}
+      onPostCreated={(id: string) => navigate(`/posts/${id}`)}
+    >
+      <Divider sx={{ borderColor: "white" }} />
       {/* <Button
         onClick={() => {
           setLoading(!loading);
@@ -259,10 +251,11 @@ function PostPage({
         mt={2}
         pb={4}
         px={2}
-        direction={"row"}
-        width={"100%"}
-        maxWidth={"1200px"}
-        mx={"auto"}
+        direction="row"
+        width="100%"
+        maxWidth="1200px"
+        mx="auto"
+        height={"100%"}
         gap={8}
       >
         <Stack flexGrow={1}>
@@ -450,8 +443,7 @@ function PostPage({
           />
         )}
       </Stack>
-      <Footer />
-    </Stack>
+    </AppLayout>
   );
 }
 

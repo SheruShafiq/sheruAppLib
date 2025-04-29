@@ -90,7 +90,7 @@ Product properties
 35. [Feature] Are you sure and provide a reason dialogue on report post.
 36. [Feature] ThreeJS 404 page after basic exams
 37. <del>Categories's PostsID array is also not working as intended</del>
-38. [BUG] Better error handeling when post ID in URL is wrong
+38. <del>[BUG] Better error handeling when post ID in URL is wrong</del>
 39. [Feature] Add a check if username and password already exist
 40. [Feature] Lazy LOAD (where applicable)
 41. [Feature] MUSIC
