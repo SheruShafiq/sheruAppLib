@@ -24,7 +24,7 @@ import PostPreview from "../Components/PostPreview";
 import CommentBlock from "../Components/CommentBlock";
 import PostPreviewSkeletonLoader from "../SkeletonLoaders/PostPreviewSkeletonLoader";
 import CommentSkeletonLoader from "../SkeletonLoaders/CommentSkeletonLoader";
-import AppLayout from "../Layouts/AppLayout";
+import SauceLayout from "../Layouts/SauceLayout";
 
 function buildCommentTree(
   flatComments: Comment[]
@@ -279,7 +279,7 @@ function UserProfilePage({
   }, []);
 
   return (
-    <AppLayout
+    <SauceLayout
       callerIdentifier="userProfilePage"
       isLoggedIn={isLoggedIn}
       userData={loggedInUserData}
@@ -474,7 +474,7 @@ function UserProfilePage({
           </Fade>
         )}
       </Stack>
-    </AppLayout>
+    </SauceLayout>
   );
 }
 

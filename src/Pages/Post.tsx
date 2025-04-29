@@ -12,7 +12,7 @@ import {
 import { useParams } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import PostPreview from "../Components/PostPreview";
-import AppLayout from "../Layouts/AppLayout";
+import SauceLayout from "../Layouts/SauceLayout";
 import Divider from "@mui/material/Divider";
 import PostPreviewSkeletonLoader from "../SkeletonLoaders/PostPreviewSkeletonLoader";
 import Fade from "@mui/material/Fade";
@@ -230,7 +230,7 @@ function PostPage({
     };
   }, [isDesktop]);
   return (
-    <AppLayout
+    <SauceLayout
       callerIdentifier="postPage"
       isLoggedIn={isLoggedIn}
       userData={userData}
@@ -443,7 +443,7 @@ function PostPage({
           />
         )}
       </Stack>
-    </AppLayout>
+    </SauceLayout>
   );
 }
 

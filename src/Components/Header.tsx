@@ -162,7 +162,7 @@ function Header({
           </Stack>
         </Box>
         <Box flex={1} display="flex" justifyContent="center">
-          <Logo logoName={"Sauce"} URL={"/"} />
+          <Logo logoName={"Sauce"} URL={"/sauce"} />
         </Box>
         {deferredPrompt ? (
           <Button

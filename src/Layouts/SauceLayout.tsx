@@ -3,7 +3,7 @@ import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import { Stack } from "@mui/material";
 
-function AppLayout({
+function SauceLayout({
   children,
   isLoggedIn,
   userData,
@@ -30,4 +30,4 @@ function AppLayout({
   );
 }
 
-export default AppLayout;
+export default SauceLayout;

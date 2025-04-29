@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Home from "./Pages/Home";
+import SauceHome from "./Pages/SauceHome.tsx";
 import Four0Four from "./Pages/404";
 import { SnackbarProvider } from "notistack";
 import { createRef } from "react";
@@ -18,6 +18,7 @@ import React from "react";
 import { Buffer } from "buffer";
 import UserProfilePage from "./Pages/UserProfilePage.tsx";
 import { Global } from "@emotion/react";
+import Home from "./Pages/Home.tsx";
 
 // Ensure TypeScript recognizes custom variants declared in main.tsx
 
@@ -225,10 +226,18 @@ function App() {
         />
         <Routes>
           <Route
-            path="/:pageNumber?"
+            path="/"
             element={
               <div className="APP_Sauce">
-                <Home
+                <Home />
+              </div>
+            }
+          />
+          <Route
+            path="/sauce/:pageNumber?"
+            element={
+              <div className="APP_Sauce">
+                <SauceHome
                   setIsLoggedIn={setIsLoggedIn}
                   userData={userData}
                   setOpen={setLogInDialogue}
@@ -239,6 +248,7 @@ function App() {
               </div>
             }
           />
+
           <Route
             path="*"
             element={
