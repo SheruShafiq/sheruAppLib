@@ -12,6 +12,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
+      includeAssets: ['**/*.glb'],
       devOptions: {
         enabled: true,     // ← turn on PWA support in dev
         type: 'module'
@@ -20,6 +21,14 @@ export default defineConfig({
         // add a higher threshold (e.g. 5 MiB)
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         runtimeCaching: [
+          {
+            urlPattern: /\.glb$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'models-cache',
+              expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 * 24 * 30 }
+            }
+          },
           {
             urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
             handler: 'CacheFirst',
@@ -486,7 +495,8 @@ export default defineConfig({
           }
         ]
       }
-    })],
+    })
+  ],
   optimizeDeps: {
     exclude: ['@vercel/speed-insights']
   },
