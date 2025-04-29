@@ -10,21 +10,18 @@ export default defineConfig({
   plugins: [react(), VitePWA({
     registerType: 'autoUpdate',
     injectRegister: 'auto',
-    includeAssets: [
-      'sauceIcon.png',
-      'image.png',
-      'appsIcon.png',
-      'animeIcon.png',
-      'gamesIcon.png',
-      'musicIcon.png',
-      'moviesIcon.png',
-      'booksIcon.png',
-      'noBitches.png',
 
-    ],
     workbox: {
-      globPatterns: ['**/*.{js,css,html,ico,png,svg,xml,json,gif}'],
-      maximumFileSizeToCacheInBytes: 30000000,
+      runtimeCaching: [
+        {
+          urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'images-cache',
+            expiration: { maxEntries: 100, maxAgeSeconds: 30 * 24 * 60 * 60 }
+          }
+        }
+      ]
     },
     manifest: {
       name: "Sheru's App Library",
