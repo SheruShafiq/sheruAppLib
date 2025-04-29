@@ -1,6 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), VitePWA({
@@ -27,4 +31,17 @@ export default defineConfig({
       ]
     }
   })],
+  resolve: {
+    alias: {
+      'next/navigation.js': path.resolve(__dirname, 'src/empty.js')
+    }
+  },
+  optimizeDeps: {
+    exclude: ['@vercel/speed-insights']
+  },
+  build: {
+    rollupOptions: {
+      external: ['@vercel/speed-insights']
+    }
+  }
 })
