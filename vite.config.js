@@ -10,7 +10,18 @@ export default defineConfig({
   plugins: [react(), VitePWA({
     registerType: 'autoUpdate',
     injectRegister: 'auto',
-    includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
+    includeAssets: [
+      'sauceIcon.png',
+      'image.png',
+      'appsIcon.png',
+      'animeIcon.png',
+      'gamesIcon.png',
+      'musicIcon.png',
+      'moviesIcon.png',
+      'booksIcon.png',
+      'noBitches.png',
+
+    ],
     workbox: {
       globPatterns: ['**/*.{js,css,html,ico,png,svg,xml,json,gif}'],
       maximumFileSizeToCacheInBytes: 30000000,
