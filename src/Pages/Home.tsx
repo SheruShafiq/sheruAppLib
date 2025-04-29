@@ -20,7 +20,7 @@ function Home() {
           zIndex: 0,
         }}
       >
-        <ModelViewer url={"../../3dModels/neonBG.glb"} />
+        <ModelViewer url={"/3dModels/neonBG.glb"} />
       </div>
 
       {/* Foreground content */}
