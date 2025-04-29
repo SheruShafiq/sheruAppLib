@@ -1,7 +1,29 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-
+import { VitePWA } from 'vite-plugin-pwa'
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), VitePWA({
+    registerType: 'autoUpdate',
+    injectRegister: 'auto',
+    includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
+    workbox: {
+      globPatterns: ['**/*.{js,css,html,ico,png,svg,xml,json,gif}']
+    },
+    manifest: {
+      name: "Sheru's App Library",
+      short_name: 'Sheru',
+      description: "Sheru's App Library is a collection of web-based tools showcasing my capabilities.",
+      theme_color: '#611A37',
+      background_color: '#ffffff',
+      display: 'standalone',
+      start_url: '/',
+      scope: '/',
+      icons: [
+        { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
+        { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },
+        { src: 'pwa-512x512-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
+      ]
+    }
+  })],
 })
