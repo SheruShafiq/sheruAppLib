@@ -120,6 +120,7 @@ Product properties
     - GITHUB_SYNC (true | false)
     - GITHUB_TOKEN
     - DB_NAME
+    - FRONTEND_URL
 - Vercel Prod URL
   <a href="https://sauce-weld.vercel.app/">https://sauce-weld.vercel.app/</a>
 - Render Backend Prod URL
