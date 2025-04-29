@@ -17,6 +17,7 @@ import BadgeMakerHome from "./Pages/BadgeMakerHome.tsx";
 import React from "react";
 import { Buffer } from "buffer";
 import UserProfilePage from "./Pages/UserProfilePage.tsx";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 // Ensure TypeScript recognizes custom variants declared in main.tsx
 
@@ -282,6 +283,8 @@ function App() {
           />
         </Routes>
       </SnackbarProvider>
+        <SpeedInsights/>
+      
     </ThemeProvider>
   );
 }
