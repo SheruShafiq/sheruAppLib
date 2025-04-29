@@ -33,6 +33,7 @@ export default defineConfig({
   })],
   resolve: {
     alias: {
+      'next/navigation': path.resolve(__dirname, 'src/empty.js'),
       'next/navigation.js': path.resolve(__dirname, 'src/empty.js')
     }
   },
