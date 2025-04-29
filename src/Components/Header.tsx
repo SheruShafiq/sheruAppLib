@@ -165,7 +165,11 @@ function Header({
           <Logo logoName={"Sauce"} URL={"/"} />
         </Box>
         {deferredPrompt ? (
-          <Button variant="contained" onClick={promptInstall}>
+          <Button
+            sx={{ position: "fixed", bottom: 16, right: 16, zIndex: 1000 }}
+            variant="contained"
+            onClick={promptInstall}
+          >
             Install App
           </Button>
         ) : null}
