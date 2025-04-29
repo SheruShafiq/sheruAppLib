@@ -8,7 +8,8 @@ export default defineConfig({
     injectRegister: 'auto',
     includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
     workbox: {
-      globPatterns: ['**/*.{js,css,html,ico,png,svg,xml,json,gif}']
+      globPatterns: ['**/*.{js,css,html,ico,png,svg,xml,json,gif}'],
+      maximumFileSizeToCacheInBytes: 30000000,
     },
     manifest: {
       name: "Sheru's App Library",
