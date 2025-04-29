@@ -11,6 +11,7 @@ import MenuItem from "@mui/material/MenuItem";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { getRandomGIFBasedOffof } from "../APICalls";
+import { usePWAInstallPrompt } from "../hooks/usePWAInstallPrompt";
 function Header({
   isLoggedIn,
   userData,
@@ -34,6 +35,7 @@ function Header({
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const { deferredPrompt, promptInstall } = usePWAInstallPrompt();
   useEffect(() => {
     (async () => {
       const randomPostGIF = await getRandomGIFBasedOffof({
@@ -46,6 +48,8 @@ function Header({
       }
     })();
   }, [userData?.displayName]);
+  if (!deferredPrompt) return null;
+
   return (
     <Box px={2} sx={{ position: "relative", minHeight: "3rem" }} mt={0.5}>
       <CreatePostDialogue
@@ -161,15 +165,25 @@ function Header({
         <Box flex={1} display="flex" justifyContent="center">
           <Logo logoName={"Sauce"} URL={"/"} />
         </Box>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={promptInstall}
+          sx={{ position: "fixed", bottom: 16, right: 16, zIndex: 1000 }}
+        >
+          Install App
+        </Button>
         <Box flex={1} display="flex" justifyContent="flex-end">
           <Fade in={isLoggedIn}>
-            <IconButton
-              onClick={() => {
-                setIsCreatePostModalOpen(true);
-              }}
-            >
-              <AddIcon />
-            </IconButton>
+            <Stack direction={"row"}>
+              <IconButton
+                onClick={() => {
+                  setIsCreatePostModalOpen(true);
+                }}
+              >
+                <AddIcon />
+              </IconButton>
+            </Stack>
           </Fade>
         </Box>
       </Stack>

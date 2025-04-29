@@ -143,3 +143,12 @@ export type loginUserProps = {
   onSuccess: (user: User) => void;
   onError: (error: any) => void;
 };
+
+export interface BeforeInstallPromptEvent extends Event {
+  readonly platforms: string[]; // e.g. ['web']
+  prompt(): Promise<void>;
+  userChoice: Promise<{
+    outcome: "accepted" | "dismissed";
+    platform: string;
+  }>;
+}
