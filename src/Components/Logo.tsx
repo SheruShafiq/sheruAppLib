@@ -2,7 +2,12 @@ import { useGlitch } from "react-powerglitch";
 import { TextGlitchEffect } from "./TextGlitchEffect";
 import { Box } from "@mui/material";
 
-const Logo = ({ logoName, URL }) => {
+interface LogoProps {
+  logoName: string;
+  URL: string;
+}
+
+const Logo = ({ logoName, URL }: LogoProps) => {
   const glitch = useGlitch({
     timing: {
       iterations: 1,
@@ -35,7 +40,7 @@ const Logo = ({ logoName, URL }) => {
         speed={100}
         letterCase="lowercase"
         className="neonText HeaderLogo"
-        type="alphanumeric"
+        type="ALPHA_NUMERIC"
       />
     </Box>
   );
