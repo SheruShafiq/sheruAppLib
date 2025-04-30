@@ -20,6 +20,8 @@ function Home() {
           zIndex: 0,
         }}
       >
+        {/* Drei’s global loader */}
+        <Loader />
         <ModelViewer url={"/3dModels/neonBG.glb"} />
       </div>
 
@@ -51,9 +53,6 @@ function Home() {
           </Button>
         </Stack>
       </Stack>
-
-      {/* Drei’s global loader */}
-      <Loader />
     </>
   );
 }

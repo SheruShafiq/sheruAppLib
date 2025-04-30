@@ -18,6 +18,7 @@ export default defineConfig({
         type: 'module'
       },
       workbox: {
+        cleanupOutdatedCaches: true,
         // add a higher threshold (e.g. 5 MiB)
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         runtimeCaching: [

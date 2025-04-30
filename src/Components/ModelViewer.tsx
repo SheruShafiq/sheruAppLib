@@ -23,7 +23,7 @@ export default function ModelViewer({ url }: ModelProps) {
       camera={{
         fov: 100,
         position: [101.98700844028129, 8.824833678051316, 124.91157525205487], // Default camera position
-        zoom: 6, // Default zoom value
+        zoom: 7, // Default zoom value
         near: 0.1,
         far: 1000,
         rotation: [
@@ -69,7 +69,7 @@ export default function ModelViewer({ url }: ModelProps) {
         <Bloom
           luminanceThreshold={0}
           luminanceSmoothing={0.3}
-          intensity={1.5}
+          intensity={0.8}
           mipmapBlur
         />
       </EffectComposer>
