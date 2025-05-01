@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+import { apiRequest } from "./Helpers/api";
 const APIURL = import.meta.env.VITE_BACKEND_URL;
 import {
   Post,
@@ -13,6 +14,7 @@ import {
   loginUserProps,
   VoteField,
   PatchUserProps,
+  PaginatedPostsResponse,
 } from "../dataTypeDefinitions.ts";
 const now = new Date().toISOString();
 function createSafePost(post: Partial<Post>): Post {
@@ -35,12 +37,16 @@ function createSafePost(post: Partial<Post>): Post {
 
 export async function fetchPosts({ onSuccess, onError }: fetchPostsProps) {
   try {
-    const response = await fetch(`${APIURL}/posts`);
-    const data = await response.json();
-    const posts: Post[] = data.posts;
+    const { posts } = await apiRequest<{ posts: Post[] }>(`/posts`);
     onSuccess(posts);
   } catch (error) {
-    onError(error); // need to implement proper error props
+    const err = error as Error;
+    onError({
+      id: "fetchPosts",
+      userFriendlyMessage: "Unable to fetch posts.",
+      errorMessage: err.message,
+      error: err,
+    });
   }
 }
 
@@ -53,13 +59,18 @@ export async function fetchPostsPaginated({
   sortOrder = "desc",
 }: fetchPostsPaginatedProps) {
   try {
-    const response = await fetch(
-      `${APIURL}/posts?_sort=${sortBy}&_order=${sortOrder}&_page=${page}&_limit=${pageSize}`
+    const data = await apiRequest<PaginatedPostsResponse>(
+      `/posts?_sort=${sortBy}&_order=${sortOrder}&_page=${page}&_limit=${pageSize}`
     );
-    const data = await response.json();
     onSuccess(data);
   } catch (error) {
-    onError(error);
+    const err = error as Error;
+    onError({
+      id: "fetchPostsPaginated",
+      userFriendlyMessage: "Unable to load posts.",
+      errorMessage: err.message,
+      error: err,
+    });
   }
 }
 

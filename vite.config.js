@@ -14,12 +14,11 @@ export default defineConfig({
       injectRegister: 'auto',
       includeAssets: ['**/*.glb'],
       devOptions: {
-        enabled: true,     // ← turn on PWA support in dev
+        enabled: true,    
         type: 'module'
       },
       workbox: {
         cleanupOutdatedCaches: true,
-        // add a higher threshold (e.g. 5 MiB)
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         runtimeCaching: [
           {

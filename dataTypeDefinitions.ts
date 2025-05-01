@@ -105,7 +105,7 @@ export type createPostProps = {
 };
 export type errorProps = {
   id: string;
-  userFreindlyMessage: string;
+  userFriendlyMessage: string;
   errorMessage: string;
   error: Error;
 };
