@@ -111,6 +111,7 @@ function Home() {
           >
             Badge Maker{" "}
           </Button>
+          
           <Button
             size="large"
             variant="outlined"

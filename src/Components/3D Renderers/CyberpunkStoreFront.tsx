@@ -1,6 +1,7 @@
 // src/Components/ModelViewer.tsx
 import React, { Suspense, useState } from "react";
 import { Canvas } from "@react-three/fiber";
+import Button3D from "../3D Objects/Button";
 import {
   OrbitControls,
   Stage,
@@ -10,6 +11,10 @@ import {
 } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
+import { Root } from "@react-three/uikit/dist/root";
+import { Text } from "@react-three/uikit/dist/Text";
+import { Content } from "@react-three/uikit/dist/content";
+import { Container } from "@react-three/uikit/dist/container";
 
 type CyberpunkStoreFrontProps = { url?: string };
 function Model({ url = "/3dModels/neonBG.glb" }: CyberpunkStoreFrontProps) {
@@ -69,6 +74,17 @@ export default function CyberpunkStoreFront({ url }: CyberpunkStoreFrontProps) {
             speed={1}
           />
         </Suspense>
+
+        {/* <Root anchorY={"top"}>
+          <Container backgroundColor="red">
+            <Text fontSize={100} fontWeight="bold">
+              Hello World!
+            </Text>
+            <Content width={100} height={100} position={[0, 0, 0]}>
+              <Button3D position={[1.2, 8, 0]} />
+            </Content>
+          </Container>
+        </Root> */}
 
         <OrbitControls
           enablePan={false}
