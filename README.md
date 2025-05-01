@@ -105,7 +105,10 @@ Product properties
 50. [DB Error] On prod, one of the user's(dev) liked posts array contains ID: 0. Which is non existing. I'll try to see if thats new or always been there. Also the error snckbar is blanco, gotta look into that as well.
 51. [Feature] Edit and delete posts/comments if user is owner or super user
 52. [Feature] Admin dashboard to manage existing categories and such
-53. [Side]
+53. [Feature] Dont force 3D backdrop, ask user I guess? Or make it a toggle?
+54. [MaybeBUG?] 3D model can just unalive itself if you are on a different tab
+55. [Featuer expansion] Interactions like liking or disliking are locked behind an account system, but posting and commenting isnt.
+56. [Dating crypto app] Track the streets your partner has been to, every relation is more than a relation, its TANGIBLE.
 
 ---
 

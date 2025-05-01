@@ -1,4 +1,4 @@
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, Fade, Stack } from "@mui/material";
 import React from "react";
 import Logo from "../Components/Logo";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,22 @@ function Home() {
   return (
     <>
       {/* Background ModelViewer */}
+      <Fade in={true} timeout={3000} mountOnEnter>
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            zIndex: 0,
+          }}
+        >
+          {/* Drei’s global loader */}
+
+          <ModelViewer url={"/3dModels/neonBG.glb"} />
+        </div>
+      </Fade>
       <div
         style={{
           position: "absolute",
@@ -17,14 +33,33 @@ function Home() {
           left: 0,
           width: "100vw",
           height: "100vh",
-          zIndex: 0,
+          zIndex: -1,
         }}
       >
         {/* Drei’s global loader */}
-        <Loader />
-        <ModelViewer url={"/3dModels/neonBG.glb"} />
+        <Loader
+          containerStyles={{
+            backgroundColor: "rgba(0, 0, 0, 1)",
+          }}
+          dataStyles={{
+            color: "#000",
+          }}
+          innerStyles={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%",
+          }}
+          barStyles={{
+            borderRadius: "6px",
+            width: "20vw",
+            boxShadow:
+              " 0 0 0.1vw 1px #ffffff, 0 0 0.4rem 2px #da4983, 0 0 1rem 4px #ff0066",
+          }}
+          dataInterpolation={(p) => `Loading ${p.toFixed(2)}%`}
+          initialState={(active) => active}
+        />
       </div>
-
       {/* Foreground content */}
       <Stack
         minHeight={"100vh"}

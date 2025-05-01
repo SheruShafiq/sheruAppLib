@@ -6,7 +6,6 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 
 type ModelProps = { url: string };
-
 function Model({ url }: ModelProps) {
   const { scene } = useGLTF(url);
   scene.rotation.y = Math.PI; // Rotate the model 180 degrees
@@ -22,18 +21,16 @@ export default function ModelViewer({ url }: ModelProps) {
   const handleMouseMove = (event: React.MouseEvent) => {
     setMousePosition({ x: event.clientX, y: event.clientY });
   };
-
+  const isDesktop = window.innerWidth > 768; // Check if the device is desktop
+  const zoom = isDesktop ? 7 : 12; // Set zoom level based on device type
   return (
-    <div
-      style={{ width: "100%", height: "100%" }}
-      onMouseMove={handleMouseMove}
-    >
+    <div style={{ width: "100%", height: "100%" }}>
       <Canvas
         style={{ width: "100%", height: "100%" }}
         camera={{
           fov: 100,
           position: [101.98700844028129, 8.824833678051316, 124.91157525205487], // Default camera position
-          zoom: 7, // Default zoom value
+          zoom: zoom,
           near: 0.1,
           far: 1000,
           rotation: [
@@ -42,22 +39,15 @@ export default function ModelViewer({ url }: ModelProps) {
         }}
         gl={{ antialias: true }}
         onCreated={({ gl, camera }) => {
-          // enable physical light model
-          gl.physicallyCorrectLights = true;
-          // use ACES Filmic tone mapping
           gl.toneMapping = THREE.ACESFilmicToneMapping;
-          // output in sRGB color space — cast to any to dodge the missing‐types error
-          (gl as any).outputEncoding = THREE.sRGBEncoding;
-
-          // Set the default target for the camera
           camera.lookAt(0, 0, 0);
         }}
       >
         <Suspense fallback={null}>
           <Stage
-            preset="rembrandt"
-            intensity={1.2}
-            environment="city"
+            preset="soft"
+            intensity={1}
+            environment="night"
             shadows={false}
           >
             <Model url={url} />
@@ -78,8 +68,8 @@ export default function ModelViewer({ url }: ModelProps) {
         <EffectComposer>
           <Bloom
             luminanceThreshold={0}
-            luminanceSmoothing={0.3}
-            intensity={0.8}
+            luminanceSmoothing={0}
+            intensity={1}
             mipmapBlur
           />
         </EffectComposer>
@@ -87,19 +77,6 @@ export default function ModelViewer({ url }: ModelProps) {
         {/* ensure all assets (HDR, textures, GLTF) are registered with the default manager */}
         <Preload all />
       </Canvas>
-      <div
-        style={{
-          position: "absolute",
-          top: 10,
-          left: 10,
-          color: "white",
-          background: "rgba(0, 0, 0, 0.5)",
-          padding: "5px",
-          borderRadius: "5px",
-        }}
-      >
-        Mouse Position: {mousePosition.x}, {mousePosition.y}
-      </div>
     </div>
   );
 }
