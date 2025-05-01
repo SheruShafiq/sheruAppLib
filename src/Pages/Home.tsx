@@ -7,6 +7,14 @@ import { Loader } from "@react-three/drei";
 
 function Home() {
   const navigate = useNavigate();
+  const [shouldDisplay, setShouldDisplay] = React.useState(false);
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setShouldDisplay(true);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
   return (
     <>
       {/* Background ModelViewer */}
@@ -14,6 +22,8 @@ function Home() {
         <div
           style={{
             position: "absolute",
+            transition: "opacity 0.5s ease-in-out",
+            opacity: shouldDisplay ? 1 : 0,
             top: 0,
             left: 0,
             width: "100vw",
@@ -29,17 +39,16 @@ function Home() {
       <div
         style={{
           position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100vw",
-          height: "100vh",
-          zIndex: -1,
+          transform: "translate(-50%, -50%)",
+          top: "50%",
+          left: "50%",
+          // zIndex: -1,
         }}
       >
         {/* Drei’s global loader */}
         <Loader
           containerStyles={{
-            backgroundColor: "rgba(0, 0, 0, 1)",
+            backgroundColor: "rgba(0, 0, 0, 0)",
           }}
           dataStyles={{
             color: "#000",
