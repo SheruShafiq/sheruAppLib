@@ -1,9 +1,14 @@
 import React from "react";
 import "../Styles/IOSLoader.css";
 
-function IOSLoader({ size = 20, theme = "dark" }) {
+interface IOSLoaderProps {
+  size?: number;
+  theme?: "dark" | "light";
+}
+
+function IOSLoader({ size = 20, theme = "dark" }: IOSLoaderProps) {
   const themeClass = theme === "dark" ? "spinner dark" : "spinner light";
-  const style = {
+  const style: React.CSSProperties = {
     width: size,
     height: size,
   };

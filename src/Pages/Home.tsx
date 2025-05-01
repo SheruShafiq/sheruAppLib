@@ -1,46 +1,41 @@
 import { Button, Fade, Stack } from "@mui/material";
-import React from "react";
+import { lazy, Suspense, useState, useEffect } from "react";
 import Logo from "../Components/Logo";
 import { useNavigate } from "react-router-dom";
-import ModelViewer from "../Components/ModelViewer";
+const CyberpunkStoreFront = lazy(
+  () => import("../Components/3D Renderers/CyberpunkStoreFront")
+);
 import { Loader } from "@react-three/drei";
+import IOSLoader from "../Components/IOSLoader";
 
 function Home() {
   const navigate = useNavigate();
-  const [shouldDisplay, setShouldDisplay] = React.useState(false);
-  React.useEffect(() => {
+  const [ready, setReady] = useState(false);
+  const [shouldDisplay, setShouldDisplay] = useState(false);
+  useEffect(() => {
+    // Defer mounting of the GLTF/canvas until browser idle (or 200ms fallback)
+    const handle = (window as any).requestIdleCallback
+      ? (window as any).requestIdleCallback(() => setReady(true))
+      : window.setTimeout(() => setReady(true), 200);
     const timer = setTimeout(() => {
       setShouldDisplay(true);
-    }, 1000);
-
-    return () => clearTimeout(timer);
+    }, 2000);
+    return () => {
+      if ((window as any).cancelIdleCallback) {
+        (window as any).cancelIdleCallback(handle);
+      } else {
+        clearTimeout(handle as number);
+        clearTimeout(timer as number);
+      }
+    };
   }, []);
   return (
     <>
-      {/* Background ModelViewer */}
-      <Fade in={true} timeout={3000} mountOnEnter>
-        <div
-          style={{
-            position: "absolute",
-            transition: "opacity 0.5s ease-in-out",
-            opacity: shouldDisplay ? 1 : 0,
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            zIndex: 0,
-          }}
-        >
-          {/* Drei’s global loader */}
-
-          <ModelViewer url={"/3dModels/neonBG.glb"} />
-        </div>
-      </Fade>
       <div
         style={{
           position: "absolute",
           transform: "translate(-50%, -50%)",
-          top: "50%",
+          top: "52%",
           left: "50%",
           // zIndex: -1,
         }}
@@ -52,6 +47,7 @@ function Home() {
           }}
           dataStyles={{
             color: "#000",
+            visibility: "hidden",
           }}
           innerStyles={{
             display: "flex",
@@ -60,7 +56,7 @@ function Home() {
             width: "100%",
           }}
           barStyles={{
-            borderRadius: "6px",
+            borderRadius: "12px",
             width: "20vw",
             boxShadow:
               " 0 0 0.1vw 1px #ffffff, 0 0 0.4rem 2px #da4983, 0 0 1rem 4px #ff0066",
@@ -69,6 +65,28 @@ function Home() {
           initialState={(active) => active}
         />
       </div>
+      <Suspense fallback={<IOSLoader />}>
+        {/* Background ModelViewer */}
+        <Fade in={true} timeout={3000} mountOnEnter>
+          <div
+            style={{
+              position: "absolute",
+              transition: "opacity 2s ease-in-out",
+              opacity: shouldDisplay ? 1 : 0,
+              top: 0,
+              left: 0,
+              width: "100vw",
+              height: "100vh",
+              zIndex: 0,
+            }}
+          >
+            {/* Drei’s global loader */}
+
+            <CyberpunkStoreFront />
+            {/* <NeonBar /> */}
+          </div>
+        </Fade>
+      </Suspense>
       {/* Foreground content */}
       <Stack
         minHeight={"100vh"}
@@ -80,7 +98,11 @@ function Home() {
         gap={4}
         zIndex={2} // Ensure content is above the background
       >
-        <Logo logoName={"Sheru"} URL={"/"} />
+        <Logo
+          logoName={"Sheru"}
+          URL={"/"}
+          additionalClassName={"homePageTitleDrop"}
+        />
         <Stack direction={"row"} gap={1}>
           <Button
             variant="outlined"

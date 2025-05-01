@@ -49,7 +49,9 @@ body {
     transparent calc(50% + 0.5px)
   );
 }
-
+.homePageTitleDrop {
+  font-size: 10vw !important;
+}
 /* =======================================
    Thumb: full 16px wide, rounded, with box-shadow
    ======================================= */

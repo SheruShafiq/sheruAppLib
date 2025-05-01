@@ -5,9 +5,10 @@ import { Box } from "@mui/material";
 interface LogoProps {
   logoName: string;
   URL: string;
+  additionalClassName?: string;
 }
 
-const Logo = ({ logoName, URL }: LogoProps) => {
+const Logo = ({ logoName, URL, additionalClassName = "" }: LogoProps) => {
   const glitch = useGlitch({
     timing: {
       iterations: 1,
@@ -15,8 +16,8 @@ const Logo = ({ logoName, URL }: LogoProps) => {
       duration: 500,
     },
     glitchTimeSpan: {
-      start: 0,
-      end: 0.3,
+      start: 0.1,
+      end: 0.9,
     },
     playMode: "hover",
   });
@@ -31,6 +32,7 @@ const Logo = ({ logoName, URL }: LogoProps) => {
         zIndex: 100,
       }}
       onClick={() => {
+        if (window.location.href === URL) return;
         window.location.href = URL;
       }}
       ref={glitch.ref}
@@ -39,7 +41,7 @@ const Logo = ({ logoName, URL }: LogoProps) => {
         text={logoName}
         speed={100}
         letterCase="lowercase"
-        className="neonText HeaderLogo"
+        className={`neonText HeaderLogo ${additionalClassName}`}
         type="ALPHA_NUMERIC"
       />
     </Box>
