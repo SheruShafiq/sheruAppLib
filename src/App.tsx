@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
-import SauceHome from "./Pages/SauceHome.tsx";
+import SauceHome from "./Pages/SauceHome";
 import Four0Four from "./Pages/404";
 import { SnackbarProvider } from "notistack";
 import { createRef } from "react";
@@ -13,12 +13,13 @@ import CssBaseline from "@mui/material/CssBaseline";
 import CustomErrorSnackBar from "./Components/CustomErrorSnackBar";
 import { Category, errorProps, User } from "../dataTypeDefinitions";
 import { useSnackbar } from "notistack";
-import BadgeMakerHome from "./Pages/BadgeMakerHome.tsx";
+import BadgeMakerHome from "./Pages/BadgeMakerHome";
 import React from "react";
 import { Buffer } from "buffer";
-import UserProfilePage from "./Pages/UserProfilePage.tsx";
+import UserProfilePage from "./Pages/UserProfilePage";
 import { Global } from "@emotion/react";
 import Home from "./Pages/Home.tsx";
+import CV from "./Pages/CV.js";
 
 // Ensure TypeScript recognizes custom variants declared in main.tsx
 
@@ -225,14 +226,8 @@ function App() {
           setUserData={setUserData}
         />
         <Routes>
-          <Route
-            path="/"
-            element={
-              <div className="APP_Sauce">
-                <Home />
-              </div>
-            }
-          />
+          <Route path="/" element={<Home />} />
+          <Route path="/cv" element={<CV />} />
           <Route
             path="/sauce/:pageNumber?"
             element={
@@ -277,6 +272,7 @@ function App() {
               </div>
             }
           />
+
           <Route
             path="/user/:id"
             element={

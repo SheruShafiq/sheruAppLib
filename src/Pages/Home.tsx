@@ -105,16 +105,25 @@ function Home() {
         />
         <Stack direction={"row"} gap={1}>
           <Button
+            size="large"
             variant="outlined"
             onClick={() => navigate("/sheru/appLibrary/badgeMaker")}
           >
             Badge Maker{" "}
           </Button>
-          <Button variant="outlined" onClick={() => navigate("/sauce")}>
+          <Button
+            size="large"
+            variant="outlined"
+            onClick={() => navigate("/sauce")}
+          >
             {" "}
             Sauce{" "}
           </Button>
-          <Button variant="outlined" onClick={() => navigate("/cv")}>
+          <Button
+            size="large"
+            variant="outlined"
+            onClick={() => navigate("/cv")}
+          >
             CV
           </Button>
         </Stack>
