@@ -45,7 +45,7 @@ export default defineConfig({
         short_name: 'Sheru',
         description: "Sheru's App Library is a collection of web-based tools showcasing my capabilities.",
         theme_color: '#611A37',
-        background_color: '#ffffff',
+        background_color: '#000',
         display: 'standalone',
         start_url: '/',
         scope: '/',
