@@ -97,7 +97,6 @@ function Badge({ role, name, preview }: badgeProps) {
         justifyContent="center"
         alignItems="center"
       >
-        {/* Header with flags and title */}
         <Stack
           direction="row"
           width="100%"

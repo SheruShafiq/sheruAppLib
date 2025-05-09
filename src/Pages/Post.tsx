@@ -61,7 +61,7 @@ function PostPage({
         setLoading(false);
         const err: errorProps = {
           id: "failed to get post data",
-          userFreindlyMessage: "Something went wrong when getting post data",
+          userFriendlyMessage: "Something went wrong when getting post data",
           errorMessage:
             error instanceof Error ? error.message : "Unknown error",
           error: error instanceof Error ? error : new Error("Unknown error"),
@@ -81,7 +81,7 @@ function PostPage({
       (error: any) => {
         const err: errorProps = {
           id: "fetching author data Error",
-          userFreindlyMessage:
+          userFriendlyMessage:
             "An error occurred while fetching post's author data.",
           errorMessage:
             error instanceof Error ? error.message : "Unknown error",
@@ -147,7 +147,7 @@ function PostPage({
                 (error) => {
                   const err: errorProps = {
                     id: "failed to add comment to post",
-                    userFreindlyMessage:
+                    userFriendlyMessage:
                       "Something went wrong when creating comment",
                     errorMessage:
                       error instanceof Error ? error.message : "Unknown error",
@@ -173,7 +173,7 @@ function PostPage({
                 (error) => {
                   const err: errorProps = {
                     id: "failed to add comment to post",
-                    userFreindlyMessage:
+                    userFriendlyMessage:
                       "Something went wrong when creating comment",
                     errorMessage:
                       error instanceof Error ? error.message : "Unknown error",
@@ -190,7 +190,7 @@ function PostPage({
           onError: (error) => {
             const err: errorProps = {
               id: "failed to create comment in user",
-              userFreindlyMessage: "Something went wrong when creating comment",
+              userFriendlyMessage: "Something went wrong when creating comment",
               errorMessage:
                 error instanceof Error ? error.message : "Unknown error",
               error:
@@ -204,7 +204,7 @@ function PostPage({
       (error) => {
         const err: errorProps = {
           id: "failed to create comment",
-          userFreindlyMessage: "Something went wrong when creating comment",
+          userFriendlyMessage: "Something went wrong when creating comment",
           errorMessage:
             error instanceof Error ? error.message : "Unknown error",
           error: error instanceof Error ? error : new Error("Unknown error"),
@@ -322,7 +322,7 @@ function PostPage({
               speed={60}
               letterCase="lowercase"
               className="postPageCommentsTitle"
-              type="alphanumeric"
+              type="ALPHA_NUMERIC"
             />
             <Stack gap={2} width={"100%"}>
               <TextField
@@ -425,7 +425,7 @@ function PostPage({
                       text={`No comments yet`}
                       speed={60}
                       letterCase="lowercase"
-                      type="alphanumeric"
+                      type="ALPHA_NUMERIC"
                       className={"no Comments Found"}
                     />
                   </Stack>
