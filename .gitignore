@@ -35,3 +35,4 @@ dist-examples-root
 examples/*/test-results/
 examples/*/playwright-report/
 examples/*/playwright/.cache/
+next-app/.next

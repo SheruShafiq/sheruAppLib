@@ -156,7 +156,7 @@ export async function fetchCategories(
   }
 }
 
-export async function patchUser({
+export async function patchUserField({
   userID,
   field,
   newValue,
@@ -229,6 +229,110 @@ export async function loginUser({
     }
     
     onSuccess(user);
+  } catch (error) {
+    onError(error);
+  }
+}
+
+export async function patchVotePost(
+  postId: string,
+  voteType: 'upvote' | 'downvote',
+  userId: string,
+  onSuccess: () => void,
+  onError: (error: any) => void
+) {
+  try {
+    // First, update the post
+    const voteField = voteType === 'upvote' ? 'upvotes' : 'downvotes';
+    const post = await apiRequest<Post>(`/posts/${postId}`);
+    const currentValue = voteType === 'upvote' ? post.upvotes : post.downvotes;
+    
+    await apiRequest(`/posts/${postId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ 
+        [voteField]: currentValue + 1,
+        dateModified: now
+      })
+    });
+
+    // Then, update the user's voted posts
+    const userVoteField = voteType === 'upvote' ? 'upvotedPosts' : 'downVotedPosts';
+    const user = await apiRequest<User>(`/users/${userId}`);
+    const currentVotedPosts = user[userVoteField] || [];
+    
+    await apiRequest(`/users/${userId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ 
+        [userVoteField]: [...currentVotedPosts, postId],
+        dateModified: now
+      })
+    });
+
+    onSuccess();
+  } catch (error) {
+    onError(error);
+  }
+}
+
+export async function patchUndoVotePost(
+  postId: string,
+  voteType: 'upvote' | 'downvote',
+  userId: string,
+  onSuccess: () => void,
+  onError: (error: any) => void
+) {
+  try {
+    // First, update the post
+    const voteField = voteType === 'upvote' ? 'upvotes' : 'downvotes';
+    const post = await apiRequest<Post>(`/posts/${postId}`);
+    const currentValue = voteType === 'upvote' ? post.upvotes : post.downvotes;
+    
+    // Ensure the value doesn't go below 0
+    const newValue = Math.max(0, currentValue - 1);
+    
+    await apiRequest(`/posts/${postId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ 
+        [voteField]: newValue,
+        dateModified: now
+      })
+    });
+
+    // Then, update the user's voted posts
+    const userVoteField = voteType === 'upvote' ? 'upvotedPosts' : 'downVotedPosts';
+    const user = await apiRequest<User>(`/users/${userId}`);
+    const currentVotedPosts = user[userVoteField] || [];
+    
+    await apiRequest(`/users/${userId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ 
+        [userVoteField]: currentVotedPosts.filter(id => id !== postId),
+        dateModified: now
+      })
+    });
+
+    onSuccess();
+  } catch (error) {
+    onError(error);
+  }
+}
+
+export async function patchUser(
+  userId: string,
+  userData: Partial<User>,
+  onSuccess: () => void,
+  onError: (error: any) => void
+) {
+  try {
+    await apiRequest(`/users/${userId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ 
+        ...userData,
+        dateModified: now
+      })
+    });
+
+    onSuccess();
   } catch (error) {
     onError(error);
   }
