@@ -8,7 +8,7 @@ const TYPES = {
   ALPHABETS: "alphabets",
   NUMBERS: "numbers",
   SPECIAL_CHARS: "specialchars",
-  ALPHA_NUMERIC: "alphanumeric",
+  ALPHA_NUMERIC: "ALPHA_NUMERIC",
 };
 
 type GlitchEffectProps = {
@@ -24,7 +24,7 @@ export const TextGlitchEffect: React.FC<GlitchEffectProps> = ({
   speed = 30,
   letterCase = "uppercase",
   className,
-  type = "alphanumeric",
+  type = "ALPHA_NUMERIC",
 }) => {
   const intervalRef = useRef<number | null>(null);
   const textElementRef = useRef<HTMLDivElement | null>(null);

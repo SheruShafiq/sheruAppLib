@@ -104,7 +104,7 @@ function UserStats({ userData, isLoggedIn, randomGIFIndex, pageVariant }) {
                 speed={40}
                 letterCase="lowercase"
                 className="userProfilePageUserName"
-                type="alphanumeric"
+                type="ALPHA_NUMERIC"
               />
             </Link>
           ) : (
@@ -113,7 +113,7 @@ function UserStats({ userData, isLoggedIn, randomGIFIndex, pageVariant }) {
               speed={40}
               letterCase="lowercase"
               className="userProfilePageUserName"
-              type="alphanumeric"
+              type="ALPHA_NUMERIC"
             />
           )}
           <Stack gap={1}>
@@ -151,7 +151,7 @@ function UserStats({ userData, isLoggedIn, randomGIFIndex, pageVariant }) {
                   speed={40}
                   letterCase="lowercase"
                   className="userProfilePageUserStats"
-                  type="alphanumeric"
+                  type="ALPHA_NUMERIC"
                 />
                 <strong> {stat.count}</strong>
               </Button>

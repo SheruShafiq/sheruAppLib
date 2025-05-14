@@ -239,7 +239,7 @@ function PostPage({
       onPostCreated={(id: string) => navigate(`/posts/${id}`)}
     >
       <Divider sx={{ borderColor: "white" }} />
-   
+
       <Stack
         mt={2}
         pb={4}
@@ -315,7 +315,7 @@ function PostPage({
               speed={60}
               letterCase="lowercase"
               className="postPageCommentsTitle"
-              type="alphanumeric"
+              type="ALPHA_NUMERIC"
             />
             <Stack gap={2} width={"100%"}>
               <TextField
@@ -418,7 +418,7 @@ function PostPage({
                       text={`No comments yet`}
                       speed={60}
                       letterCase="lowercase"
-                      type="alphanumeric"
+                      type="ALPHA_NUMERIC"
                       className={"no Comments Found"}
                     />
                   </Stack>

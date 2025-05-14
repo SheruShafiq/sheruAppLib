@@ -95,7 +95,7 @@ function Header({
                     speed={40}
                     letterCase="lowercase"
                     className="loggedInUserName"
-                    type="alphanumeric"
+                    type="ALPHA_NUMERIC"
                   />
                   View profile
                 </Stack>
