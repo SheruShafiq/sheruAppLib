@@ -12,7 +12,7 @@ import { errorProps } from "../../dataTypeDefinitions";
 
 const CustomErrorSnackBar = forwardRef<HTMLDivElement, errorProps>(
   ({ id, ...props }, ref) => {
-    const { userFreindlyMessage, error } = props;
+    const { userFriendlyMessage, error } = props;
     console.log("Error SnackBar", props);
     const { closeSnackbar } = useSnackbar();
     const [expanded, setExpanded] = useState(false);
@@ -82,7 +82,7 @@ const CustomErrorSnackBar = forwardRef<HTMLDivElement, errorProps>(
               textOverflow={"ellipsis"}
               overflow={"hidden"}
             >
-              {userFreindlyMessage}
+              {userFriendlyMessage}
             </Typography>
             <Stack direction="row" alignItems="center">
               <IconButton

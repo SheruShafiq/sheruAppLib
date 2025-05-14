@@ -87,7 +87,7 @@ function SauceHome({
       onError: (error: errorProps) => {
         const err: errorProps = {
           id: "fetching Paginated Posts Error",
-          userFreindlyMessage: "An error occurred while fetching posts.",
+          userFriendlyMessage: "An error occurred while fetching posts.",
           errorMessage:
             error instanceof Error ? error.message : "Unknown error",
           error: error instanceof Error ? error : new Error("Unknown error"),
@@ -113,7 +113,7 @@ function SauceHome({
       (error) => {
         const err: errorProps = {
           id: "fetching Post Error",
-          userFreindlyMessage: "An error occurred while fetching posts.",
+          userFriendlyMessage: "An error occurred while fetching posts.",
           errorMessage:
             error instanceof Error ? error.message : "Unknown error",
           error: error instanceof Error ? error : new Error("Unknown error"),
@@ -161,7 +161,7 @@ function SauceHome({
           (error) => {
             const err: errorProps = {
               id: "searchinh Post Error",
-              userFreindlyMessage: "An error occurred while searching posts.",
+              userFriendlyMessage: "An error occurred while searching posts.",
               errorMessage:
                 error instanceof Error ? error.message : "Unknown error",
               error:
@@ -265,7 +265,6 @@ function SauceHome({
                   defaultValue={"dateCreated"}
                   labelId="select-sorting"
                   id="elect-sorting"
-                  // value={age}
                   label="Age"
                   onChange={(e) => {
                     setUserSortPrefrences((prev) => ({

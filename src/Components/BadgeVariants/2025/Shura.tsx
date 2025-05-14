@@ -12,12 +12,13 @@ export type badgeProps = {
   preview?: boolean;
 };
 
+
 const ROLE_MIN = 12;
 const ROLE_MAX = 70;
 const NAME_MIN = 12;
 const NAME_MAX = 30;
 
-function Badge({ role, name, preview }: badgeProps) {
+function Shura({ role, name, preview }: badgeProps) {
   const roleRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLDivElement>(null);
 
@@ -28,7 +29,6 @@ function Badge({ role, name, preview }: badgeProps) {
     <Stack mx="auto" width="660px" height="350px" bgcolor="white">
       <Stack
         sx={{
-          background: `linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)), url(${Minara}), url(${Flower})`,
           backgroundSize: "560px 500px, 110px 200px",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "50% -50%, 105% 90px",
@@ -38,6 +38,7 @@ function Badge({ role, name, preview }: badgeProps) {
         justifyContent="center"
         alignItems="center"
       >
+       
         <Stack
           direction="row"
           width="100%"
@@ -60,19 +61,26 @@ function Badge({ role, name, preview }: badgeProps) {
                 borderBottom: "2px solid #AF1623",
                 lineHeight: "40px",
                 mt: "6px",
+                pb: "4px",
               }}
               fontWeight={500}
               color="black"
               fontSize="3rem"
             >
-              JALSA SALANA
+              Majlis-e-Shura
             </Typography>
-            <Typography mt={1} fontWeight={200} color="black" fontSize="1em">
-              43
-              <sup style={{ fontSize: "9px", verticalAlign: "super" }}>
-                ste
-              </sup>{" "}
-              JAARLIJKSE BIJEENKOMST
+            <Typography
+              sx={{
+                textShadow: "0 0 8px rgb(0, 0, 0), 0 0 16px rgb(0, 0, 0)",
+                fontWeight: 700,
+              }}
+              mt={1}
+              fontWeight={200}
+              color="white"
+              fontSize="3em"
+              lineHeight={1}
+            >
+              2025
             </Typography>
           </Stack>
           <Stack width={150} height={75}>
@@ -82,14 +90,20 @@ function Badge({ role, name, preview }: badgeProps) {
           </Stack>
         </Stack>
 
+       
         <Stack
-          gap={2}
           width="100%"
           height="100%"
           justifyContent="center"
           alignItems="center"
         >
-          <Box py={2} bgcolor="#fddfe094" width="100%" overflow="hidden">
+          <Box
+            
+            py={2}
+            
+            width="100%"
+            overflow="hidden"
+          >
             <Typography
               ref={roleRef}
               sx={{
@@ -103,7 +117,14 @@ function Badge({ role, name, preview }: badgeProps) {
               {role}
             </Typography>
           </Box>
-          <Box width="100%" overflow="hidden">
+          <Box
+            justifyContent="center"
+            alignContent={"center"}
+            height={"50%"}
+            width="100%"
+            overflow="hidden"
+            
+          >
             <Typography
               ref={nameRef}
               sx={{
@@ -118,34 +139,9 @@ function Badge({ role, name, preview }: badgeProps) {
             </Typography>
           </Box>
         </Stack>
-
-        <Stack
-          boxSizing="border-box"
-          pb={0.5}
-          px={1}
-          direction="row"
-          justifyContent="space-between"
-          width="100%"
-          alignItems="center"
-        >
-          <Typography
-            sx={{ display: "flex", alignItems: "center" }}
-            color="black"
-          >
-            <CalendarMonthIcon sx={{ pb: 0.2 }} fontSize="small" /> 2,3,4 Mei
-            2025
-          </Typography>
-          <Typography
-            sx={{ display: "flex", alignItems: "center" }}
-            color="black"
-          >
-            <LocationOnIcon sx={{ pb: 0.2 }} fontSize="small" /> 't Frusselt 30,
-            8076 RE Vierhouten, Nederland
-          </Typography>
-        </Stack>
       </Stack>
     </Stack>
   );
 }
 
-export default Badge;
+export default Shura;

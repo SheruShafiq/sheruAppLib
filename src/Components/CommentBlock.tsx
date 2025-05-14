@@ -211,7 +211,7 @@ function CommentBlock({
     } catch (error: any) {
       const err: errorProps = {
         id: "processing Comment Vote Error",
-        userFreindlyMessage: "An error occurred while voting.",
+        userFriendlyMessage: "An error occurred while voting.",
         errorMessage: error instanceof Error ? error.message : "Unknown error",
         error: error instanceof Error ? error : new Error("Unknown error"),
       };
@@ -241,7 +241,7 @@ function CommentBlock({
         pl: amIaReply ? 2 : 0,
       }}
     >
-      {/* ---- The main comment row ---- */}
+      
       <Stack direction="row" spacing={2} py={1}>
         <Avatar src={imageUrl || GIFs[randomGIFIndex]} alt={userName} />
         <Stack gap={1} width={"100%"}>
@@ -264,7 +264,7 @@ function CommentBlock({
           </Stack>
           <ReadMore text={commentContents} maxLength={200} />
 
-          {/* If there are replies, add a toggle button to expand/collapse */}
+          
           <Stack direction="row" alignItems="center">
             {replies.length > 0 && (
               <Stack
@@ -367,7 +367,6 @@ function CommentBlock({
               />
               <Button
                 onClick={() => {
-                  // setCreatingReply(false);
                   setGeneratingCommentsChain(true);
                   handleCommentCreate({
                     reply: id,
@@ -391,7 +390,7 @@ function CommentBlock({
         </Stack>
       </Stack>
 
-      {/* ---- Replies section ---- */}
+      
       {replies.length > 0 && (
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           {replies.reverse().map((reply) => (

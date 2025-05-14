@@ -61,13 +61,13 @@ function CreatePostDialogue({
             newValue: [...userData.posts, data.id],
             onSuccess: () => {
               updateCateogories(
-                category, // id
-                "posts", // field
+                category, 
+                "posts", 
                 [
                   ...(categories.find((cat) => cat.id === category)?.posts ||
                     []),
                   data.id,
-                ], // newValue
+                ], 
                 () => {
                   if (callerIdentifier === "postPage") {
                     onPostCreated(data.id);
@@ -82,7 +82,7 @@ function CreatePostDialogue({
                 (error) => {
                   const err: errorProps = {
                     id: "failed to add post to category",
-                    userFreindlyMessage:
+                    userFriendlyMessage:
                       "An error occurred while updating the category.",
                     errorMessage:
                       error instanceof Error ? error.message : "Unknown error",
@@ -99,7 +99,7 @@ function CreatePostDialogue({
             onError: (error) => {
               const err: errorProps = {
                 id: "failed to add post to user",
-                userFreindlyMessage:
+                userFriendlyMessage:
                   "An error occurred while creating the post.",
                 errorMessage:
                   error instanceof Error ? error.message : "Unknown error",
@@ -117,7 +117,7 @@ function CreatePostDialogue({
       onError: (error) => {
         const err: errorProps = {
           id: "failed to create post",
-          userFreindlyMessage: "An error occurred while creating the post.",
+          userFriendlyMessage: "An error occurred while creating the post.",
           errorMessage:
             error instanceof Error ? error.message : "Unknown error",
           error: error instanceof Error ? error : new Error("Unknown error"),

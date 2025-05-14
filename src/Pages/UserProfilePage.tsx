@@ -94,7 +94,7 @@ function UserProfilePage({
       (error) => {
         const err: errorProps = {
           id: "fetching user data Error",
-          userFreindlyMessage: "An error occurred while fetching user data.",
+          userFriendlyMessage: "An error occurred while fetching user data.",
           errorMessage:
             error instanceof Error ? error.message : "Unknown error",
           error: error instanceof Error ? error : new Error("Unknown error"),
@@ -166,7 +166,7 @@ function UserProfilePage({
         const resource = isCommentTab ? "comments" : "posts";
         const err: errorProps = {
           id: `fetch-${resource}-error`,
-          userFreindlyMessage: `An error occurred while fetching ${resource}.`,
+          userFriendlyMessage: `An error occurred while fetching ${resource}.`,
           errorMessage:
             error instanceof Error ? error.message : "Unknown error",
           error: error instanceof Error ? error : new Error("Unknown error"),
@@ -213,7 +213,7 @@ function UserProfilePage({
           onError: (error) => {
             const err: errorProps = {
               id: "patch-user-error",
-              userFreindlyMessage:
+              userFriendlyMessage:
                 "An error occurred while updating user comments.",
               errorMessage:
                 error instanceof Error ? error.message : "Unknown error",
@@ -228,7 +228,7 @@ function UserProfilePage({
       (error) => {
         const err: errorProps = {
           id: "failed to create comment",
-          userFreindlyMessage: "Something went wrong when creating comment",
+          userFriendlyMessage: "Something went wrong when creating comment",
           errorMessage:
             error instanceof Error ? error.message : "Unknown error",
           error: error instanceof Error ? error : new Error("Unknown error"),
@@ -248,7 +248,7 @@ function UserProfilePage({
       (error) => {
         const err: errorProps = {
           id: "fetch-post-error",
-          userFreindlyMessage: "An error occurred while fetching the post.",
+          userFriendlyMessage: "An error occurred while fetching the post.",
           errorMessage:
             error instanceof Error ? error.message : "Unknown error",
           error: error instanceof Error ? error : new Error("Unknown error"),
@@ -296,22 +296,7 @@ function UserProfilePage({
           randomGIFIndex={randomGIFIndex}
           pageVariant={false}
         />
-        {/* <Divider sx={{ borderColor: "white" }} /> */}
-        {/* <Button
-          onClick={() => {
-            setGeneratingCommentsChain(!generatingCommentsChain);
-          }}
-        >
-          togglecomments
-        </Button> */}
-        {/*
-        <Button
-          onClick={() => {
-            setLoading(!loading);
-          }}
-        >
-          toggle Posts
-        </Button> */}
+       
         <Stack
           sx={{
             overflowX: "auto",
@@ -365,7 +350,6 @@ function UserProfilePage({
             >
               Disliked Comments ({userData?.dislikedComments.length})
             </ToggleButton>
-            {/* <ToggleButton value="reportedPosts">Reported Posts</ToggleButton> */}
           </ToggleButtonGroup>
         </Stack>
         {loading && !generatingCommentsChain && (

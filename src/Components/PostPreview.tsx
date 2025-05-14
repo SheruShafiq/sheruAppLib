@@ -81,7 +81,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
   const history = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const formattedTitle = useMemo(() => {
-    const maxLength = Math.floor((window.innerWidth * 0.5) / 10); // Assuming 10px per character as an approximation
+    const maxLength = Math.floor((window.innerWidth * 0.5) / 10); 
     return title?.length > maxLength
       ? `${title?.slice(0, maxLength)}...`
       : title;
@@ -298,7 +298,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
     } catch (error: any) {
       const err: errorProps = {
         id: "Voting Error",
-        userFreindlyMessage: "An error occurred while voting",
+        userFriendlyMessage: "An error occurred while voting",
         errorMessage: error.message,
         error: error,
       };
@@ -391,7 +391,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
                 speed={40}
                 letterCase="lowercase"
                 className="resourceLink"
-                type="alphanumeric"
+                type="ALPHA_NUMERIC"
               />
             </Stack>
           </Link>

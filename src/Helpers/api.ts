@@ -1,4 +1,3 @@
-// Generic API request helper
 const APIURL = import.meta.env.VITE_BACKEND_URL;
 
 /**

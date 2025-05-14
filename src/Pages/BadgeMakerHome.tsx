@@ -15,7 +15,8 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
-import Badge, { badgeProps } from "../Components/BadgeVariants/2025/Badge";
+import * as BadgeVariants from "../Components/BadgeVariants/2025";
+import type { badgeProps } from "../Components/BadgeVariants/2025";
 import ExcelInput from "../Components/ExcelInput";
 import Papa from "papaparse";
 import { toCanvas } from "html-to-image";
@@ -23,7 +24,6 @@ import { jsPDF } from "jspdf";
 import Logo from "../Components/Logo";
 import IOSLoader from "../Components/IOSLoader";
 import "../Styles/BadgeMakerMain.css";
-import CarPass from "../Components/BadgeVariants/2025/CarPass";
 
 export type RowData = { col1: string; col2: string };
 
@@ -38,13 +38,17 @@ function Home() {
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
   const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
-  // 1 = car pass, 2 = badge
-  const [badgeVariant, setBadgeVariant] = useState<Number>(1);
+ 
+  const [badgeVariant, setBadgeVariant] = useState<number>(1);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const exportRefs = useRef<(HTMLDivElement | null)[]>([]);
+ 
+  const variantComponents: React.ComponentType<badgeProps>[] = Object.values(
+    BadgeVariants
+  ) as React.ComponentType<badgeProps>[];
   const isDesktop = window.innerWidth > 768;
 
-  // parse CSV into badgesData
+ 
   useEffect(() => {
     if (!csvFile) {
       setBadgesData([]);
@@ -54,11 +58,11 @@ function Home() {
     Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
-      transformHeader: (h) => h.trim(), // ← trim whitespace from " name"
+      transformHeader: (h) => h.trim(),
       complete: (results) => {
         const data = (results.data as any[]).map((row) => ({
           role: row["Role"] || row["role"] || "",
-          name: row["Name"] || row["name"] || "", // now "name" will exist
+          name: row["Name"] || row["name"] || "",
         }));
         setBadgesData(data);
       },
@@ -70,13 +74,13 @@ function Home() {
     setDataInputMode(newMode);
   };
 
-  // non-blocking, chunked PDF export using canvas directly to avoid huge Base64 strings
+ 
   const handleExportPDF = async () => {
     setIsExporting(true);
     setExportProgress(0);
     setPdfBlobUrl(null);
 
-    // Remove Google Fonts link nodes to avoid CORS/cssRules issues during snapshot
+   
     const head = document.head;
     const removed: Array<{ link: HTMLLinkElement; next: ChildNode | null }> =
       [];
@@ -100,7 +104,7 @@ function Home() {
         const node = exportRefs.current[i];
         if (!node) continue;
         try {
-          // snapshot DOM to offscreen canvas at 2x resolution for crispness
+         
           const canvas = await toCanvas(node, { pixelRatio: 2 });
           if (i > 0) doc.addPage();
           doc.addImage(canvas, "JPEG", 0, 0, 660, 350);
@@ -108,14 +112,14 @@ function Home() {
           console.error("Canvas snapshot failed", err);
         }
 
-        // update progress and yield to event loop
+       
         setExportProgress(
           Math.round(((i + 1) / exportRefs.current.length) * 100)
         );
         await new Promise((r) => setTimeout(r, 0));
       }
 
-      // generate blob PDF and trigger download
+     
       const pdfBlob = doc.output("blob");
       const url = URL.createObjectURL(pdfBlob);
       setPdfBlobUrl(url);
@@ -129,18 +133,44 @@ function Home() {
     } catch (error) {
       console.error("PDF export error:", error);
     } finally {
-      // restore removed font links
+     
       removed.forEach(({ link, next }) => {
         head.insertBefore(link, next);
       });
       setIsExporting(false);
-      // revoke after a minute
+     
       if (pdfBlobUrl) setTimeout(() => URL.revokeObjectURL(pdfBlobUrl), 60000);
     }
   };
 
-  // preview height based on device
+ 
   const previewHeight = window.innerHeight * (isDesktop ? 0.7 : 0.5);
+
+ 
+  const variantNames = Object.keys(BadgeVariants);
+
+  const variantLabels = [
+    {
+      col1: "License Number",
+      col2: "Pass Level",
+      placeholder1: "XTCAS-ASD1A",
+      placeholder2: "1 | 2",
+    },
+    {
+      col1: "Role",
+      col2: "Name",
+      placeholder1: "Nazim Jalsa Food",
+      placeholder2: "John Doom",
+    },
+    {
+      col1: "Role",
+      col2: "Name",
+      placeholder1: "Sadar Jamat Utrecht",
+      placeholder2: "John Elden",
+    },
+
+   
+  ];
 
   return (
     <Stack
@@ -157,7 +187,7 @@ function Home() {
         mt={generate ? "2vh" : "25vh"}
         sx={{ transition: "all .3s ease-in-out" }}
       >
-        {/* Top Controls */}
+       
         <Stack
           direction="row"
           width="100%"
@@ -210,13 +240,13 @@ function Home() {
               {isExporting
                 ? "Processing..."
                 : pdfBlobUrl
-                ? "Download PDF"
-                : "Export PDF"}
+                  ? "Download PDF"
+                  : "Export PDF"}
             </Button>
           </Fade>
         </Stack>
 
-        {/* Progress Indicator */}
+       
         <Fade in={isExporting}>
           <Stack width="80%" maxWidth="600px">
             <Typography align="center">Exporting {exportProgress}%</Typography>
@@ -224,7 +254,7 @@ function Home() {
           </Stack>
         </Fade>
 
-        {/* Preview & Off-screen Rendering */}
+       
         {generate && (
           <Fade in={generate}>
             <Box
@@ -248,24 +278,28 @@ function Home() {
                     background: "linear-gradient(transparent, black)",
                   }}
                 />
-                {badgesData.map((item, index) => (
-                  <div
-                    key={index}
-                    ref={(el) => (exportRefs.current[index] = el)}
-                  >
-                    {badgeVariant === 1 ? (
-                      <CarPass role={item.role} name={item.name} preview />
-                    ) : (
-                      <Badge role={item.role} name={item.name} preview />
-                    )}
-                  </div>
-                ))}
+                {badgesData.map((item, index) => {
+                  if (!item.role || !item.name) return null;
+                  if (item.role === "" || item.name === "") return null;
+                  const Variant =
+                    variantComponents[badgeVariant - 1] || variantComponents[0];
+                  return (
+                    <div
+                      key={index}
+                      ref={(el) => {
+                        exportRefs.current[index] = el;
+                      }}
+                    >
+                      <Variant role={item.role} name={item.name} preview />
+                    </div>
+                  );
+                })}
               </Stack>
             </Box>
           </Fade>
         )}
 
-        {/* Input Mode Toggle */}
+       
         <Fade in={!generate}>
           <Stack gap={2}>
             <ToggleButtonGroup
@@ -292,15 +326,18 @@ function Home() {
                   setBadgeVariant(Number(e.target.value));
                 }}
               >
-                <MenuItem value={1}>Car Pass</MenuItem>
-                <MenuItem value={2}>Standard Badge</MenuItem>
+                {variantNames.map((variantName, index) => (
+                  <MenuItem key={index} value={index + 1}>
+                    {variantName}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Stack>
         </Fade>
       </Stack>
 
-      {/* Data Input Section */}
+     
       <Fade in={!generate}>
         <Stack
           gap={2}
@@ -311,9 +348,9 @@ function Home() {
         >
           {dataInputMode === "manual" && (
             <ExcelInput
-              badgeVariant={badgeVariant}
               rows={rows}
               setRows={setRows}
+              labels={variantLabels[badgeVariant - 1] || variantLabels[0]}
             />
           )}
           {dataInputMode === "csv" && (

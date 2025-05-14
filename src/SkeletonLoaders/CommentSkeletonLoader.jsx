@@ -8,7 +8,6 @@ const CommentSkeletonLoader = () => {
   );
   return (
     <Stack width={"100%"} sx={{ position: "relative", ml: 0, pl: 0 }} gap={2}>
-      {/* ---- Main Comment Row ---- */}
       <Stack direction="row" gap={2}>
         <Skeleton
           animation="wave"

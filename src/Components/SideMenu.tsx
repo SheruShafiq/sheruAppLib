@@ -25,7 +25,6 @@ function SideMenu({ categories }: { categories: Category[] }) {
               key={category.id}
               color="primary"
               onClick={() => {
-                // Handle category click
                 console.log(`Clicked on category: ${category.name}`);
               }}
               sx={{

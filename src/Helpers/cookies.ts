@@ -1,4 +1,3 @@
-// Utility functions for cookie management
 
 /**
  * Get the value of a cookie by name.

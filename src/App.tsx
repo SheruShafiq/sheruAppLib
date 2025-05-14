@@ -21,7 +21,7 @@ import { Global } from "@emotion/react";
 import Home from "./Pages/Home.tsx";
 import CV from "./Pages/CV.js";
 
-// Ensure TypeScript recognizes custom variants declared in main.tsx
+
 
 declare module "notistack" {
   interface VariantOverrides {
@@ -66,7 +66,7 @@ const darkTheme = createTheme({
         },
         container: {
           background: "#00000096",
-          alignItems: globalThis.isDesktop ? "center" : "flex-start", // Apply alignItems to MuiDialog-container
+          alignItems: globalThis.isDesktop ? "center" : "flex-start", 
         },
       },
     },
@@ -133,7 +133,7 @@ function App() {
       (error: any) => {
         const err: errorProps = {
           id: "fetching User Data Error",
-          userFreindlyMessage:
+          userFriendlyMessage:
             "An error occurred while fetching user data, try to log in again.",
           errorMessage:
             error instanceof Error ? error.message : "Unknown error",
@@ -159,7 +159,7 @@ function App() {
       (error) => {
         const err: errorProps = {
           id: "fetching Categories Error",
-          userFreindlyMessage: "An error occurred while fetching categories.",
+          userFriendlyMessage: "An error occurred while fetching categories.",
           errorMessage:
             error instanceof Error ? error.message : "Unknown error",
           error: error instanceof Error ? error : new Error("Unknown error"),
