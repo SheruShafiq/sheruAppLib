@@ -6,20 +6,28 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   TextField,
   Typography,
 } from "@mui/material";
-import { ExcelInputProps, RowData } from "../Pages/BadgeMakerHome"; // Adjust the import path as necessary
+
+export type ExcelInputProps = {
+  rows: RowData[];
+  setRows: React.Dispatch<React.SetStateAction<RowData[]>>;
+  labels: {
+    col1: string;
+    col2: string;
+    placeholder1: string;
+    placeholder2: string;
+  };
+};
+
+export type RowData = { col1: string; col2: string };
 
 const ExcelLikeTable: React.FC<ExcelInputProps> = ({
   rows,
   setRows,
-  badgeVariant,
+  labels,
 }) => {
-  // Start with one blank row
-
-  // Update row data and auto append new row when needed
   const handleInputChange = (
     index: number,
     field: keyof RowData,
@@ -29,7 +37,6 @@ const ExcelLikeTable: React.FC<ExcelInputProps> = ({
     newRows[index] = { ...newRows[index], [field]: value };
     setRows(newRows);
 
-    // If editing the last row and at least one field is not empty, add a new blank row.
     if (
       index === rows.length - 1 &&
       (newRows[index].col1.trim() !== "" || newRows[index].col2.trim() !== "")
@@ -45,13 +52,12 @@ const ExcelLikeTable: React.FC<ExcelInputProps> = ({
           <TableRow>
             <TableCell>
               <Typography variant="h6" fontWeight={600}>
-                {badgeVariant == 2 ? "Role" : "Licensce Number"}
+                {labels.col1}
               </Typography>
             </TableCell>
             <TableCell>
-              {" "}
               <Typography variant="h6" fontWeight={600}>
-                {badgeVariant == 2 ? "Name" : "Pass Level"}
+                {labels.col2}
               </Typography>
             </TableCell>
           </TableRow>
@@ -73,9 +79,7 @@ const ExcelLikeTable: React.FC<ExcelInputProps> = ({
                   }
                   fullWidth
                   variant="standard"
-                  placeholder={
-                    badgeVariant == 2 ? "Nazim Jalsa Food" : "XTCAS-ASD1A"
-                  }
+                  placeholder={labels.placeholder1}
                 />
               </TableCell>
               <TableCell sx={{ borderBottom: "none" }}>
@@ -87,11 +91,7 @@ const ExcelLikeTable: React.FC<ExcelInputProps> = ({
                   }
                   fullWidth
                   variant="standard"
-                  placeholder={
-                    badgeVariant == 2
-                      ? "Ahmad Ali Abbas"
-                      : "1 = Standard, 2 = Full Access"
-                  }
+                  placeholder={labels.placeholder2}
                 />
               </TableCell>
             </TableRow>

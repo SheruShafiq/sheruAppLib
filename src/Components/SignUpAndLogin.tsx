@@ -62,7 +62,7 @@ function SignUpAndLogin({
         onError: (error: any) => {
           const err: errorProps = {
             id: "user login error",
-            userFreindlyMessage: "Either username or password is incorrect.",
+            userFriendlyMessage: "Either username or password is incorrect.",
             errorMessage:
               error instanceof Error ? error.message : "Unknown error",
             error: error instanceof Error ? error : new Error("Unknown error"),
@@ -91,7 +91,7 @@ function SignUpAndLogin({
         onError: (error: any) => {
           const err: errorProps = {
             id: "creating user error",
-            userFreindlyMessage:
+            userFriendlyMessage:
               "Failed to create an account, try again later.",
             errorMessage:
               error instanceof Error ? error.message : "Unknown error",

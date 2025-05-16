@@ -145,7 +145,7 @@ export type loginUserProps = {
 };
 
 export interface BeforeInstallPromptEvent extends Event {
-  readonly platforms: string[]; // e.g. ['web']
+  readonly platforms: string[];
   prompt(): Promise<void>;
   userChoice: Promise<{
     outcome: "accepted" | "dismissed";

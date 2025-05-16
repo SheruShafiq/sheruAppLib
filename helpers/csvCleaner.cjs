@@ -32,18 +32,18 @@ let records = [];
 
 try {
     if (ext === ".xlsx" || ext === ".xls") {
-        // ----- Excel path -----
+        
         const workbook = XLSX.readFile(inputPath);
         const sheetName = workbook.SheetNames[0];
         const ws = workbook.Sheets[sheetName];
 
-        // Convert to array of arrays, defval="" ensures no undefined
+        
         const raw = XLSX.utils.sheet_to_json(ws, { header: 1, defval: "" });
         if (raw.length === 0) {
             throw new Error("Excel file is empty.");
         }
 
-        // Try to find header row containing both Functie and Naam
+        
         let headerRowIndex = raw.findIndex(
             row => row.some(cell => /^Functie$/i.test(cell.toString().trim()))
                 && row.some(cell => /^Naam$/i.test(cell.toString().trim()))
@@ -69,7 +69,7 @@ try {
         });
 
     } else if (ext === ".csv") {
-        // ----- CSV fallback -----
+        
         const text = fs.readFileSync(inputPath, "utf8");
         const lines = text.split(/\r?\n/);
 
@@ -77,7 +77,7 @@ try {
             throw new Error("CSV has fewer than 2 lines; cannot parse content.");
         }
 
-        // Drop first empty line if present
+        
         const sliced = lines[0].trim() === "" ? lines.slice(1).join("\n") : lines.join("\n");
         const { data, errors } = Papa.parse(sliced, {
             header: true,
@@ -87,7 +87,7 @@ try {
             console.warn("⚠️ Warnings while parsing CSV:", errors);
         }
 
-        // Detect if headers exist
+        
         const hasFuncHeader = data.length > 0 && Object.prototype.hasOwnProperty.call(data[0], 'Functie');
         const hasNameHeader = data.length > 0 && Object.prototype.hasOwnProperty.call(data[0], 'Naam');
 
@@ -97,7 +97,7 @@ try {
                 role = (row['Functie'] || row['functie'] || '').trim();
                 name = (row['Naam'] || row['naam'] || '').trim();
             } else {
-                // Fallback to positional columns
+                
                 const keys = Object.keys(row);
                 role = (row[keys[1]] || '').trim();
                 name = (row[keys[2]] || '').trim();
@@ -109,10 +109,10 @@ try {
         throw new Error("Unsupported extension: " + ext);
     }
 
-    // Build CSV text
+    
     const headerLine = "Role,Name";
     const linesOut = records.map(r => {
-        // Escape quotes
+        
         const esc = s => `"${s.replace(/"/g, '""')}"`;
         return [esc(r.Role), esc(r.Name)].join(",");
     });

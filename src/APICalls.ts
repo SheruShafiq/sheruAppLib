@@ -1,4 +1,6 @@
-/// <reference types="vite/client" />
+
+// <reference types="vite/client" />
+
 import { apiRequest } from "./Helpers/api";
 const APIURL = import.meta.env.VITE_BACKEND_URL;
 import {
@@ -209,7 +211,9 @@ export async function patchUser({
     const response = await fetch(`${APIURL}/users/${userID}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ [field]: newValue, dateModified: now }), // Updated here
+      body: JSON.stringify({ [field]: newValue, dateModified: now }), 
+  
+      
     });
 
     if (!response.ok) {
@@ -303,7 +307,7 @@ export async function getPostByID(
   }
 }
 
-// Helper to wrap getPostByID in a Promise
+
 function getPostByIdPromise(postId: string): Promise<Post> {
   return new Promise((resolve, reject) => {
     getPostByID(
@@ -314,7 +318,7 @@ function getPostByIdPromise(postId: string): Promise<Post> {
   });
 }
 
-// Function to get multiple posts by their IDs (e.g., from a user's "Liked Posts" array)
+
 export async function getPostsByIds(ids: string[]): Promise<Post[]> {
   return Promise.all(ids.map((id) => getPostByIdPromise(id)));
 }
@@ -389,8 +393,8 @@ export async function fetchCommentByID(
   }
 }
 
-// New utility types and functions for generating full comments with user names
-// Updated FullComment type using Omit to override 'replies'
+
+
 type FullComment = Omit<Comment, "replies"> & {
   authorName: string;
   replies: FullComment[];
@@ -398,7 +402,9 @@ type FullComment = Omit<Comment, "replies"> & {
 
 function getCommentByIdPromise(commentId: string): Promise<Comment> {
   return new Promise((resolve, reject) => {
-    // Wrap callback-based fetchCommentByID to a Promise
+    
+
+    
     fetchCommentByID(commentId, resolve, reject);
   });
 }
@@ -415,7 +421,9 @@ export async function getCommentsByIDs(ids: string[]): Promise<Comment[]> {
         return await getCommentByIdPromise(id);
       } catch (error) {
         console.error(`Error fetching comment: ${error}`);
-        throw error; // Re-throw error to propagate it
+        throw error; 
+    
+        
       }
     })
   );
@@ -424,7 +432,8 @@ async function getFullComment(commentId: string): Promise<FullComment> {
   const comment = await getCommentByIdPromise(commentId);
   const user = await getUserByIdPromise(comment.authorID);
   const authorName = user?.displayName || "Unknown";
-  // Ensure replies is processed only if it is an array
+  
+  
   let fullReplies: FullComment[] = [];
   if (Array.isArray(comment.replies) && comment.replies.length > 0) {
     fullReplies = await Promise.all(

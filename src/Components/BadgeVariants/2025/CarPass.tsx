@@ -5,66 +5,8 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import JalsaLogo from "../../../assets/jalsaLogo.png";
 import { badgeProps } from "./Badge";
+import useDynamicFont from "../../../hooks/useDynamicFontSize";
 
-// Hook to dynamically fit text within its container
-function useDynamicFont(
-  ref: React.RefObject<HTMLElement | null>,
-  dependencies: any[],
-  minSize: number,
-  maxSize: number
-) {
-  const [fontSize, setFontSize] = useState(maxSize);
-
-  useLayoutEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-    const parent = element.parentElement;
-    if (!parent) return;
-
-    const resizeText = () => {
-      const parentWidth = parent.clientWidth;
-      let size = maxSize;
-      element.style.fontSize = `${size}px`;
-      let contentWidth = element.scrollWidth;
-
-      // Shrink until it fits
-      while (contentWidth > parentWidth && size > minSize) {
-        size -= 1;
-        element.style.fontSize = `${size}px`;
-        contentWidth = element.scrollWidth;
-      }
-
-      // Grow if there's extra space
-      while (contentWidth < parentWidth && size < maxSize) {
-        const nextSize = size + 1;
-        element.style.fontSize = `${nextSize}px`;
-        if (element.scrollWidth <= parentWidth) {
-          size = nextSize;
-          contentWidth = element.scrollWidth;
-        } else break;
-      }
-
-      setFontSize(size);
-    };
-
-    // Initial adjustment
-    resizeText();
-
-    // Observe parent size changes
-    const observer = new ResizeObserver(resizeText);
-    observer.observe(parent);
-    window.addEventListener("resize", resizeText);
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", resizeText);
-    };
-  }, dependencies);
-
-  return fontSize;
-}
-
-// bounds for dynamic text fitting
 const ROLE_MIN = 12;
 const ROLE_MAX = 120;
 const NAME_MIN = 12;
@@ -85,7 +27,6 @@ function CarPass({ role, name, preview }: badgeProps) {
         justifyContent="center"
         alignItems="center"
       >
-        {/* Header with flags and title */}
         <Stack
           direction="row"
           width="100%"
@@ -130,7 +71,6 @@ function CarPass({ role, name, preview }: badgeProps) {
           </Box>
         </Stack>
 
-        {/* Dynamic role and  sections */}
         <Stack
           width="100%"
           height="100%"

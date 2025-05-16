@@ -9,7 +9,6 @@ interface ReadMoreProps {
 const ReadMore: React.FC<ReadMoreProps> = ({ text, maxLength }) => {
   const [expanded, setExpanded] = useState(false);
 
-  // If text is short, render normally
   if (text?.length <= maxLength) {
     return (
       <Typography variant="body1" component="div">

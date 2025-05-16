@@ -1,4 +1,4 @@
-import { Avatar, Stack, Typography, Box } from "@mui/material"; // added Box import
+import { Avatar, Stack, Typography, Box } from "@mui/material"; 
 import React from "react";
 import giphyCredits from "../assets/giphyCredits.gif";
 import MUIicon from "../assets/MUIicon.svg";

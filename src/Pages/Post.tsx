@@ -99,7 +99,6 @@ function PostPage({
     fetchCurrentPostData(id!);
   }, [id]);
 
-  // New effect to generate full comments chain after post is fetched
   useEffect(() => {
     if (post && post.comments && post.comments.length > 0) {
       setGeneratingCommentsChain(true);
@@ -240,13 +239,7 @@ function PostPage({
       onPostCreated={(id: string) => navigate(`/posts/${id}`)}
     >
       <Divider sx={{ borderColor: "white" }} />
-      {/* <Button
-        onClick={() => {
-          setLoading(!loading);
-        }}
-      >
-        Toggle loading
-      </Button> */}
+
       <Stack
         mt={2}
         pb={4}

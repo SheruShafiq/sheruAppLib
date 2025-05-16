@@ -13,7 +13,6 @@ function Home() {
   const [ready, setReady] = useState(false);
   const [shouldDisplay, setShouldDisplay] = useState(false);
   useEffect(() => {
-    // Defer mounting of the GLTF/canvas until browser idle (or 200ms fallback)
     const handle = (window as any).requestIdleCallback
       ? (window as any).requestIdleCallback(() => setReady(true))
       : window.setTimeout(() => setReady(true), 200);
@@ -37,10 +36,9 @@ function Home() {
           transform: "translate(-50%, -50%)",
           top: "52%",
           left: "50%",
-          // zIndex: -1,
         }}
       >
-        {/* Drei’s global loader */}
+        
         <Loader
           containerStyles={{
             backgroundColor: "rgba(0, 0, 0, 0)",
@@ -66,7 +64,7 @@ function Home() {
         />
       </div>
       <Suspense fallback={<IOSLoader />}>
-        {/* Background ModelViewer */}
+        
         <Fade in={true} timeout={3000} mountOnEnter>
           <div
             style={{
@@ -80,14 +78,14 @@ function Home() {
               zIndex: 0,
             }}
           >
-            {/* Drei’s global loader */}
+            
 
             <CyberpunkStoreFront />
-            {/* <NeonBar /> */}
+            
           </div>
         </Fade>
       </Suspense>
-      {/* Foreground content */}
+      
       <Stack
         minHeight={"100vh"}
         minWidth={"100vw"}
@@ -96,7 +94,7 @@ function Home() {
         justifyContent={"center"}
         alignItems={"center"}
         gap={4}
-        zIndex={2} // Ensure content is above the background
+        zIndex={2} 
       >
         <Logo
           logoName={"Sheru"}
