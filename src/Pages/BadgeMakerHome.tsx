@@ -38,17 +38,23 @@ function Home() {
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
   const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
- 
+
   const [badgeVariant, setBadgeVariant] = useState<number>(1);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const exportRefs = useRef<(HTMLDivElement | null)[]>([]);
- 
+
   const variantComponents: React.ComponentType<badgeProps>[] = Object.values(
     BadgeVariants
   ) as React.ComponentType<badgeProps>[];
   const isDesktop = window.innerWidth > 768;
 
- 
+  // Add this mapping for badge dimensions (update as needed for each variant)
+  const variantDimensions = [
+    { width: 660, height: 350 }, // CarPass
+    { width: 660, height: 350 }, // Badge
+    { width: 660, height: 400 }, // Shura (example: adjust if needed)
+  ];
+
   useEffect(() => {
     if (!csvFile) {
       setBadgesData([]);
@@ -74,13 +80,11 @@ function Home() {
     setDataInputMode(newMode);
   };
 
- 
   const handleExportPDF = async () => {
     setIsExporting(true);
     setExportProgress(0);
     setPdfBlobUrl(null);
 
-   
     const head = document.head;
     const removed: Array<{ link: HTMLLinkElement; next: ChildNode | null }> =
       [];
@@ -93,10 +97,14 @@ function Home() {
         }
       });
 
+    // Get dimensions for the selected badge variant
+    const { width, height } =
+      variantDimensions[badgeVariant - 1] || variantDimensions[0];
+
     const doc = new jsPDF({
       orientation: isDesktop ? "landscape" : "portrait",
       unit: "px",
-      format: [660, 350],
+      format: [width, height],
     });
 
     try {
@@ -104,22 +112,19 @@ function Home() {
         const node = exportRefs.current[i];
         if (!node) continue;
         try {
-         
           const canvas = await toCanvas(node, { pixelRatio: 2 });
           if (i > 0) doc.addPage();
-          doc.addImage(canvas, "JPEG", 0, 0, 660, 350);
+          doc.addImage(canvas, "JPEG", 0, 0, width, height);
         } catch (err) {
           console.error("Canvas snapshot failed", err);
         }
 
-       
         setExportProgress(
           Math.round(((i + 1) / exportRefs.current.length) * 100)
         );
         await new Promise((r) => setTimeout(r, 0));
       }
 
-     
       const pdfBlob = doc.output("blob");
       const url = URL.createObjectURL(pdfBlob);
       setPdfBlobUrl(url);
@@ -133,20 +138,17 @@ function Home() {
     } catch (error) {
       console.error("PDF export error:", error);
     } finally {
-     
       removed.forEach(({ link, next }) => {
         head.insertBefore(link, next);
       });
       setIsExporting(false);
-     
+
       if (pdfBlobUrl) setTimeout(() => URL.revokeObjectURL(pdfBlobUrl), 60000);
     }
   };
 
- 
   const previewHeight = window.innerHeight * (isDesktop ? 0.7 : 0.5);
 
- 
   const variantNames = Object.keys(BadgeVariants);
 
   const variantLabels = [
@@ -168,8 +170,6 @@ function Home() {
       placeholder1: "Sadar Jamat Utrecht",
       placeholder2: "John Elden",
     },
-
-   
   ];
 
   return (
@@ -187,7 +187,6 @@ function Home() {
         mt={generate ? "2vh" : "25vh"}
         sx={{ transition: "all .3s ease-in-out" }}
       >
-       
         <Stack
           direction="row"
           width="100%"
@@ -246,7 +245,6 @@ function Home() {
           </Fade>
         </Stack>
 
-       
         <Fade in={isExporting}>
           <Stack width="80%" maxWidth="600px">
             <Typography align="center">Exporting {exportProgress}%</Typography>
@@ -254,30 +252,16 @@ function Home() {
           </Stack>
         </Fade>
 
-       
         {generate && (
           <Fade in={generate}>
             <Box
-              style={{
-                height: "88vh",
+              sx={{
                 width: "fit-content",
-                overflowY: "auto",
                 display: generate ? "flex" : "none",
               }}
               px={1}
             >
               <Stack gap={2} alignItems="center">
-                <Box
-                  sx={{
-                    position: "absolute",
-                    bottom: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "50vh",
-                    pointerEvents: "none",
-                    background: "linear-gradient(transparent, black)",
-                  }}
-                />
                 {badgesData.map((item, index) => {
                   if (!item.role || !item.name) return null;
                   if (item.role === "" || item.name === "") return null;
@@ -289,6 +273,9 @@ function Home() {
                       ref={(el) => {
                         exportRefs.current[index] = el;
                       }}
+                      style={{
+                        scale: isDesktop ? 1 : 0.5,
+                      }}
                     >
                       <Variant role={item.role} name={item.name} preview />
                     </div>
@@ -299,7 +286,6 @@ function Home() {
           </Fade>
         )}
 
-       
         <Fade in={!generate}>
           <Stack gap={2}>
             <ToggleButtonGroup
@@ -337,7 +323,6 @@ function Home() {
         </Fade>
       </Stack>
 
-     
       <Fade in={!generate}>
         <Stack
           gap={2}

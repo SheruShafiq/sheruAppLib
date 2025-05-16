@@ -12,11 +12,10 @@ export type badgeProps = {
   preview?: boolean;
 };
 
-
 const ROLE_MIN = 12;
-const ROLE_MAX = 70;
+const ROLE_MAX = 100;
 const NAME_MIN = 12;
-const NAME_MAX = 30;
+const NAME_MAX = 50;
 
 function Shura({ role, name, preview }: badgeProps) {
   const roleRef = useRef<HTMLDivElement>(null);
@@ -26,7 +25,13 @@ function Shura({ role, name, preview }: badgeProps) {
   const nameFontSize = useDynamicFont(nameRef, [name], NAME_MIN, NAME_MAX);
 
   return (
-    <Stack mx="auto" width="660px" height="350px" bgcolor="white">
+    <Stack
+      border={"1px solid #000"}
+      mx="auto"
+      width="660px"
+      height="400px"
+      bgcolor="white"
+    >
       <Stack
         sx={{
           backgroundSize: "560px 500px, 110px 200px",
@@ -38,7 +43,6 @@ function Shura({ role, name, preview }: badgeProps) {
         justifyContent="center"
         alignItems="center"
       >
-       
         <Stack
           direction="row"
           width="100%"
@@ -52,7 +56,7 @@ function Shura({ role, name, preview }: badgeProps) {
               alt="Ahmadiyya flag"
             />
           </Box>
-          <Stack px={2} mt={1} alignItems="center">
+          <Stack gap={1} px={2} mt={1} alignItems="center">
             <Typography color="#AF1623">
               Ahmadiyya Moslim Gemeenschap
             </Typography>
@@ -90,20 +94,13 @@ function Shura({ role, name, preview }: badgeProps) {
           </Stack>
         </Stack>
 
-       
         <Stack
           width="100%"
           height="100%"
           justifyContent="center"
           alignItems="center"
         >
-          <Box
-            
-            py={2}
-            
-            width="100%"
-            overflow="hidden"
-          >
+          <Box py={2} pt={1} width="100%" overflow="hidden">
             <Typography
               ref={roleRef}
               sx={{
@@ -123,7 +120,6 @@ function Shura({ role, name, preview }: badgeProps) {
             height={"50%"}
             width="100%"
             overflow="hidden"
-            
           >
             <Typography
               ref={nameRef}
