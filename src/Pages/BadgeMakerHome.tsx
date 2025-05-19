@@ -54,6 +54,7 @@ function Home() {
     { width: 660, height: 350 }, // Badge
     { width: 660, height: 400 }, // Shura (example: adjust if needed)
   ];
+  // if isDesktop, variantDimensions should be halved.
 
   useEffect(() => {
     if (!csvFile) {
