@@ -46,6 +46,8 @@ function Badge({ role, name, preview }: badgeProps) {
         >
           <Box sx={{ width: "150px", height: "75px", backgroundColor: "red" }}>
             <img
+              // add crossOrigin for html-to-image
+              crossOrigin="anonymous"
               style={{ width: "100%", height: "100%", objectFit: "contain" }}
               src={AhmadiyyaFlag}
               alt="Ahmadiyya flag"

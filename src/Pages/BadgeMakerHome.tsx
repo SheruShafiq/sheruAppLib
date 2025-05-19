@@ -286,7 +286,9 @@ function Home() {
                         exportRefs.current[index] = el;
                       }}
                       style={{
-                        scale: isDesktop ? 1 : 0.5,
+                        // use real CSS transform instead of `scale` prop
+                        transform: isDesktop ? "none" : "scale(0.5)",
+                        transformOrigin: "top left",
                       }}
                     >
                       <Variant role={item.role} name={item.name} preview />

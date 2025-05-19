@@ -39,6 +39,7 @@ function CarPass({ role, name, preview }: badgeProps) {
             <img
               style={{ width: "100%", height: "100%", objectFit: "contain" }}
               src={MinaraLogo}
+              crossOrigin="anonymous"
               alt="Ahmadiyya flag"
             />
           </Box>
@@ -67,6 +68,7 @@ function CarPass({ role, name, preview }: badgeProps) {
               }}
               src={JalsaLogo}
               alt="Ahmadiyya flag"
+              crossOrigin="anonymous"
             />
           </Box>
         </Stack>

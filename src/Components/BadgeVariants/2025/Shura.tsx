@@ -51,6 +51,7 @@ function Shura({ role, name, preview }: badgeProps) {
         >
           <Box sx={{ width: "150px", height: "75px", backgroundColor: "red" }}>
             <img
+              crossOrigin="anonymous"
               style={{ width: "100%", height: "100%", objectFit: "contain" }}
               src={AhmadiyyaFlag}
               alt="Ahmadiyya flag"
