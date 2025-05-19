@@ -5,7 +5,7 @@ import AddIcon from "@mui/icons-material/Add";
 import CreatePostDialogue from "./CreatePostDialogue";
 import Logo from "./Logo";
 import { useMemo } from "react";
-import { GIFs } from "../assets/GIFs";
+import { GIFs } from "@assets/GIFs";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";

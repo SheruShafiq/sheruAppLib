@@ -16,12 +16,12 @@ import {
   createComment,
   patchUser,
 } from "../APICalls";
-import { GIFs } from "../assets/GIFs";
+import { GIFs } from "@assets/GIFs";
 import { errorProps, Comment, User, Post } from "../../dataTypeDefinitions";
 import { enqueueSnackbar } from "notistack";
-import UserStats from "../Components/UserStats";
-import PostPreview from "../Components/PostPreview";
-import CommentBlock from "../Components/CommentBlock";
+import UserStats from "@components/UserStats";
+import PostPreview from "@components/PostPreview";
+import CommentBlock from "@components/CommentBlock";
 import PostPreviewSkeletonLoader from "../SkeletonLoaders/PostPreviewSkeletonLoader";
 import CommentSkeletonLoader from "../SkeletonLoaders/CommentSkeletonLoader";
 import SauceLayout from "../Layouts/SauceLayout";
@@ -296,7 +296,7 @@ function UserProfilePage({
           randomGIFIndex={randomGIFIndex}
           pageVariant={false}
         />
-       
+
         <Stack
           sx={{
             overflowX: "auto",

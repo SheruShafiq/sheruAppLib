@@ -11,7 +11,7 @@ import { useSnackbar } from "notistack";
 import Chip from "@mui/material/Chip";
 import Avatar from "@mui/material/Avatar";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { GIFs } from "../assets/GIFs";
+import { GIFs } from "@assets/GIFs";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import HeartBrokenIcon from "@mui/icons-material/HeartBroken";
 import {
@@ -241,7 +241,6 @@ function CommentBlock({
         pl: amIaReply ? 2 : 0,
       }}
     >
-      
       <Stack direction="row" spacing={2} py={1}>
         <Avatar src={imageUrl || GIFs[randomGIFIndex]} alt={userName} />
         <Stack gap={1} width={"100%"}>
@@ -264,7 +263,6 @@ function CommentBlock({
           </Stack>
           <ReadMore text={commentContents} maxLength={200} />
 
-          
           <Stack direction="row" alignItems="center">
             {replies.length > 0 && (
               <Stack
@@ -390,7 +388,6 @@ function CommentBlock({
         </Stack>
       </Stack>
 
-      
       {replies.length > 0 && (
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           {replies.reverse().map((reply) => (

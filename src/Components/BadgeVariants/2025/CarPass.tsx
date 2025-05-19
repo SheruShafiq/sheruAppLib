@@ -1,11 +1,11 @@
 import React, { useRef, useState, useLayoutEffect } from "react";
 import { Box, Stack, Typography } from "@mui/material";
-import MinaraLogo from "../../../assets/minaraLogo.png";
+import MinaraLogo from "@assets/minaraLogo.png";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import JalsaLogo from "../../../assets/jalsaLogo.png";
+import JalsaLogo from "@assets/jalsaLogo.png";
 import { badgeProps } from "./Badge";
-import useDynamicFont from "../../../hooks/useDynamicFontSize";
+import useDynamicFont from "@hooks/useDynamicFontSize";
 
 const ROLE_MIN = 12;
 const ROLE_MAX = 120;

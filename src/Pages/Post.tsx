@@ -11,22 +11,22 @@ import {
 } from "../APICalls";
 import { useParams } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import PostPreview from "../Components/PostPreview";
+import PostPreview from "@components/PostPreview";
 import SauceLayout from "../Layouts/SauceLayout";
 import Divider from "@mui/material/Divider";
 import PostPreviewSkeletonLoader from "../SkeletonLoaders/PostPreviewSkeletonLoader";
 import Fade from "@mui/material/Fade";
-import { TextGlitchEffect } from "../Components/TextGlitchEffect";
+import { TextGlitchEffect } from "@components/TextGlitchEffect";
 import { Post, Comment, errorProps, User } from "../../dataTypeDefinitions";
-import CommentBlock from "../Components/CommentBlock";
+import CommentBlock from "@components/CommentBlock";
 import { useNavigate } from "react-router-dom";
-import IOSLoader from "../Components/IOSLoader";
+import IOSLoader from "@components/IOSLoader";
 import SendIcon from "@mui/icons-material/Send";
 import CommentSkeletonLoader from "../SkeletonLoaders/CommentSkeletonLoader";
-import { useMaximumRenderableSkeletonComments } from "../hooks/useMaximumRenderableSkeletonComments";
+import { useMaximumRenderableSkeletonComments } from "@hooks/useMaximumRenderableSkeletonComments";
 import UserProfilePage from "./UserProfilePage";
-import UserStats from "../Components/UserStats";
-import { GIFs } from "../assets/GIFs";
+import UserStats from "@components/UserStats";
+import { GIFs } from "@assets/GIFs";
 
 function PostPage({
   isLoggedIn,

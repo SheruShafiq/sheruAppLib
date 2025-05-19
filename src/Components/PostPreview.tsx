@@ -27,7 +27,7 @@ import { Category, errorProps, User, Post } from "../../dataTypeDefinitions";
 import IOSLoader from "./IOSLoader";
 import ReadMore from "./ReadMore";
 import { useNavigate } from "react-router-dom";
-import { GIFs } from "../assets/GIFs";
+import { GIFs } from "@assets/GIFs";
 import { formatDateRedditStyle } from "../globalFunctions";
 
 interface PostPreviewProps {
@@ -81,7 +81,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
   const history = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const formattedTitle = useMemo(() => {
-    const maxLength = Math.floor((window.innerWidth * 0.5) / 10); 
+    const maxLength = Math.floor((window.innerWidth * 0.5) / 10);
     return title?.length > maxLength
       ? `${title?.slice(0, maxLength)}...`
       : title;

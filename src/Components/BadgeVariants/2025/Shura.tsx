@@ -1,11 +1,7 @@
 import React, { useRef, useState, useLayoutEffect } from "react";
 import { Box, Stack, Typography } from "@mui/material";
-import Minara from "../../../assets/Minara.png";
-import Flower from "../../../assets/bgFlower.png";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import AhmadiyyaFlag from "../../../assets/ahmadiyyaFlag.png";
-import useDynamicFont from "../../../hooks/useDynamicFontSize";
+import AhmadiyyaFlag from "@assets/ahmadiyyaFlag.png";
+import useDynamicFont from "@hooks/useDynamicFontSize";
 export type badgeProps = {
   role: string;
   name: string;

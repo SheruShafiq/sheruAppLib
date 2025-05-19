@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { fetchPostsPaginated, getPostByID, searchPosts } from "../APICalls";
 import { useSnackbar } from "notistack";
-import PostPreview from "../Components/PostPreview";
+import PostPreview from "@components/PostPreview";
 import SauceLayout from "../Layouts/SauceLayout";
 import PostPreviewSkeletonLoader from "../SkeletonLoaders/PostPreviewSkeletonLoader";
 import Fade from "@mui/material/Fade";
@@ -28,12 +28,12 @@ import {
   Category,
 } from "../../dataTypeDefinitions";
 import { errorProps } from "../../dataTypeDefinitions";
-import IOSSpinner from "../Components/IOSLoader";
-import { GIFs } from "../assets/GIFs";
-import HomeInteractions from "../Components/HomeInteractions";
-import IOSLoader from "../Components/IOSLoader";
+import IOSSpinner from "@components/IOSLoader";
+import { GIFs } from "@assets/GIFs";
+import HomeInteractions from "@components/HomeInteractions";
+import IOSLoader from "@components/IOSLoader";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
-import SideMenu from "../Components/SideMenu";
+import SideMenu from "@components/SideMenu";
 function SauceHome({
   isLoggedIn,
   userData,

@@ -15,15 +15,15 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
-import * as BadgeVariants from "../Components/BadgeVariants/2025";
-import type { badgeProps } from "../Components/BadgeVariants/2025";
-import ExcelInput from "../Components/ExcelInput";
+import * as BadgeVariants from "@components/BadgeVariants/2025";
+import type { badgeProps } from "@components/BadgeVariants/2025";
+import ExcelInput from "@components/ExcelInput";
 import Papa from "papaparse";
 import { toCanvas } from "html-to-image";
 import { jsPDF } from "jspdf";
-import Logo from "../Components/Logo";
-import IOSLoader from "../Components/IOSLoader";
-import "../Styles/BadgeMakerMain.css";
+import Logo from "@components/Logo";
+import IOSLoader from "@components/IOSLoader";
+import "@styles/BadgeMakerMain.css";
 
 export type RowData = { col1: string; col2: string };
 
@@ -118,7 +118,6 @@ function Home() {
         // full-size, CORS-enabled snapshot without CSS scale
         const canvas = await toCanvas(node, {
           pixelRatio: 2,
-          useCORS: true,
           cacheBust: true,
           width, // from variantDimensions
           height, // from variantDimensions
