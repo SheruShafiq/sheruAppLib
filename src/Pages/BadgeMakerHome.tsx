@@ -54,7 +54,6 @@ function Home() {
     { width: 660, height: 350 }, // Badge
     { width: 660, height: 400 }, // Shura (example: adjust if needed)
   ];
-  // if isDesktop, variantDimensions should be halved.
 
   useEffect(() => {
     if (!csvFile) {
@@ -112,13 +111,25 @@ function Home() {
       for (let i = 0; i < exportRefs.current.length; i++) {
         const node = exportRefs.current[i];
         if (!node) continue;
-        try {
-          const canvas = await toCanvas(node, { pixelRatio: 2 });
-          if (i > 0) doc.addPage();
-          doc.addImage(canvas, "JPEG", 0, 0, width, height);
-        } catch (err) {
-          console.error("Canvas snapshot failed", err);
-        }
+
+        // ensure images have loaded
+        await new Promise((r) => setTimeout(r, 100));
+
+        // full-size, CORS-enabled snapshot without CSS scale
+        const canvas = await toCanvas(node, {
+          pixelRatio: 2,
+          useCORS: true,
+          cacheBust: true,
+          width, // from variantDimensions
+          height, // from variantDimensions
+          style: {
+            transform: "scale(1)",
+            transformOrigin: "top left",
+          },
+        });
+
+        if (i > 0) doc.addPage();
+        doc.addImage(canvas, "JPEG", 0, 0, width, height);
 
         setExportProgress(
           Math.round(((i + 1) / exportRefs.current.length) * 100)
