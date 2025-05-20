@@ -10,10 +10,12 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  IconButton,
 } from "@mui/material";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { styled } from "@mui/material/styles";
 import * as BadgeVariants from "@components/BadgeVariants/2025/index";
 import type { badgeProps } from "@components/BadgeVariants/2025/index";
@@ -24,6 +26,7 @@ import Logo from "@components/Logo";
 import IOSLoader from "@components/IOSLoader";
 import "@styles/BadgeMakerMain.css";
 import { chunk, mergePdfBuffers } from "@workers/pdfHelpers";
+import WorkerConfig from "@components/WorkerConfig";
 /* ------------------------------------------------------------------ */
 /* Util: build one big CSS string that inlines _all_ Google Fonts     */
 /* ------------------------------------------------------------------ */
@@ -104,6 +107,15 @@ type WorkerProgressEvent = { progress: number; workerIndex: number };
 type WorkerCompleteEvent = { pdfBytes: ArrayBuffer; workerIndex: number };
 type WorkerEvent = { data: WorkerProgressEvent | WorkerCompleteEvent };
 
+// Worker status for visualization
+type WorkerStatus = {
+  id: number;
+  progress: number;
+  active: boolean;
+  completed: boolean;
+  imageCount: number;
+};
+
 /* ------------------------------------------------------------------ */
 /* Component                                                          */
 /* ------------------------------------------------------------------ */
@@ -121,6 +133,22 @@ function Home() {
   const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
   const [visibleCount, setVisibleCount] = useState(0);
   const [workerProgress, setWorkerProgress] = useState<number[]>([]);
+  const [workerStatuses, setWorkerStatuses] = useState<WorkerStatus[]>([]);
+  const [activeWorkers, setActiveWorkers] = useState(0);
+  const [configOpen, setConfigOpen] = useState(false);
+  
+  // Add refs to track current state in worker callbacks
+  const workerStatusesRef = useRef<WorkerStatus[]>([]);
+  const activeWorkersRef = useRef(0);
+  
+  // Update refs when state changes
+  useEffect(() => {
+    workerStatusesRef.current = workerStatuses;
+  }, [workerStatuses]);
+  
+  useEffect(() => {
+    activeWorkersRef.current = activeWorkers;
+  }, [activeWorkers]);
 
   const pdfWorkerRef = useRef<Worker | null>(null);
 
@@ -188,7 +216,15 @@ function Home() {
     setIsExporting(true);
     setExportProgress(0);
     setPdfBlobUrl(null);
-    setWorkerProgress(Array(MAX_WORKERS).fill(0));
+    setWorkerProgress([]);
+    setWorkerStatuses([]);
+    setActiveWorkers(0);
+    
+    // Clear any previous blob URL
+    if (pdfBlobUrl) {
+      URL.revokeObjectURL(pdfBlobUrl);
+      setPdfBlobUrl(null);
+    }
 
     try {
       await document.fonts.ready;
@@ -219,6 +255,23 @@ function Home() {
       const chunks = chunk(images, MAX_WORKERS).filter(c => c.length);
       const workers: Worker[] = [];
       
+      // Initialize worker status tracking - create a new array with initial values
+      const initialStatuses: WorkerStatus[] = chunks.map((chunk, idx) => ({
+        id: idx,
+        progress: 0,
+        active: true,
+        completed: false,
+        imageCount: chunk.length
+      }));
+      
+      setWorkerStatuses(initialStatuses);
+      workerStatusesRef.current = initialStatuses;
+      
+      setActiveWorkers(chunks.length);
+      activeWorkersRef.current = chunks.length;
+      
+      setWorkerProgress(new Array(chunks.length).fill(0));
+      
       const workerPromises = chunks.map(
         (imgs, idx) =>
           new Promise<ArrayBuffer>((res, rej) => {
@@ -231,15 +284,49 @@ function Home() {
               
               w.onmessage = (e: WorkerEvent) => {
                 if ('progress' in e.data) {
-                  // Handle progress updates
-                  const newProgress = [...workerProgress];
-                  newProgress[e.data.workerIndex] = e.data.progress;
-                  setWorkerProgress(newProgress);
+                  // Handle progress updates using functional updates to avoid stale closures
+                  setWorkerProgress(prev => {
+                    const newProgress = [...prev];
+                    while (newProgress.length <= e.data.workerIndex) {
+                      newProgress.push(0);
+                    }
+                    newProgress[e.data.workerIndex] = e.data.progress;
+                    return newProgress;
+                  });
+                  
+                  // Update worker status for visualization using the ref for current state
+                  setWorkerStatuses(prevStatuses => {
+                    return prevStatuses.map(status => 
+                      status.id === e.data.workerIndex 
+                        ? { ...status, progress: e.data.progress }
+                        : status
+                    );
+                  });
                   
                   // Calculate overall progress (25-90%)
-                  const avgProgress = newProgress.reduce((a, b) => a + b, 0) / newProgress.length;
+                  const updatedStatuses = workerStatusesRef.current;
+                  const progressValues = updatedStatuses.map(s => s.progress);
+                  const avgProgress = progressValues.length > 0 
+                    ? progressValues.reduce((a, b) => a + b, 0) / progressValues.length 
+                    : 0;
                   setExportProgress(25 + Math.round(avgProgress * 0.65));
                 } else if ('pdfBytes' in e.data) {
+                  // Update worker status to completed
+                  setWorkerStatuses(prevStatuses => {
+                    const newStatuses = prevStatuses.map(status => 
+                      status.id === e.data.workerIndex 
+                        ? { ...status, progress: 100, completed: true, active: false }
+                        : status
+                    );
+                    return newStatuses;
+                  });
+                  
+                  setActiveWorkers(prev => {
+                    const newValue = Math.max(0, prev - 1);
+                    activeWorkersRef.current = newValue;
+                    return newValue;
+                  });
+                  
                   // Handle completed PDF chunk
                   res(e.data.pdfBytes);
                 }
@@ -247,6 +334,17 @@ function Home() {
               
               w.onerror = (err) => {
                 console.error(`Worker ${idx} error:`, err);
+                
+                // Mark worker as failed in UI
+                setWorkerStatuses(prevStatuses => 
+                  prevStatuses.map(status => 
+                    status.id === idx
+                      ? { ...status, active: false, completed: false }
+                      : status
+                  )
+                );
+                setActiveWorkers(prev => prev - 1);
+                
                 rej(new Error(`Worker ${idx} failed: ${err.message}`));
               };
               
@@ -259,6 +357,17 @@ function Home() {
               });
             } catch (err) {
               console.error(`Failed to initialize worker ${idx}:`, err);
+              
+              // Mark worker as failed in UI
+              setWorkerStatuses(prevStatuses => 
+                prevStatuses.map(status => 
+                  status.id === idx
+                    ? { ...status, active: false, completed: false }
+                    : status
+                )
+              );
+              setActiveWorkers(prev => prev - 1);
+              
               rej(err);
             }
           })
@@ -273,6 +382,16 @@ function Home() {
         const url = URL.createObjectURL(finalBlob);
         setPdfBlobUrl(url);
         setExportProgress(100);
+        
+        // Auto download if enabled
+        if (localStorage.getItem("badge.autoDownload") === "true") {
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "badges.pdf";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        }
       } finally {
         // Clean up workers
         workers.forEach(w => w.terminate());
@@ -283,17 +402,64 @@ function Home() {
     } finally {
       setIsExporting(false);
     }
-
-    // optional auto-download
-    if (pdfBlobUrl) {
-      const a = document.createElement("a");
-      a.href = pdfBlobUrl;
-      a.download = "badges.pdf";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    }
   };
+  
+  // Worker visualization component - update to handle empty state better
+  const WorkerProgressDisplay = () => (
+    <Box sx={{ mt: 2, width: '100%', maxWidth: '600px' }}>
+      <Typography variant="subtitle2" align="center" gutterBottom>
+        Worker Status: {activeWorkers} active workers
+      </Typography>
+      {workerStatuses.length === 0 ? (
+        <Typography variant="body2" align="center">
+          Initializing workers...
+        </Typography>
+      ) : (
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 1 }}>
+          {workerStatuses.map((worker) => (
+            <Box 
+              key={worker.id}
+              sx={{
+                border: '1px solid',
+                borderColor: worker.completed ? 'success.main' : worker.active ? 'primary.main' : 'error.main',
+                borderRadius: 1,
+                p: 1,
+                minWidth: '100px',
+                position: 'relative',
+                backgroundColor: 'background.paper'
+              }}
+            >
+              <Typography variant="caption" display="block">
+                Worker {worker.id + 1}
+              </Typography>
+              <Typography variant="caption" display="block">
+                {worker.imageCount} images
+              </Typography>
+              <LinearProgress 
+                variant="determinate" 
+                value={worker.progress} 
+                sx={{ 
+                  height: 6,
+                  borderRadius: 3,
+                  backgroundColor: 'grey.300',
+                  '& .MuiLinearProgress-bar': {
+                    backgroundColor: worker.completed ? 'success.main' : 'primary.main'
+                  }
+                }} 
+              />
+              <Typography variant="caption" display="block" align="right">
+                {worker.progress}%
+              </Typography>
+              <Typography variant="caption" display="block">
+                Status: {worker.completed ? "Complete" : worker.active ? "Active" : "Error"}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+      )}
+    </Box>
+  );
+
   const handleChange = (_: any, newMode: "csv" | "manual") => {
     setDataInputMode(newMode);
   };
@@ -361,40 +527,52 @@ function Home() {
 
           <Logo logoName="Badge" URL="/sheru/appLibrary/BadgeMaker" />
 
-          <Fade in={generate}>
-            <Button
-              loading={isExporting}
-              loadingIndicator={<IOSLoader />}
-              color="secondary"
-              onClick={() => {
-                if (!pdfBlobUrl) {
-                  handleExportPDF();
-                } else {
-                  const link = document.createElement("a");
-                  link.href = pdfBlobUrl;
-                  link.download = "badges.pdf";
-                  document.body.appendChild(link);
-                  link.click();
-                  link.remove();
-                }
-              }}
-              sx={{
-                display: generate ? "flex" : "none",
-              }}
+          <Stack direction="row">
+            <IconButton 
+              size="small" 
+              onClick={() => setConfigOpen(true)}
+              sx={{ mr: generate ? 2 : 0 }}
+              color="primary"
             >
-              {isExporting
-                ? "Processing..."
-                : pdfBlobUrl
-                ? "Download PDF"
-                : "Export PDF"}
-            </Button>
-          </Fade>
+              <SettingsIcon fontSize="small" />
+            </IconButton>
+            
+            <Fade in={generate}>
+              <Button
+                loading={isExporting}
+                loadingIndicator={<IOSLoader />}
+                color="secondary"
+                onClick={() => {
+                  if (!pdfBlobUrl) {
+                    handleExportPDF();
+                  } else {
+                    const link = document.createElement("a");
+                    link.href = pdfBlobUrl;
+                    link.download = "badges.pdf";
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                  }
+                }}
+                sx={{
+                  display: generate ? "flex" : "none",
+                }}
+              >
+                {isExporting
+                  ? "Processing..."
+                  : pdfBlobUrl
+                  ? "Download PDF"
+                  : "Export PDF"}
+              </Button>
+            </Fade>
+          </Stack>
         </Stack>
 
         <Fade in={isExporting}>
           <Stack width="80%" maxWidth="600px">
             <Typography align="center">Exporting {exportProgress}%</Typography>
             <LinearProgress variant="determinate" value={exportProgress} />
+            {workerStatuses.length > 0 && <WorkerProgressDisplay />}
           </Stack>
         </Fade>
 
@@ -572,6 +750,12 @@ function Home() {
           </Button>
         </Stack>
       </Fade>
+
+      {/* Worker config dialog */}
+      <WorkerConfig 
+        open={configOpen}
+        onClose={() => setConfigOpen(false)}
+      />
     </Stack>
   );
 }
