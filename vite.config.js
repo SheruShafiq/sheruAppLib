@@ -505,6 +505,7 @@ export default defineConfig({
       "@helpers": path.resolve("./src/Helpers"),
       "@hooks": path.resolve("./src/hooks"),
       "@styles": path.resolve("./src/Styles"),
+      "@workers": path.resolve("./src/workers"),
     },
   },
   optimizeDeps: {

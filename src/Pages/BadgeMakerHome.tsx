@@ -23,7 +23,7 @@ import { toCanvas } from "html-to-image";
 import Logo from "@components/Logo";
 import IOSLoader from "@components/IOSLoader";
 import "@styles/BadgeMakerMain.css";
-
+import { chunk, mergePdfBuffers } from "@workers/pdfHelpers";
 /* ------------------------------------------------------------------ */
 /* Util: build one big CSS string that inlines _all_ Google Fonts     */
 /* ------------------------------------------------------------------ */
@@ -99,6 +99,11 @@ async function getInlineGoogleFontsCss(): Promise<string> {
 
 export type RowData = { col1: string; col2: string };
 
+// Define worker message types
+type WorkerProgressEvent = { progress: number; workerIndex: number };
+type WorkerCompleteEvent = { pdfBytes: ArrayBuffer; workerIndex: number };
+type WorkerEvent = { data: WorkerProgressEvent | WorkerCompleteEvent };
+
 /* ------------------------------------------------------------------ */
 /* Component                                                          */
 /* ------------------------------------------------------------------ */
@@ -115,6 +120,7 @@ function Home() {
   const [exportProgress, setExportProgress] = useState(0);
   const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
   const [visibleCount, setVisibleCount] = useState(0);
+  const [workerProgress, setWorkerProgress] = useState<number[]>([]);
 
   const pdfWorkerRef = useRef<Worker | null>(null);
 
@@ -171,70 +177,124 @@ function Home() {
 
   /* ------------- event handlers ----------------------------------- */
   const handleMode = (_: unknown, m: "csv" | "manual") => setDataInputMode(m);
+  
+  // Use a consistent MAX_WORKERS value from local storage or navigator
+  const MAX_WORKERS = Math.min(
+    Number(localStorage.getItem("badge.workers") || navigator.hardwareConcurrency || 4),
+    8 // cap at 8 workers maximum
+  );
 
   const handleExportPDF = async () => {
     setIsExporting(true);
     setExportProgress(0);
     setPdfBlobUrl(null);
+    setWorkerProgress(Array(MAX_WORKERS).fill(0));
 
-    await document.fonts.ready;
-    const inlineCss = await getInlineGoogleFontsCss();
+    try {
+      await document.fonts.ready;
+      const inlineCss = await getInlineGoogleFontsCss();
 
-    const { width, height } =
-      variantDimensions[badgeVariant - 1] ?? variantDimensions[0];
+      const { width, height } =
+        variantDimensions[badgeVariant - 1] ?? variantDimensions[0];
 
-    const images: string[] = [];
+      /* ---------- 1️⃣   Render all badges to images ----------------- */
+      const images: string[] = [];
+      for (let i = 0; i < exportRefs.current.length; i++) {
+        const node = exportRefs.current[i];
+        if (!node) continue;
 
-    for (let i = 0; i < exportRefs.current.length; i++) {
-      const node = exportRefs.current[i];
-      if (!node) continue;
+        const canvas = await toCanvas(node, {
+          pixelRatio: 2,
+          width,
+          height,
+          cacheBust: true,
+          backgroundColor: "#ffffff",
+          fontEmbedCSS: inlineCss,
+        });
+        images.push(canvas.toDataURL("image/jpeg", 1));
+        setExportProgress(Math.round(((i + 1) / exportRefs.current.length) * 25));
+      }
 
-      const canvas = await toCanvas(node, {
-        pixelRatio: 2,
-        width,
-        height,
-        cacheBust: true,
-        backgroundColor: "#ffffff",
-        fontEmbedCSS: inlineCss, // 👉 base64-inlined fonts
-      });
+      /* ---------- 2️⃣   Fire up a small worker-pool ---------------- */
+      const chunks = chunk(images, MAX_WORKERS).filter(c => c.length);
+      const workers: Worker[] = [];
+      
+      const workerPromises = chunks.map(
+        (imgs, idx) =>
+          new Promise<ArrayBuffer>((res, rej) => {
+            try {
+              const w = new Worker(
+                new URL("../workers/pdfChunkWorker.ts", import.meta.url),
+                { type: "module" }
+              );
+              workers.push(w);
+              
+              w.onmessage = (e: WorkerEvent) => {
+                if ('progress' in e.data) {
+                  // Handle progress updates
+                  const newProgress = [...workerProgress];
+                  newProgress[e.data.workerIndex] = e.data.progress;
+                  setWorkerProgress(newProgress);
+                  
+                  // Calculate overall progress (25-90%)
+                  const avgProgress = newProgress.reduce((a, b) => a + b, 0) / newProgress.length;
+                  setExportProgress(25 + Math.round(avgProgress * 0.65));
+                } else if ('pdfBytes' in e.data) {
+                  // Handle completed PDF chunk
+                  res(e.data.pdfBytes);
+                }
+              };
+              
+              w.onerror = (err) => {
+                console.error(`Worker ${idx} error:`, err);
+                rej(new Error(`Worker ${idx} failed: ${err.message}`));
+              };
+              
+              w.postMessage({
+                images: imgs,
+                width,
+                height,
+                orientation: isDesktop ? "landscape" : "portrait",
+                workerIndex: idx
+              });
+            } catch (err) {
+              console.error(`Failed to initialize worker ${idx}:`, err);
+              rej(err);
+            }
+          })
+      );
 
-      images.push(canvas.toDataURL("image/jpeg", 1));
-      setExportProgress(Math.round(((i + 1) / exportRefs.current.length) * 50));
+      /* ---------- 3️⃣   Merge partial PDFs ------------------------- */
+      try {
+        const partialBuffers = await Promise.all(workerPromises);
+        setExportProgress(90);
+
+        const finalBlob = await mergePdfBuffers(partialBuffers);
+        const url = URL.createObjectURL(finalBlob);
+        setPdfBlobUrl(url);
+        setExportProgress(100);
+      } finally {
+        // Clean up workers
+        workers.forEach(w => w.terminate());
+      }
+    } catch (err) {
+      console.error("PDF export failed:", err);
+      alert("Export failed: " + (err instanceof Error ? err.message : String(err)));
+    } finally {
+      setIsExporting(false);
     }
 
-    /* worker ------------------------------------------------------- */
-    pdfWorkerRef.current = new Worker(
-      new URL("../workers/pdfWorker.ts", import.meta.url),
-      { type: "module" }
-    );
-
-    pdfWorkerRef.current.onmessage = ({ data }) => {
-      const { pdfBlob, progress } = data;
-      if (progress !== undefined)
-        setExportProgress(50 + Math.round(progress * 0.5));
-
-      if (pdfBlob) {
-        const url = URL.createObjectURL(pdfBlob);
-        setPdfBlobUrl(url);
-        setIsExporting(false);
-
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "badges.pdf";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-      }
-    };
-
-    pdfWorkerRef.current.postMessage({
-      images,
-      width,
-      height,
-      orientation: isDesktop ? "landscape" : "portrait",
-    });
+    // optional auto-download
+    if (pdfBlobUrl) {
+      const a = document.createElement("a");
+      a.href = pdfBlobUrl;
+      a.download = "badges.pdf";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
   };
-const handleChange = (_: any, newMode: "csv" | "manual") => {
+  const handleChange = (_: any, newMode: "csv" | "manual") => {
     setDataInputMode(newMode);
   };
   const variantNames = Object.keys(BadgeVariants);
