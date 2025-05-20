@@ -25,6 +25,41 @@ import Logo from "@components/Logo";
 import IOSLoader from "@components/IOSLoader";
 import "@styles/BadgeMakerMain.css";
 
+// Helper function to fetch Google Fonts CSS
+async function getGoogleFontsCss(): Promise<string> {
+  const fontLinks: HTMLLinkElement[] = [];
+  document.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
+    if (
+      link instanceof HTMLLinkElement &&
+      link.href.includes("fonts.googleapis.com")
+    ) {
+      fontLinks.push(link);
+    }
+  });
+
+  let allFontCss = "";
+  for (const link of fontLinks) {
+    try {
+      const url = new URL(link.href);
+      // Adding a cache-busting param can be helpful sometimes, though not strictly necessary for Google Fonts
+      url.searchParams.append("_cb", Date.now().toString());
+
+      const response = await fetch(url.toString(), { mode: "cors" });
+      if (response.ok) {
+        const cssText = await response.text();
+        allFontCss += cssText + "\n";
+      } else {
+        console.warn(
+          `Failed to fetch font CSS: ${link.href}, status: ${response.status}`
+        );
+      }
+    } catch (error) {
+      console.warn(`Error fetching font CSS: ${link.href}`, error);
+    }
+  }
+  return allFontCss;
+}
+
 export type RowData = { col1: string; col2: string };
 
 function Home() {
@@ -38,6 +73,8 @@ function Home() {
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
   const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(0);
+  const pdfWorkerRef = useRef<Worker | null>(null);
 
   const [badgeVariant, setBadgeVariant] = useState<number>(1);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -76,6 +113,21 @@ function Home() {
     });
   }, [csvFile]);
 
+  // 1) chunked render effect
+  useEffect(() => {
+    if (!generate) return;
+    const batchSize = 20;
+    setVisibleCount(0);
+    const schedule = () => {
+      setVisibleCount((prev) => {
+        const next = Math.min(prev + batchSize, badgesData.length);
+        if (next < badgesData.length) setTimeout(schedule, 0);
+        return next;
+      });
+    };
+    schedule();
+  }, [generate, badgesData]);
+
   const handleChange = (_: any, newMode: "csv" | "manual") => {
     setDataInputMode(newMode);
   };
@@ -85,77 +137,59 @@ function Home() {
     setExportProgress(0);
     setPdfBlobUrl(null);
 
-    const head = document.head;
-    const removed: Array<{ link: HTMLLinkElement; next: ChildNode | null }> =
-      [];
-    head
-      .querySelectorAll('link[href*="fonts.googleapis.com"]')
-      .forEach((node) => {
-        if (node instanceof HTMLLinkElement) {
-          removed.push({ link: node, next: node.nextSibling });
-          head.removeChild(node);
-        }
-      });
+    // Fetch Google Fonts CSS content
+    const googleFontsCss = await getGoogleFontsCss();
 
-    // Get dimensions for the selected badge variant
+    // capture canvases → dataURLs
     const { width, height } =
       variantDimensions[badgeVariant - 1] || variantDimensions[0];
-
-    const doc = new jsPDF({
-      orientation: isDesktop ? "landscape" : "portrait",
-      unit: "px",
-      format: [width, height],
-    });
-
-    try {
-      for (let i = 0; i < exportRefs.current.length; i++) {
-        const node = exportRefs.current[i];
-        if (!node) continue;
-
-        // ensure images have loaded
-        await new Promise((r) => setTimeout(r, 100));
-
-        // full-size, CORS-enabled snapshot without CSS scale
-        const canvas = await toCanvas(node, {
-          pixelRatio: 2,
-          cacheBust: true,
-          width, // from variantDimensions
-          height, // from variantDimensions
-          style: {
-            transform: "scale(1)",
-            transformOrigin: "top left",
-          },
-        });
-
-        if (i > 0) doc.addPage();
-        doc.addImage(canvas, "JPEG", 0, 0, width, height);
-
-        setExportProgress(
-          Math.round(((i + 1) / exportRefs.current.length) * 100)
-        );
-        await new Promise((r) => setTimeout(r, 0));
-      }
-
-      const pdfBlob = doc.output("blob");
-      const url = URL.createObjectURL(pdfBlob);
-      setPdfBlobUrl(url);
-
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = "badges.pdf";
-      document.body.appendChild(anchor);
-      anchor.click();
-      anchor.remove();
-    } catch (error) {
-      console.error("PDF export error:", error);
-    } finally {
-      removed.forEach(({ link, next }) => {
-        head.insertBefore(link, next);
+    const images: string[] = [];
+    for (let i = 0; i < exportRefs.current.length; i++) {
+      const node = exportRefs.current[i];
+      if (!node) continue;
+      await new Promise((r) => setTimeout(r, 50));
+      const canvas = await toCanvas(node, {
+        pixelRatio: 2,
+        cacheBust: true,
+        width,
+        height,
+        style: { transform: "scale(1)", transformOrigin: "top left" },
+        fontEmbedCSS: googleFontsCss, // Pass fetched font CSS here
       });
-      setIsExporting(false);
-
-      if (pdfBlobUrl) setTimeout(() => URL.revokeObjectURL(pdfBlobUrl), 60000);
+      images.push(canvas.toDataURL("image/jpeg", 1));
+      setExportProgress(Math.round(((i + 1) / exportRefs.current.length) * 50));
     }
+
+    // spawn worker
+    pdfWorkerRef.current = new Worker(
+      new URL("../workers/pdfWorker.ts", import.meta.url),
+      { type: "module" }
+    );
+    pdfWorkerRef.current.onmessage = (e) => {
+      const { pdfBlob, progress } = e.data;
+      if (progress != null) {
+        setExportProgress(50 + Math.round(progress * 0.5));
+      }
+      if (pdfBlob) {
+        const url = URL.createObjectURL(pdfBlob);
+        setPdfBlobUrl(url);
+        setIsExporting(false);
+        // trigger download
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "badges.pdf";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }
+    };
+    // send all data to worker
+    pdfWorkerRef.current.postMessage({
+      images,
+      width,
+      height,
+      orientation: isDesktop ? "landscape" : "portrait",
+    });
   };
 
   const previewHeight = window.innerHeight * (isDesktop ? 0.7 : 0.5);
@@ -273,7 +307,7 @@ function Home() {
               px={1}
             >
               <Stack gap={2} alignItems="center">
-                {badgesData.map((item, index) => {
+                {(badgesData.slice(0, visibleCount)).map((item, index) => {
                   if (!item.role || !item.name) return null;
                   if (item.role === "" || item.name === "") return null;
                   const Variant =
