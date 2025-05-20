@@ -27,6 +27,7 @@ import IOSLoader from "@components/IOSLoader";
 import "@styles/BadgeMakerMain.css";
 import { chunk, mergePdfBuffers } from "@workers/pdfHelpers";
 import WorkerConfig from "@components/WorkerConfig";
+import WorkerProgressDisplay, { calculateOverallProgress } from "@components/WorkerProgressDisplay";
 
 const fontCache: { css?: string } = {};
 
@@ -100,84 +101,6 @@ type WorkerStatus = {
   imageCount: number;
 };
 
-const yieldToMainThread = () => new Promise((res) => setTimeout(res, 0));
-
-function WorkerProgressDisplay({ workerStatuses, activeWorkers, isExporting, exportFinished, setShowWorkerStatus }) {
-  return (
-    <Box sx={{ mt: 2, width: '100%', maxWidth: '600px' }}>
-      <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
-        <Typography variant="subtitle2">
-          {activeWorkers > 0 
-            ? `Worker Status: ${activeWorkers} active workers` 
-            : isExporting 
-              ? "Initializing workers..."
-              : "Export complete"}
-        </Typography>
-        {exportFinished && (
-          <Button 
-            size="small" 
-            onClick={() => setShowWorkerStatus(false)} 
-            variant="outlined"
-            sx={{ fontSize: '0.7rem' }}
-          >
-            Hide Details
-          </Button>
-        )}
-      </Stack>
-      {workerStatuses.length === 0 ? (
-        <Box sx={{ p: 2, textAlign: 'center' }}>
-          {isExporting ? (
-            <LinearProgress variant="indeterminate" />
-          ) : (
-            <Typography variant="body2">No active workers</Typography>
-          )}
-        </Box>
-      ) : (
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 1 }}>
-          {workerStatuses.map((worker) => (
-            <Box 
-              key={worker.id}
-              sx={{
-                border: '1px solid',
-                borderColor: worker.completed ? 'success.main' : worker.active ? 'primary.main' : 'error.main',
-                borderRadius: 1,
-                p: 1,
-                minWidth: '100px',
-                position: 'relative',
-                backgroundColor: 'background.paper'
-              }}
-            >
-              <Typography variant="caption" display="block">
-                Worker {worker.id + 1}
-              </Typography>
-              <Typography variant="caption" display="block">
-                {worker.imageCount} images
-              </Typography>
-              <LinearProgress 
-                variant="determinate" 
-                value={worker.progress} 
-                sx={{ 
-                  height: 6,
-                  borderRadius: 3,
-                  backgroundColor: 'grey.300',
-                  '& .MuiLinearProgress-bar': {
-                    backgroundColor: worker.completed ? 'success.main' : 'primary.main'
-                  }
-                }} 
-              />
-              <Typography variant="caption" display="block" align="right">
-                {worker.progress}%
-              </Typography>
-              <Typography variant="caption" display="block">
-                Status: {worker.completed ? "Complete" : worker.active ? "Active" : "Error"}
-              </Typography>
-            </Box>
-          ))}
-        </Box>
-      )}
-    </Box>
-  );
-}
 
 function Home() {
   const [csvFile, setCSV] = useState<FileList | null>(null);
@@ -288,7 +211,6 @@ function Home() {
     setExportFinished(false);
     
   
-    await yieldToMainThread();
 
   
     if (pdfBlobUrl) {
@@ -324,7 +246,6 @@ function Home() {
         setExportProgress(Math.round(((i + 1) / exportRefs.current.length) * 15));
 
       
-        await yieldToMainThread();
       }
 
       const chunks = chunk(images, MAX_WORKERS).filter(c => c.length);
@@ -347,7 +268,6 @@ function Home() {
       setWorkerProgress(new Array(chunks.length).fill(0));
       
     
-      await yieldToMainThread();
 
       const workerPromises = chunks.map(
         (imgs, idx) =>
@@ -361,37 +281,17 @@ function Home() {
               
               w.onmessage = (e: WorkerEvent) => {
                 if ("progress" in e.data) {
-                
-                  setWorkerProgress(prev => {
-                    const newProgress = [...prev];
-                    while (newProgress.length <= e.data.workerIndex) {
-                      newProgress.push(0);
-                    }
-                    newProgress[e.data.workerIndex] = (e.data as WorkerProgressEvent).progress; // Explicit cast
-                    return newProgress;
-                  });
-                  
-                
+                  // Update worker status and compute overall progress
+                  const idx = e.data.workerIndex;
+                  const prog = (e.data as WorkerProgressEvent).progress;
                   setWorkerStatuses(prevStatuses => {
-                    return prevStatuses.map(status =>
-                      status.id === e.data.workerIndex
-                        ? { ...status, progress: (e.data as WorkerProgressEvent).progress } // Explicit cast
-                        : status
+                    const newStatuses = prevStatuses.map(s =>
+                      s.id === idx ? { ...s, progress: prog } : s
                     );
+                    const overall = calculateOverallProgress(newStatuses);
+                    setExportProgress(15 + Math.round(overall * 0.7));
+                    return newStatuses;
                   });
-                  
-                
-                
-                
-                
-                  const updatedStatuses = workerStatusesRef.current;
-                  const progressValues = updatedStatuses.map(s => s.progress);
-                  const avgProgress = progressValues.length > 0 
-                    ? progressValues.reduce((a, b) => a + b, 0) / progressValues.length 
-                    : 0;
-                  
-                
-                  setExportProgress(15 + Math.round(avgProgress * 0.7));
                 } else if ("pdfBytes" in e.data) {
                 
                   setWorkerStatuses(prevStatuses => {
@@ -461,7 +361,6 @@ function Home() {
       setExportProgress(85);
       
     
-      await yieldToMainThread(); // allow UI to paint “85%” first
       await new Promise<void>((res, rej) => {
         const m = new Worker(
           new URL("../workers/pdfMergeWorker.ts", import.meta.url),

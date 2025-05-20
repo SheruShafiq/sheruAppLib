@@ -1,7 +1,29 @@
 import React from "react";
 import { Box, Stack, Typography, Button, LinearProgress } from "@mui/material";
 
+/**
+ * Calculate the overall weighted progress across all workers
+ * Each worker's progress is weighted by its workload (image count)
+ */
+export const calculateOverallProgress = (statuses) => {
+  if (statuses.length === 0) return 0;
+  
+  const totalImages = statuses.reduce((sum, status) => sum + status.imageCount, 0);
+  if (totalImages === 0) return 0;
+  
+  const weightedProgress = statuses.reduce((sum, status) => {
+    // Weight each worker's progress by its proportion of the total workload
+    const weight = status.imageCount / totalImages;
+    return sum + (status.progress * weight);
+  }, 0);
+  
+  return Math.round(weightedProgress);
+};
+
 function WorkerProgressDisplay({ workerStatuses, activeWorkers, isExporting, exportFinished, setShowWorkerStatus }) {
+  // Calculate overall progress across all workers
+  const overallProgress = calculateOverallProgress(workerStatuses);
+  
   return (
     <Box sx={{ mt: 2, width: '100%', maxWidth: '600px' }}>
       <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
@@ -23,6 +45,29 @@ function WorkerProgressDisplay({ workerStatuses, activeWorkers, isExporting, exp
           </Button>
         )}
       </Stack>
+      
+      {/* Display overall progress */}
+      {workerStatuses.length > 0 && (
+        <Box sx={{ mb: 2 }}>
+          <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Typography variant="caption">Overall Progress</Typography>
+            <Typography variant="caption">{overallProgress}%</Typography>
+          </Stack>
+          <LinearProgress 
+            variant="determinate" 
+            value={overallProgress} 
+            sx={{ 
+              height: 8,
+              borderRadius: 3,
+              backgroundColor: 'grey.300',
+              '& .MuiLinearProgress-bar': {
+                backgroundColor: overallProgress === 100 ? 'success.main' : 'primary.main'
+              }
+            }} 
+          />
+        </Box>
+      )}
+      
       {workerStatuses.length === 0 ? (
         <Box sx={{ p: 2, textAlign: 'center' }}>
           {isExporting ? (
