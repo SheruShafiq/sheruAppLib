@@ -136,6 +136,8 @@ function Home() {
   const [workerStatuses, setWorkerStatuses] = useState<WorkerStatus[]>([]);
   const [activeWorkers, setActiveWorkers] = useState(0);
   const [configOpen, setConfigOpen] = useState(false);
+  const [showWorkerStatus, setShowWorkerStatus] = useState(false);
+  const [exportFinished, setExportFinished] = useState(false);
   
   // Add refs to track current state in worker callbacks
   const workerStatusesRef = useRef<WorkerStatus[]>([]);
@@ -203,6 +205,13 @@ function Home() {
     step();
   }, [generate, badgesData]);
 
+  // New useEffect to ensure worker status is visible during and after export
+  useEffect(() => {
+    if (isExporting) {
+      setShowWorkerStatus(true);
+    }
+  }, [isExporting]);
+
   /* ------------- event handlers ----------------------------------- */
   const handleMode = (_: unknown, m: "csv" | "manual") => setDataInputMode(m);
   
@@ -219,6 +228,8 @@ function Home() {
     setWorkerProgress([]);
     setWorkerStatuses([]);
     setActiveWorkers(0);
+    setShowWorkerStatus(true);
+    setExportFinished(false);
     
     // Clear any previous blob URL
     if (pdfBlobUrl) {
@@ -234,6 +245,7 @@ function Home() {
         variantDimensions[badgeVariant - 1] ?? variantDimensions[0];
 
       /* ---------- 1️⃣   Render all badges to images ----------------- */
+      // Adjust progress calculation to only use 15% of the total for image rendering
       const images: string[] = [];
       for (let i = 0; i < exportRefs.current.length; i++) {
         const node = exportRefs.current[i];
@@ -246,12 +258,19 @@ function Home() {
           cacheBust: true,
           backgroundColor: "#ffffff",
           fontEmbedCSS: inlineCss,
+          // Force image cache to avoid repeated network requests
+          imageCacheMaxAge: Infinity,
+          // Set image options to help with caching
+          fetchRequestInit: {
+            cache: 'force-cache',
+          },
         });
         images.push(canvas.toDataURL("image/jpeg", 1));
-        setExportProgress(Math.round(((i + 1) / exportRefs.current.length) * 25));
+        setExportProgress(Math.round(((i + 1) / exportRefs.current.length) * 15));
       }
 
       /* ---------- 2️⃣   Fire up a small worker-pool ---------------- */
+      // Workers progress will account for 15%-85% of total progress
       const chunks = chunk(images, MAX_WORKERS).filter(c => c.length);
       const workers: Worker[] = [];
       
@@ -303,13 +322,18 @@ function Home() {
                     );
                   });
                   
-                  // Calculate overall progress (25-90%)
+                  // Better progress calculation: 
+                  // - First 15% is image rendering
+                  // - Next 70% (15-85%) is worker processing
+                  // - Last 15% (85-100%) is PDF merging
                   const updatedStatuses = workerStatusesRef.current;
                   const progressValues = updatedStatuses.map(s => s.progress);
                   const avgProgress = progressValues.length > 0 
                     ? progressValues.reduce((a, b) => a + b, 0) / progressValues.length 
                     : 0;
-                  setExportProgress(25 + Math.round(avgProgress * 0.65));
+                  
+                  // Scale worker progress to be between 15% and 85%
+                  setExportProgress(15 + Math.round(avgProgress * 0.7));
                 } else if ('pdfBytes' in e.data) {
                   // Update worker status to completed
                   setWorkerStatuses(prevStatuses => {
@@ -376,21 +400,27 @@ function Home() {
       /* ---------- 3️⃣   Merge partial PDFs ------------------------- */
       try {
         const partialBuffers = await Promise.all(workerPromises);
-        setExportProgress(90);
+        setExportProgress(85); // Start final merge phase
 
         const finalBlob = await mergePdfBuffers(partialBuffers);
         const url = URL.createObjectURL(finalBlob);
         setPdfBlobUrl(url);
         setExportProgress(100);
+        setExportFinished(true);
         
-        // Auto download if enabled
+        // Flag to keep worker status visible
+        setShowWorkerStatus(true);
+        
+        // Auto download if enabled, but with a slight delay
         if (localStorage.getItem("badge.autoDownload") === "true") {
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "badges.pdf";
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
+          setTimeout(() => {
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "badges.pdf";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+          }, 600); // Small delay so user can see worker results
         }
       } finally {
         // Clean up workers
@@ -401,19 +431,47 @@ function Home() {
       alert("Export failed: " + (err instanceof Error ? err.message : String(err)));
     } finally {
       setIsExporting(false);
+      // Make sure worker status stays visible after export
+      setShowWorkerStatus(true);
     }
   };
   
-  // Worker visualization component - update to handle empty state better
+  // Worker visualization component - simplify to always show during export
   const WorkerProgressDisplay = () => (
-    <Box sx={{ mt: 2, width: '100%', maxWidth: '600px' }}>
-      <Typography variant="subtitle2" align="center" gutterBottom>
-        Worker Status: {activeWorkers} active workers
-      </Typography>
-      {workerStatuses.length === 0 ? (
-        <Typography variant="body2" align="center">
-          Initializing workers...
+    <Box sx={{ 
+      mt: 2, 
+      width: '100%', 
+      maxWidth: '600px'
+    }}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
+        <Typography variant="subtitle2">
+          {activeWorkers > 0 
+            ? `Worker Status: ${activeWorkers} active workers` 
+            : isExporting 
+              ? "Initializing workers..."
+              : "Export complete"}
         </Typography>
+        
+        {exportFinished && (
+          <Button 
+            size="small" 
+            onClick={() => setShowWorkerStatus(false)} 
+            variant="outlined"
+            sx={{ fontSize: '0.7rem' }}
+          >
+            Hide Details
+          </Button>
+        )}
+      </Stack>
+      
+      {workerStatuses.length === 0 ? (
+        <Box sx={{ p: 2, textAlign: 'center' }}>
+          {isExporting ? (
+            <LinearProgress variant="indeterminate" />
+          ) : (
+            <Typography variant="body2">No active workers</Typography>
+          )}
+        </Box>
       ) : (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 1 }}>
           {workerStatuses.map((worker) => (
@@ -459,7 +517,7 @@ function Home() {
       )}
     </Box>
   );
-
+  
   const handleChange = (_: any, newMode: "csv" | "manual") => {
     setDataInputMode(newMode);
   };
@@ -568,11 +626,24 @@ function Home() {
           </Stack>
         </Stack>
 
-        <Fade in={isExporting}>
+        <Fade in={isExporting || (showWorkerStatus && exportFinished)}>
           <Stack width="80%" maxWidth="600px">
-            <Typography align="center">Exporting {exportProgress}%</Typography>
-            <LinearProgress variant="determinate" value={exportProgress} />
-            {workerStatuses.length > 0 && <WorkerProgressDisplay />}
+            <Typography align="center">
+              {isExporting 
+                ? `Exporting ${exportProgress}%` 
+                : "Export Complete!"}
+            </Typography>
+            <LinearProgress 
+              variant="determinate" 
+              value={exportProgress}
+              sx={{
+                '& .MuiLinearProgress-bar': {
+                  backgroundColor: exportFinished ? 'success.main' : 'primary.main'
+                }
+              }} 
+            />
+            {/* Always render worker display when exporting or finished */}
+            <WorkerProgressDisplay />
           </Stack>
         </Fade>
 
