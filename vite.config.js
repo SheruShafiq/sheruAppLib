@@ -499,12 +499,12 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "src"),
-      "@components": path.resolve(__dirname, "src/Components"),
-      "@assets": path.resolve(__dirname, "src/assets"),
-      "@helpers": path.resolve(__dirname, "src/Helpers"),
-      "@hooks": path.resolve(__dirname, "src/hooks"),
-      "@styles": path.resolve(__dirname, "src/styles"),
+      "@": path.resolve("./src"),
+      "@components": path.resolve("./src/Components"),
+      "@assets": path.resolve("./src/assets"),
+      "@helpers": path.resolve("./src/Helpers"),
+      "@hooks": path.resolve("./src/hooks"),
+      "@styles": path.resolve("./src/Styles"),
     },
   },
   optimizeDeps: {

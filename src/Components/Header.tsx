@@ -11,7 +11,7 @@ import MenuItem from "@mui/material/MenuItem";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { getRandomGIFBasedOffof } from "../APICalls";
-import { usePWAInstallPrompt } from "../hooks/usePWAInstallPrompt";
+import { usePWAInstallPrompt } from "@hooks/usePWAInstallPrompt";
 function Header({
   isLoggedIn,
   userData,

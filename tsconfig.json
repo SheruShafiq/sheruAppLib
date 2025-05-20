@@ -18,12 +18,12 @@
     "jsx": "react-jsx",
     "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"],
-      "@components/*": ["src/Components/*"],
-      "@assets/*": ["src/assets/*"],
-      "@helpers/*": ["src/Helpers/*"],
-      "@hooks/*": ["src/hooks/*"],
-      "@styles/*": ["src/styles/*"],
+      "@/*": ["./src/*"],
+      "@components/*": ["./src/Components/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@helpers/*": ["./src/Helpers/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@styles/*": ["./src/styles/*"],
     },
     "types": [
       "vite-plugin-pwa/react",
@@ -34,5 +34,5 @@
       "vite-plugin-pwa/vue"
     ]
   },
-  "include": ["src"]
+  "include": ["./src"]
 }
