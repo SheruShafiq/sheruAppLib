@@ -27,13 +27,15 @@ import IOSLoader from "@components/IOSLoader";
 import "@styles/BadgeMakerMain.css";
 import { chunk, mergePdfBuffers } from "@workers/pdfHelpers";
 import WorkerConfig from "@components/WorkerConfig";
-import WorkerProgressDisplay, { calculateOverallProgress } from "@components/WorkerProgressDisplay";
+import WorkerProgressDisplay, {
+  calculateOverallProgress,
+} from "@components/WorkerProgressDisplay";
 import { distributeWorkload } from "@workers/pdfHelpers";
 
 const fontCache: { css?: string } = {};
 
 async function getInlineGoogleFontsCss(): Promise<string> {
-  if (fontCache.css) return fontCache.css; 
+  if (fontCache.css) return fontCache.css;
 
   const googleLinks = Array.from(
     document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')
@@ -42,12 +44,12 @@ async function getInlineGoogleFontsCss(): Promise<string> {
   let finalCss = "";
 
   for (const sheet of googleLinks) {
-  
     const url = new URL(sheet.href);
     url.searchParams.set("_cb", Date.now().toString());
 
-    const cssText = await (await fetch(url.toString(), { mode: "cors" })).text();
-
+    const cssText = await (
+      await fetch(url.toString(), { mode: "cors" })
+    ).text();
 
     const urlRegex = /url\((https:\/\/[^\)]+)\)/g;
     let replacedCss = cssText;
@@ -57,24 +59,19 @@ async function getInlineGoogleFontsCss(): Promise<string> {
       const p = fetch(remoteUrl, { mode: "cors" })
         .then((r) => r.arrayBuffer())
         .then((buf) => {
-          const mime =
-            remoteUrl.endsWith(".woff2")
-              ? "font/woff2"
-              : remoteUrl.endsWith(".woff")
+          const mime = remoteUrl.endsWith(".woff2")
+            ? "font/woff2"
+            : remoteUrl.endsWith(".woff")
               ? "font/woff"
               : "application/octet-stream";
 
-          const b64 = btoa(
-            String.fromCharCode(...new Uint8Array(buf))
-          );
+          const b64 = btoa(String.fromCharCode(...new Uint8Array(buf)));
           replacedCss = replacedCss.replace(
             remoteUrl,
             `data:${mime};base64,${b64}`
           );
         })
-        .catch((err) =>
-          console.warn("Failed to inline font", remoteUrl, err)
-        );
+        .catch((err) => console.warn("Failed to inline font", remoteUrl, err));
       promises.push(p);
       return remoteUrl;
     });
@@ -86,7 +83,6 @@ async function getInlineGoogleFontsCss(): Promise<string> {
   fontCache.css = finalCss;
   return finalCss;
 }
-
 
 export type RowData = { col1: string; col2: string };
 
@@ -102,14 +98,14 @@ type WorkerStatus = {
   imageCount: number;
 };
 
-
 function Home() {
   const [csvFile, setCSV] = useState<FileList | null>(null);
   const [badgesData, setBadgesData] = useState<badgeProps[]>([]);
   const [rows, setRows] = useState<RowData[]>([{ col1: "", col2: "" }]);
   const [generate, setGenerate] = useState(false);
-  const [dataInputMode, setDataInputMode] =
-    useState<"csv" | "manual">("manual");
+  const [dataInputMode, setDataInputMode] = useState<"csv" | "manual">(
+    "manual"
+  );
 
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
@@ -121,16 +117,14 @@ function Home() {
   const [configOpen, setConfigOpen] = useState(false);
   const [showWorkerStatus, setShowWorkerStatus] = useState(false);
   const [exportFinished, setExportFinished] = useState(false);
-  
 
   const workerStatusesRef = useRef<WorkerStatus[]>([]);
   const activeWorkersRef = useRef(0);
-  
 
   useEffect(() => {
     workerStatusesRef.current = workerStatuses;
   }, [workerStatuses]);
-  
+
   useEffect(() => {
     activeWorkersRef.current = activeWorkers;
   }, [activeWorkers]);
@@ -141,8 +135,9 @@ function Home() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const exportRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const variantComponents: React.ComponentType<badgeProps>[] =
-    Object.values(BadgeVariants) as React.ComponentType<badgeProps>[];
+  const variantComponents: React.ComponentType<badgeProps>[] = Object.values(
+    BadgeVariants
+  ) as React.ComponentType<badgeProps>[];
 
   const isDesktop = window.innerWidth > 768;
 
@@ -186,7 +181,6 @@ function Home() {
     step();
   }, [generate, badgesData]);
 
-
   useEffect(() => {
     if (isExporting) {
       setShowWorkerStatus(true);
@@ -194,156 +188,167 @@ function Home() {
   }, [isExporting]);
 
   const handleMode = (_: unknown, m: "csv" | "manual") => setDataInputMode(m);
-  
 
   const MAX_WORKERS = Math.min(
-    Number(localStorage.getItem("badge.workers") || navigator.hardwareConcurrency || 4),
+    Number(
+      localStorage.getItem("badge.workers") ||
+        navigator.hardwareConcurrency ||
+        4
+    ),
     8 // cap at 8 workers maximum
   );
 
-const handleExportPDF = async () => {
-  setIsExporting(true);
-  setExportProgress(0);
-  setPdfBlobUrl(null);
-  setWorkerStatuses([]);
-  setActiveWorkers(0);
-  setShowWorkerStatus(true);
-  setExportFinished(false);
-
-  if (pdfBlobUrl) {
-    URL.revokeObjectURL(pdfBlobUrl);
+  const handleExportPDF = async () => {
+    setIsExporting(true);
+    setExportProgress(0);
     setPdfBlobUrl(null);
-  }
+    setWorkerStatuses([]);
+    setActiveWorkers(0);
+    setShowWorkerStatus(true);
+    setExportFinished(false);
 
-  try {
-    // 1) ready fonts & inline CSS
-    await document.fonts.ready;
-    const inlineCss = await getInlineGoogleFontsCss();
-    const { width, height } = variantDimensions[badgeVariant - 1] || variantDimensions[0];
+    if (pdfBlobUrl) {
+      URL.revokeObjectURL(pdfBlobUrl);
+      setPdfBlobUrl(null);
+    }
 
-    // 2) split your badges into N pipelines up front
-    const indices = exportRefs.current
-      .map((_, i) => i)
-      .filter(i => exportRefs.current[i] != null);
-    const batches = distributeWorkload(indices, MAX_WORKERS);
+    try {
+      // 1) ready fonts & inline CSS
+      await document.fonts.ready;
+      const inlineCss = await getInlineGoogleFontsCss();
+      const { width, height } =
+        variantDimensions[badgeVariant - 1] || variantDimensions[0];
 
-    // 3) set up all workers *before* blocking loops
-    const initialStatuses: WorkerStatus[] = batches.map((batch, idx) => ({
-      id: idx,
-      progress: 0,
-      active: true,
-      completed: false,
-      imageCount: batch.length,
-    }));
-    setWorkerStatuses(initialStatuses);
-    setActiveWorkers(batches.length);
+      // 2) split your badges into N pipelines up front
+      const indices = exportRefs.current
+        .map((_, i) => i)
+        .filter((i) => exportRefs.current[i] != null);
+      const batches = distributeWorkload(indices, MAX_WORKERS);
 
-    // ——— yield to let React paint your empty bars ———
-    await new Promise<void>(r => setTimeout(r, 0));
+      // 3) set up all workers *before* blocking loops
+      const initialStatuses: WorkerStatus[] = batches.map((batch, idx) => ({
+        id: idx,
+        progress: 0,
+        active: true,
+        completed: false,
+        imageCount: batch.length,
+      }));
+      setWorkerStatuses(initialStatuses);
+      setActiveWorkers(batches.length);
 
-    // 4) now pipeline each batch into its own worker
-    const workerPromises = batches.map((batch, workerIndex) => {
-      return new Promise<ArrayBuffer>(async (resolve, reject) => {
-        // spawn the worker
-        const w = new Worker(
-          new URL("../workers/pdfChunkWorker.ts", import.meta.url),
-          { type: "module" }
-        );
+      // ——— yield to let React paint your empty bars ———
+      await new Promise<void>((r) => setTimeout(r, 0));
 
-        // hook up messages
-        w.onmessage = (e: MessageEvent<WorkerProgressEvent | WorkerCompleteEvent>) => {
-          if ("progress" in e.data) {
-            const prog = e.data.progress;
-            setWorkerStatuses(s =>
-              s.map(st =>
-                st.id === workerIndex ? { ...st, progress: prog } : st
-              )
-            );
-            // recalc overall
-            const overall = calculateOverallProgress(workerStatusesRef.current);
-            setExportProgress(15 + Math.round(overall * 0.7));
-          } else {
-            // final PDF bytes from this worker
-            setWorkerStatuses(s =>
-              s.map(st =>
+      // 4) now pipeline each batch into its own worker
+      const workerPromises = batches.map((batch, workerIndex) => {
+        return new Promise<ArrayBuffer>(async (resolve, reject) => {
+          // spawn the worker
+          const w = new Worker(
+            new URL("../workers/pdfChunkWorker.ts", import.meta.url),
+            { type: "module" }
+          );
+
+          // hook up messages
+          w.onmessage = (
+            e: MessageEvent<WorkerProgressEvent | WorkerCompleteEvent>
+          ) => {
+            if ("progress" in e.data) {
+              const prog = e.data.progress;
+              setWorkerStatuses((prevStatuses) => {
+                const newStatuses = prevStatuses.map((st) =>
+                  st.id === workerIndex ? { ...st, progress: prog } : st
+                );
+                // compute overall from the **just-updated** array
+                const overall = calculateOverallProgress(newStatuses);
+                setExportProgress(15 + Math.round(overall * 0.7));
+                return newStatuses;
+              });
+            } else {
+              // final PDF bytes
+              setWorkerStatuses((prevStatuses) =>
+                prevStatuses.map((st) =>
+                  st.id === workerIndex
+                    ? { ...st, progress: 100, completed: true, active: false }
+                    : st
+                )
+              );
+              setActiveWorkers((n) => n - 1);
+              resolve(e.data.pdfBytes);
+            }
+          };
+          w.onerror = (err) => {
+            setWorkerStatuses((s) =>
+              s.map((st) =>
                 st.id === workerIndex
-                  ? { ...st, progress: 100, completed: true, active: false }
+                  ? { ...st, active: false, completed: false }
                   : st
               )
             );
-            setActiveWorkers(n => n - 1);
-            resolve(e.data.pdfBytes);
-          }
-        };
-        w.onerror = err => {
-          setWorkerStatuses(s =>
-            s.map(st =>
-              st.id === workerIndex
-                ? { ...st, active: false, completed: false }
-                : st
-            )
-          );
-          setActiveWorkers(n => n - 1);
-          reject(err);
-        };
+            setActiveWorkers((n) => n - 1);
+            reject(err);
+          };
 
-        // 5) rasterize this worker's images one‐by‐one
-        const images: string[] = [];
-        for (let i of batch) {
-          const node = exportRefs.current[i]!;
-          const canvas = await toCanvas(node, {
-            pixelRatio: 2,
+          // 5) rasterize this worker's images one‐by‐one
+          const images: string[] = [];
+          for (let i of batch) {
+            const node = exportRefs.current[i]!;
+            const canvas = await toCanvas(node, {
+              pixelRatio: 2,
+              width,
+              height,
+              cacheBust: true,
+              backgroundColor: "#ffffff",
+              fontEmbedCSS: inlineCss,
+              fetchRequestInit: { cache: "force-cache" },
+            });
+            images.push(canvas.toDataURL("image/jpeg", 1));
+            // optional: also update your "capturing" progress here
+          }
+
+          // 6) hand off to the worker
+          w.postMessage({
+            images,
             width,
             height,
-            cacheBust: true,
-            backgroundColor: "#ffffff",
-            fontEmbedCSS: inlineCss,
-            fetchRequestInit: { cache: "force-cache" },
+            orientation: isDesktop ? "landscape" : "portrait",
+            workerIndex,
           });
-          images.push(canvas.toDataURL("image/jpeg", 1));
-          // optional: also update your "capturing" progress here
-        }
-
-        // 6) hand off to the worker
-        w.postMessage({ images, width, height, orientation: isDesktop ? "landscape" : "portrait", workerIndex });
+        });
       });
-    });
 
-    // 7) wait for all chunks, then merge
-    const partials = await Promise.all(workerPromises);
-    setExportProgress(85);
+      // 7) wait for all chunks, then merge
+      const partials = await Promise.all(workerPromises);
+      setExportProgress(85);
 
-    await new Promise<void>((res, rej) => {
-      const m = new Worker(
-        new URL("../workers/pdfMergeWorker.ts", import.meta.url),
-        { type: "module" }
-      );
-      m.onmessage = (e: MessageEvent<{ blob: Blob }>) => {
-        setPdfBlobUrl(URL.createObjectURL(e.data.blob));
-        setExportProgress(100);
-        setExportFinished(true);
-        m.terminate();
-        res();
-      };
-      m.onerror = rej;
-      m.postMessage(partials, partials as any);
-    });
+      await new Promise<void>((res, rej) => {
+        const m = new Worker(
+          new URL("../workers/pdfMergeWorker.ts", import.meta.url),
+          { type: "module" }
+        );
+        m.onmessage = (e: MessageEvent<{ blob: Blob }>) => {
+          setPdfBlobUrl(URL.createObjectURL(e.data.blob));
+          setExportProgress(100);
+          setExportFinished(true);
+          m.terminate();
+          res();
+        };
+        m.onerror = rej;
+        m.postMessage(partials, partials as any);
+      });
+    } catch (err) {
+      console.error("PDF export failed:", err);
+      alert("Export failed: " + (err as Error).message);
+    } finally {
+      setIsExporting(false);
+      setShowWorkerStatus(true);
+    }
+  };
 
-  } catch (err) {
-    console.error("PDF export failed:", err);
-    alert("Export failed: " + (err as Error).message);
-  } finally {
-    setIsExporting(false);
-    setShowWorkerStatus(true);
-  }
-};
-
-  
   const handleChange = (_: any, newMode: "csv" | "manual") => {
     setDataInputMode(newMode);
   };
   const variantNames = Object.keys(BadgeVariants);
-    const variantLabels = [
+  const variantLabels = [
     {
       col1: "License Number",
       col2: "Pass Level",
@@ -407,15 +412,15 @@ const handleExportPDF = async () => {
           <Logo logoName="Badge" URL="/sheru/appLibrary/BadgeMaker" />
 
           <Stack direction="row">
-            <IconButton 
-              size="small" 
+            <IconButton
+              size="small"
               onClick={() => setConfigOpen(true)}
               sx={{ mr: generate ? 2 : 0 }}
               color="primary"
             >
               <SettingsIcon fontSize="small" />
             </IconButton>
-            
+
             <Fade in={generate}>
               <Button
                 loading={isExporting}
@@ -440,8 +445,8 @@ const handleExportPDF = async () => {
                 {isExporting
                   ? "Processing..."
                   : pdfBlobUrl
-                  ? "Download PDF"
-                  : "Export PDF"}
+                    ? "Download PDF"
+                    : "Export PDF"}
               </Button>
             </Fade>
           </Stack>
@@ -450,25 +455,27 @@ const handleExportPDF = async () => {
         <Fade in={isExporting || showWorkerStatus}>
           <Stack width="80%" maxWidth="600px">
             <Typography align="center">
-              {isExporting 
-                ? `Exporting ${exportProgress}%` 
+              {isExporting
+                ? `Exporting ${exportProgress}%`
                 : "Export Complete!"}
             </Typography>
-            <LinearProgress 
-              variant="determinate" 
+            <LinearProgress
+              variant="determinate"
               value={exportProgress}
               sx={{
-                '& .MuiLinearProgress-bar': {
-                  backgroundColor: exportFinished ? 'success.main' : 'primary.main'
-                }
-              }} 
+                "& .MuiLinearProgress-bar": {
+                  backgroundColor: exportFinished
+                    ? "success.main"
+                    : "primary.main",
+                },
+              }}
             />
-            <WorkerProgressDisplay 
-              workerStatuses={workerStatuses} 
-              activeWorkers={activeWorkers} 
-              isExporting={isExporting} 
-              exportFinished={exportFinished} 
-              setShowWorkerStatus={setShowWorkerStatus} 
+            <WorkerProgressDisplay
+              workerStatuses={workerStatuses}
+              activeWorkers={activeWorkers}
+              isExporting={isExporting}
+              exportFinished={exportFinished}
+              setShowWorkerStatus={setShowWorkerStatus}
             />
           </Stack>
         </Fade>
@@ -503,7 +510,11 @@ const handleExportPDF = async () => {
                       }}
                       className="badge-export-container"
                     >
-                      <Variant role={item.role} name={item.name} preview={false} />
+                      <Variant
+                        role={item.role}
+                        name={item.name}
+                        preview={false}
+                      />
                     </div>
                   );
                 })}
@@ -647,10 +658,7 @@ const handleExportPDF = async () => {
         </Stack>
       </Fade>
 
-      <WorkerConfig 
-        open={configOpen}
-        onClose={() => setConfigOpen(false)}
-      />
+      <WorkerConfig open={configOpen} onClose={() => setConfigOpen(false)} />
     </Stack>
   );
 }
@@ -664,7 +672,5 @@ const VisuallyHiddenInput = styled("input")({
   position: "absolute",
   whiteSpace: "nowrap",
 });
-
-
 
 export default Home;
