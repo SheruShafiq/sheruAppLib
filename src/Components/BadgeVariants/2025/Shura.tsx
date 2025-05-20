@@ -1,4 +1,4 @@
-import React, { useRef, useState, useLayoutEffect } from "react";
+import React, { useRef } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import AhmadiyyaFlag from "@assets/ahmadiyyaFlag.png";
 import useDynamicFont from "@hooks/useDynamicFontSize";
@@ -53,8 +53,17 @@ function Shura({ role, name, preview }: badgeProps) {
               alt="Ahmadiyya flag"
             />
           </Box>
-          <Stack gap={1} px={2} mt={1} alignItems="center">
-            <Typography color="#AF1623">
+          <Stack
+            gap={1}
+            px={2}
+            mt={1}
+            alignItems="center"
+            position="relative"
+          >
+            <Typography
+              color="#AF1623"
+              fontFamily="'Roboto Condensed', sans-serif"
+            >
               Ahmadiyya Moslim Gemeenschap
             </Typography>
             <Typography
@@ -63,6 +72,7 @@ function Shura({ role, name, preview }: badgeProps) {
                 lineHeight: "40px",
                 mt: "6px",
                 pb: "4px",
+                fontFamily: "'Roboto Condensed', sans-serif",
               }}
               fontWeight={500}
               color="black"
@@ -74,9 +84,11 @@ function Shura({ role, name, preview }: badgeProps) {
               sx={{
                 textShadow: "0 0 8px rgb(0, 0, 0), 0 0 16px rgb(0, 0, 0)",
                 fontWeight: 700,
+                fontFamily: "'Roboto Condensed', sans-serif",
+                position: "relative",
+                zIndex: 5,
               }}
               mt={1}
-              fontWeight={200}
               color="white"
               fontSize="3em"
               lineHeight={1}
@@ -103,6 +115,7 @@ function Shura({ role, name, preview }: badgeProps) {
               sx={{
                 whiteSpace: "nowrap",
                 fontWeight: 500,
+                fontFamily: "'Roboto Condensed', sans-serif",
                 color: "black",
                 fontSize: `${roleFontSize}px`,
                 textAlign: "center",
@@ -123,6 +136,7 @@ function Shura({ role, name, preview }: badgeProps) {
               sx={{
                 whiteSpace: "nowrap",
                 fontWeight: 500,
+                fontFamily: "'Roboto Condensed', sans-serif",
                 color: "black",
                 fontSize: `${nameFontSize}px`,
                 textAlign: "center",

@@ -20,161 +20,204 @@ import type { badgeProps } from "@components/BadgeVariants/2025/index";
 import ExcelInput from "@components/ExcelInput";
 import Papa from "papaparse";
 import { toCanvas } from "html-to-image";
-import { jsPDF } from "jspdf";
 import Logo from "@components/Logo";
 import IOSLoader from "@components/IOSLoader";
 import "@styles/BadgeMakerMain.css";
 
-// Helper function to fetch Google Fonts CSS
-async function getGoogleFontsCss(): Promise<string> {
-  const fontLinks: HTMLLinkElement[] = [];
-  document.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
-    if (
-      link instanceof HTMLLinkElement &&
-      link.href.includes("fonts.googleapis.com")
-    ) {
-      fontLinks.push(link);
-    }
-  });
+/* ------------------------------------------------------------------ */
+/* Util: build one big CSS string that inlines _all_ Google Fonts     */
+/* ------------------------------------------------------------------ */
 
-  let allFontCss = "";
-  for (const link of fontLinks) {
-    try {
-      const url = new URL(link.href);
-      // Adding a cache-busting param can be helpful sometimes, though not strictly necessary for Google Fonts
-      url.searchParams.append("_cb", Date.now().toString());
+const fontCache: { css?: string } = {};
 
-      const response = await fetch(url.toString(), { mode: "cors" });
-      if (response.ok) {
-        const cssText = await response.text();
-        allFontCss += cssText + "\n";
-      } else {
-        console.warn(
-          `Failed to fetch font CSS: ${link.href}, status: ${response.status}`
+async function getInlineGoogleFontsCss(): Promise<string> {
+  if (fontCache.css) return fontCache.css; // ⏪  already built once
+
+  const googleLinks = Array.from(
+    document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')
+  ).filter((l) => l.href.includes("fonts.googleapis.com"));
+
+  let finalCss = "";
+
+  for (const sheet of googleLinks) {
+    // add a cache-buster so we never get a 304 from the normal browser cache
+    const url = new URL(sheet.href);
+    url.searchParams.set("_cb", Date.now().toString());
+
+    const cssText = await (await fetch(url.toString(), { mode: "cors" })).text();
+
+    /* example Google Fonts rule -------------------------------------
+       @font-face {
+          font-family:"Roboto Condensed";
+          font-style:normal;
+          font-weight:400;
+          src: url(https://fonts.gstatic.com/.../ieVl2ZhZ...woff2) format("woff2");
+       }
+    -----------------------------------------------------------------*/
+    const urlRegex = /url\((https:\/\/[^\)]+)\)/g;
+    let replacedCss = cssText;
+    const promises: Promise<void>[] = [];
+
+    replacedCss.replace(urlRegex, (_, remoteUrl) => {
+      const p = fetch(remoteUrl, { mode: "cors" })
+        .then((r) => r.arrayBuffer())
+        .then((buf) => {
+          const mime =
+            remoteUrl.endsWith(".woff2")
+              ? "font/woff2"
+              : remoteUrl.endsWith(".woff")
+              ? "font/woff"
+              : "application/octet-stream";
+
+          const b64 = btoa(
+            String.fromCharCode(...new Uint8Array(buf))
+          );
+          replacedCss = replacedCss.replace(
+            remoteUrl,
+            `data:${mime};base64,${b64}`
+          );
+        })
+        .catch((err) =>
+          console.warn("Failed to inline font", remoteUrl, err)
         );
-      }
-    } catch (error) {
-      console.warn(`Error fetching font CSS: ${link.href}`, error);
-    }
+      promises.push(p);
+      return remoteUrl;
+    });
+
+    await Promise.all(promises);
+    finalCss += replacedCss + "\n";
   }
-  return allFontCss;
+
+  /* cache for subsequent exports in this tab ----------------------- */
+  fontCache.css = finalCss;
+  return finalCss;
 }
 
+/* ------------------------------------------------------------------ */
+/* Types                                                              */
+/* ------------------------------------------------------------------ */
+
 export type RowData = { col1: string; col2: string };
+
+/* ------------------------------------------------------------------ */
+/* Component                                                          */
+/* ------------------------------------------------------------------ */
 
 function Home() {
   const [csvFile, setCSV] = useState<FileList | null>(null);
   const [badgesData, setBadgesData] = useState<badgeProps[]>([]);
   const [rows, setRows] = useState<RowData[]>([{ col1: "", col2: "" }]);
   const [generate, setGenerate] = useState(false);
-  const [dataInputMode, setDataInputMode] = useState<"csv" | "manual">(
-    "manual"
-  );
+  const [dataInputMode, setDataInputMode] =
+    useState<"csv" | "manual">("manual");
+
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
   const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
   const [visibleCount, setVisibleCount] = useState(0);
+
   const pdfWorkerRef = useRef<Worker | null>(null);
 
   const [badgeVariant, setBadgeVariant] = useState<number>(1);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const exportRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const variantComponents: React.ComponentType<badgeProps>[] = Object.values(
-    BadgeVariants
-  ) as React.ComponentType<badgeProps>[];
+  const variantComponents: React.ComponentType<badgeProps>[] =
+    Object.values(BadgeVariants) as React.ComponentType<badgeProps>[];
+
   const isDesktop = window.innerWidth > 768;
 
-  // Add this mapping for badge dimensions (update as needed for each variant)
   const variantDimensions = [
-    { width: 660, height: 350 }, // CarPass
-    { width: 660, height: 350 }, // Badge
-    { width: 660, height: 400 }, // Shura (example: adjust if needed)
+    { width: 660, height: 350 },
+    { width: 660, height: 350 },
+    { width: 660, height: 400 },
   ];
 
+  /* ---------------- CSV parsing ----------------------------------- */
   useEffect(() => {
-    if (!csvFile) {
-      setBadgesData([]);
-      return;
-    }
-    const file = csvFile[0];
-    Papa.parse(file, {
+    if (!csvFile) return setBadgesData([]);
+
+    Papa.parse(csvFile[0], {
       header: true,
       skipEmptyLines: true,
       transformHeader: (h) => h.trim(),
-      complete: (results) => {
-        const data = (results.data as any[]).map((row) => ({
-          role: row["Role"] || row["role"] || "",
-          name: row["Name"] || row["name"] || "",
-        }));
-        setBadgesData(data);
-      },
+      complete: ({ data }) =>
+        setBadgesData(
+          (data as any[]).map((r) => ({
+            role: r["Role"] || r["role"] || "",
+            name: r["Name"] || r["name"] || "",
+          }))
+        ),
       error: console.error,
     });
   }, [csvFile]);
 
-  // 1) chunked render effect
+  /* ------------- progressive render ------------------------------- */
   useEffect(() => {
     if (!generate) return;
-    const batchSize = 20;
+
+    const batch = 20;
     setVisibleCount(0);
-    const schedule = () => {
+
+    const step = () =>
       setVisibleCount((prev) => {
-        const next = Math.min(prev + batchSize, badgesData.length);
-        if (next < badgesData.length) setTimeout(schedule, 0);
+        const next = Math.min(prev + batch, badgesData.length);
+        if (next < badgesData.length) requestAnimationFrame(step);
         return next;
       });
-    };
-    schedule();
+
+    step();
   }, [generate, badgesData]);
 
-  const handleChange = (_: any, newMode: "csv" | "manual") => {
-    setDataInputMode(newMode);
-  };
+  /* ------------- event handlers ----------------------------------- */
+  const handleMode = (_: unknown, m: "csv" | "manual") => setDataInputMode(m);
 
   const handleExportPDF = async () => {
     setIsExporting(true);
     setExportProgress(0);
     setPdfBlobUrl(null);
 
-    // Fetch Google Fonts CSS content
-    const googleFontsCss = await getGoogleFontsCss();
+    await document.fonts.ready;
+    const inlineCss = await getInlineGoogleFontsCss();
 
-    // capture canvases → dataURLs
     const { width, height } =
-      variantDimensions[badgeVariant - 1] || variantDimensions[0];
+      variantDimensions[badgeVariant - 1] ?? variantDimensions[0];
+
     const images: string[] = [];
+
     for (let i = 0; i < exportRefs.current.length; i++) {
       const node = exportRefs.current[i];
       if (!node) continue;
-      await new Promise((r) => setTimeout(r, 50));
+
       const canvas = await toCanvas(node, {
         pixelRatio: 2,
-        cacheBust: true,
         width,
         height,
-        style: { transform: "scale(1)", transformOrigin: "top left" },
-        fontEmbedCSS: googleFontsCss, // Pass fetched font CSS here
+        cacheBust: true,
+        backgroundColor: "#ffffff",
+        fontEmbedCSS: inlineCss, // 👉 base64-inlined fonts
       });
+
       images.push(canvas.toDataURL("image/jpeg", 1));
       setExportProgress(Math.round(((i + 1) / exportRefs.current.length) * 50));
     }
 
-    // spawn worker
+    /* worker ------------------------------------------------------- */
     pdfWorkerRef.current = new Worker(
       new URL("../workers/pdfWorker.ts", import.meta.url),
-      { type: "module" } // Ensure the worker uses the "module" format
+      { type: "module" }
     );
-    pdfWorkerRef.current.onmessage = (e) => {
-      const { pdfBlob, progress } = e.data;
-      if (progress != null) {
+
+    pdfWorkerRef.current.onmessage = ({ data }) => {
+      const { pdfBlob, progress } = data;
+      if (progress !== undefined)
         setExportProgress(50 + Math.round(progress * 0.5));
-      }
+
       if (pdfBlob) {
         const url = URL.createObjectURL(pdfBlob);
         setPdfBlobUrl(url);
         setIsExporting(false);
-        // trigger download
+
         const a = document.createElement("a");
         a.href = url;
         a.download = "badges.pdf";
@@ -183,7 +226,7 @@ function Home() {
         a.remove();
       }
     };
-    // send all data to worker
+
     pdfWorkerRef.current.postMessage({
       images,
       width,
@@ -191,12 +234,11 @@ function Home() {
       orientation: isDesktop ? "landscape" : "portrait",
     });
   };
-
-  const previewHeight = window.innerHeight * (isDesktop ? 0.7 : 0.5);
-
+const handleChange = (_: any, newMode: "csv" | "manual") => {
+    setDataInputMode(newMode);
+  };
   const variantNames = Object.keys(BadgeVariants);
-
-  const variantLabels = [
+    const variantLabels = [
     {
       col1: "License Number",
       col2: "Pass Level",
@@ -216,7 +258,6 @@ function Home() {
       placeholder2: "John Elden",
     },
   ];
-
   return (
     <Stack
       height="100%"
@@ -284,8 +325,8 @@ function Home() {
               {isExporting
                 ? "Processing..."
                 : pdfBlobUrl
-                  ? "Download PDF"
-                  : "Export PDF"}
+                ? "Download PDF"
+                : "Export PDF"}
             </Button>
           </Fade>
         </Stack>
@@ -305,9 +346,10 @@ function Home() {
                 display: generate ? "flex" : "none",
               }}
               px={1}
+              className="APP_BadgeMaker"
             >
               <Stack gap={2} alignItems="center">
-                {(badgesData.slice(0, visibleCount)).map((item, index) => {
+                {badgesData.slice(0, visibleCount).map((item, index) => {
                   if (!item.role || !item.name) return null;
                   if (item.role === "" || item.name === "") return null;
                   const Variant =
@@ -319,12 +361,15 @@ function Home() {
                         exportRefs.current[index] = el;
                       }}
                       style={{
-                        // use real CSS transform instead of `scale` prop
-                        transform: isDesktop ? "none" : "scale(0.5)",
+                        // Ensure no transforms for export elements
+                        transform: "none",
                         transformOrigin: "top left",
+                        display: "flex",
+                        justifyContent: "center",
                       }}
+                      className="badge-export-container"
                     >
-                      <Variant role={item.role} name={item.name} preview />
+                      <Variant role={item.role} name={item.name} preview={false} />
                     </div>
                   );
                 })}
@@ -471,6 +516,7 @@ function Home() {
   );
 }
 
+/* hidden file input */
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
