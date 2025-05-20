@@ -116,9 +116,8 @@ type WorkerStatus = {
   imageCount: number;
 };
 
-/* ------------------------------------------------------------------ */
-/* Component                                                          */
-/* ------------------------------------------------------------------ */
+/** micro‐tick to let the UI update before next heavy work */
+const yieldToMainThread = () => new Promise((res) => setTimeout(res, 0));
 
 function Home() {
   const [csvFile, setCSV] = useState<FileList | null>(null);
@@ -231,6 +230,9 @@ function Home() {
     setShowWorkerStatus(true);
     setExportFinished(false);
     
+    // let React flush “Initializing workers…” banner, etc.
+    await yieldToMainThread();
+
     // Clear any previous blob URL
     if (pdfBlobUrl) {
       URL.revokeObjectURL(pdfBlobUrl);
@@ -245,7 +247,6 @@ function Home() {
         variantDimensions[badgeVariant - 1] ?? variantDimensions[0];
 
       /* ---------- 1️⃣   Render all badges to images ----------------- */
-      // Adjust progress calculation to only use 15% of the total for image rendering
       const images: string[] = [];
       for (let i = 0; i < exportRefs.current.length; i++) {
         const node = exportRefs.current[i];
@@ -258,23 +259,23 @@ function Home() {
           cacheBust: true,
           backgroundColor: "#ffffff",
           fontEmbedCSS: inlineCss,
-          // Force image cache to avoid repeated network requests
-          imageCacheMaxAge: Infinity,
-          // Set image options to help with caching
+          // Removed unsupported property 'imageCacheMaxAge'
           fetchRequestInit: {
-            cache: 'force-cache',
+            cache: "force-cache",
           },
         });
         images.push(canvas.toDataURL("image/jpeg", 1));
         setExportProgress(Math.round(((i + 1) / exportRefs.current.length) * 15));
+
+        // yield every iteration so UI can process setExportProgress
+        await yieldToMainThread();
       }
 
       /* ---------- 2️⃣   Fire up a small worker-pool ---------------- */
-      // Workers progress will account for 15%-85% of total progress
       const chunks = chunk(images, MAX_WORKERS).filter(c => c.length);
       const workers: Worker[] = [];
       
-      // Initialize worker status tracking - create a new array with initial values
+      // Initialize worker status tracking
       const initialStatuses: WorkerStatus[] = chunks.map((chunk, idx) => ({
         id: idx,
         progress: 0,
@@ -282,7 +283,6 @@ function Home() {
         completed: false,
         imageCount: chunk.length
       }));
-      
       setWorkerStatuses(initialStatuses);
       workerStatusesRef.current = initialStatuses;
       
@@ -291,6 +291,9 @@ function Home() {
       
       setWorkerProgress(new Array(chunks.length).fill(0));
       
+      // ← yield so React can paint "Worker Status: N active workers"
+      await yieldToMainThread();
+
       const workerPromises = chunks.map(
         (imgs, idx) =>
           new Promise<ArrayBuffer>((res, rej) => {
@@ -302,22 +305,22 @@ function Home() {
               workers.push(w);
               
               w.onmessage = (e: WorkerEvent) => {
-                if ('progress' in e.data) {
+                if ("progress" in e.data) {
                   // Handle progress updates using functional updates to avoid stale closures
                   setWorkerProgress(prev => {
                     const newProgress = [...prev];
                     while (newProgress.length <= e.data.workerIndex) {
                       newProgress.push(0);
                     }
-                    newProgress[e.data.workerIndex] = e.data.progress;
+                    newProgress[e.data.workerIndex] = (e.data as WorkerProgressEvent).progress; // Explicit cast
                     return newProgress;
                   });
                   
                   // Update worker status for visualization using the ref for current state
                   setWorkerStatuses(prevStatuses => {
-                    return prevStatuses.map(status => 
-                      status.id === e.data.workerIndex 
-                        ? { ...status, progress: e.data.progress }
+                    return prevStatuses.map(status =>
+                      status.id === e.data.workerIndex
+                        ? { ...status, progress: (e.data as WorkerProgressEvent).progress } // Explicit cast
                         : status
                     );
                   });
@@ -334,7 +337,7 @@ function Home() {
                   
                   // Scale worker progress to be between 15% and 85%
                   setExportProgress(15 + Math.round(avgProgress * 0.7));
-                } else if ('pdfBytes' in e.data) {
+                } else if ("pdfBytes" in e.data) {
                   // Update worker status to completed
                   setWorkerStatuses(prevStatuses => {
                     const newStatuses = prevStatuses.map(status => 
@@ -398,34 +401,30 @@ function Home() {
       );
 
       /* ---------- 3️⃣   Merge partial PDFs ------------------------- */
-      try {
-        const partialBuffers = await Promise.all(workerPromises);
-        setExportProgress(85); // Start final merge phase
-
-        const finalBlob = await mergePdfBuffers(partialBuffers);
-        const url = URL.createObjectURL(finalBlob);
-        setPdfBlobUrl(url);
-        setExportProgress(100);
-        setExportFinished(true);
-        
-        // Flag to keep worker status visible
-        setShowWorkerStatus(true);
-        
-        // Auto download if enabled, but with a slight delay
-        if (localStorage.getItem("badge.autoDownload") === "true") {
-          setTimeout(() => {
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "badges.pdf";
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-          }, 600); // Small delay so user can see worker results
-        }
-      } finally {
-        // Clean up workers
-        workers.forEach(w => w.terminate());
-      }
+      // wait for all chunk workers
+      const partialBuffers = await Promise.all(workerPromises);
+      setExportProgress(85);
+      
+      // offload the final merge to a separate worker
+      await yieldToMainThread(); // allow UI to paint “85%” first
+      await new Promise<void>((res, rej) => {
+        const m = new Worker(
+          new URL("../workers/pdfMergeWorker.ts", import.meta.url),
+          { type: "module" }
+        );
+        m.onmessage = (e: MessageEvent<{ blob: Blob }>) => {
+          const url = URL.createObjectURL(e.data.blob);
+          setPdfBlobUrl(url);
+          setExportProgress(100);
+          setExportFinished(true);
+          m.terminate();
+          res();
+        };
+        m.onerror = rej;
+        m.postMessage(partialBuffers, partialBuffers as any);
+      });
+      // clean up chunk workers
+      workers.forEach(w => w.terminate());
     } catch (err) {
       console.error("PDF export failed:", err);
       alert("Export failed: " + (err instanceof Error ? err.message : String(err)));
@@ -841,5 +840,7 @@ const VisuallyHiddenInput = styled("input")({
   position: "absolute",
   whiteSpace: "nowrap",
 });
+
+
 
 export default Home;
