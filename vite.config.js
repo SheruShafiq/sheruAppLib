@@ -513,6 +513,12 @@ export default defineConfig({
   build: {
     rollupOptions: {
       external: ["@vercel/speed-insights"],
+      output: {
+        format: "es", // Ensure the output format is compatible
+      },
     },
+  },
+  worker: {
+    format: "es", // Use "es" format for workers
   },
 });

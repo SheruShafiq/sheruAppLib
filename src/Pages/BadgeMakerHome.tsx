@@ -163,7 +163,7 @@ function Home() {
     // spawn worker
     pdfWorkerRef.current = new Worker(
       new URL("../workers/pdfWorker.ts", import.meta.url),
-      { type: "module" }
+      { type: "module" } // Ensure the worker uses the "module" format
     );
     pdfWorkerRef.current.onmessage = (e) => {
       const { pdfBlob, progress } = e.data;
