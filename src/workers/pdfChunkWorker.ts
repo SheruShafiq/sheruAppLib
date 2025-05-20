@@ -21,20 +21,14 @@ self.onmessage = (e: MessageEvent<MsgIn>) => {
 
   (self as any).postMessage({ progress: 0, workerIndex });
 
-  const reportFrequency = Math.max(1, Math.ceil(images.length / 20));
   
-  let lastReportedProgress = 0;
 
   images.forEach((img, i) => {
     if (i) doc.addPage();
     doc.addImage(img, "JPEG", 0, 0, width, height, undefined, "FAST");
-    
     const currentProgress = Math.round(((i + 1) / images.length) * 100);
+    (self as any).postMessage({ progress: currentProgress, workerIndex });
     
-    if (currentProgress - lastReportedProgress >= 5 || i % reportFrequency === 0 || i === images.length - 1) {
-      lastReportedProgress = currentProgress;
-      (self as any).postMessage({ progress: currentProgress, workerIndex });
-    }
   });
 
   const pdfBytes = doc.output("arraybuffer");
