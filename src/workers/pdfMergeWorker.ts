@@ -8,8 +8,7 @@ self.onmessage = async (e: MessageEvent<ArrayBuffer[]>) => {
     const pages = await merged.copyPages(src, src.getPageIndices());
     pages.forEach((p) => merged.addPage(p));
   }
-  const bytes = await merged.save(); // Uint8Array
-  const blob = new Blob([bytes.buffer], { type: "application/pdf" });
-  // transfer the ArrayBuffer backing the Uint8Array
+  const bytes = await merged.save(); 
+  const blob = new Blob([bytes.buffer as ArrayBuffer], { type: "application/pdf" });
   (self as any).postMessage({ blob }, [bytes.buffer]);
 };
