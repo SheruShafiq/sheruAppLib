@@ -28,6 +28,7 @@ import "@styles/BadgeMakerMain.css";
 import { chunk, mergePdfBuffers } from "@workers/pdfHelpers";
 import WorkerConfig from "@components/WorkerConfig";
 import WorkerProgressDisplay, { calculateOverallProgress } from "@components/WorkerProgressDisplay";
+import { distributeWorkload } from "@workers/pdfHelpers";
 
 const fontCache: { css?: string } = {};
 
@@ -200,194 +201,143 @@ function Home() {
     8 // cap at 8 workers maximum
   );
 
-  const handleExportPDF = async () => {
-    setIsExporting(true);
-    setExportProgress(0);
+const handleExportPDF = async () => {
+  setIsExporting(true);
+  setExportProgress(0);
+  setPdfBlobUrl(null);
+  setWorkerStatuses([]);
+  setActiveWorkers(0);
+  setShowWorkerStatus(true);
+  setExportFinished(false);
+
+  if (pdfBlobUrl) {
+    URL.revokeObjectURL(pdfBlobUrl);
     setPdfBlobUrl(null);
-    setWorkerProgress([]);
-    setWorkerStatuses([]);
-    setActiveWorkers(0);
-    setShowWorkerStatus(true);
-    setExportFinished(false);
-    
-  
+  }
 
-  
-    if (pdfBlobUrl) {
-      URL.revokeObjectURL(pdfBlobUrl);
-      setPdfBlobUrl(null);
-    }
+  try {
+    // 1) ready fonts & inline CSS
+    await document.fonts.ready;
+    const inlineCss = await getInlineGoogleFontsCss();
+    const { width, height } = variantDimensions[badgeVariant - 1] || variantDimensions[0];
 
-    try {
-      await document.fonts.ready;
-      const inlineCss = await getInlineGoogleFontsCss();
+    // 2) split your badges into N pipelines up front
+    const indices = exportRefs.current
+      .map((_, i) => i)
+      .filter(i => exportRefs.current[i] != null);
+    const batches = distributeWorkload(indices, MAX_WORKERS);
 
-      const { width, height } =
-        variantDimensions[badgeVariant - 1] ?? variantDimensions[0];
+    // 3) set up all workers *before* blocking loops
+    const initialStatuses: WorkerStatus[] = batches.map((batch, idx) => ({
+      id: idx,
+      progress: 0,
+      active: true,
+      completed: false,
+      imageCount: batch.length,
+    }));
+    setWorkerStatuses(initialStatuses);
+    setActiveWorkers(batches.length);
 
-      const images: string[] = [];
-      for (let i = 0; i < exportRefs.current.length; i++) {
-        const node = exportRefs.current[i];
-        if (!node) continue;
+    // ——— yield to let React paint your empty bars ———
+    await new Promise<void>(r => setTimeout(r, 0));
 
-        const canvas = await toCanvas(node, {
-          pixelRatio: 2,
-          width,
-          height,
-          cacheBust: true,
-          backgroundColor: "#ffffff",
-          fontEmbedCSS: inlineCss,
-        
-          fetchRequestInit: {
-            cache: "force-cache",
-          },
-        });
-        images.push(canvas.toDataURL("image/jpeg", 1));
-        setExportProgress(Math.round(((i + 1) / exportRefs.current.length) * 15));
-
-      
-      }
-
-      const chunks = chunk(images, MAX_WORKERS).filter(c => c.length);
-      const workers: Worker[] = [];
-      
-    
-      const initialStatuses: WorkerStatus[] = chunks.map((chunk, idx) => ({
-        id: idx,
-        progress: 0,
-        active: true,
-        completed: false,
-        imageCount: chunk.length
-      }));
-      setWorkerStatuses(initialStatuses);
-      workerStatusesRef.current = initialStatuses;
-      
-      setActiveWorkers(chunks.length);
-      activeWorkersRef.current = chunks.length;
-      
-      setWorkerProgress(new Array(chunks.length).fill(0));
-      
-    
-
-      const workerPromises = chunks.map(
-        (imgs, idx) =>
-          new Promise<ArrayBuffer>((res, rej) => {
-            try {
-              const w = new Worker(
-                new URL("../workers/pdfChunkWorker.ts", import.meta.url),
-                { type: "module" }
-              );
-              workers.push(w);
-              
-              w.onmessage = (e: WorkerEvent) => {
-                if ("progress" in e.data) {
-                  // Update worker status and compute overall progress
-                  const idx = e.data.workerIndex;
-                  const prog = (e.data as WorkerProgressEvent).progress;
-                  setWorkerStatuses(prevStatuses => {
-                    const newStatuses = prevStatuses.map(s =>
-                      s.id === idx ? { ...s, progress: prog } : s
-                    );
-                    const overall = calculateOverallProgress(newStatuses);
-                    setExportProgress(15 + Math.round(overall * 0.7));
-                    return newStatuses;
-                  });
-                } else if ("pdfBytes" in e.data) {
-                
-                  setWorkerStatuses(prevStatuses => {
-                    const newStatuses = prevStatuses.map(status => 
-                      status.id === e.data.workerIndex 
-                        ? { ...status, progress: 100, completed: true, active: false }
-                        : status
-                    );
-                    return newStatuses;
-                  });
-                  
-                  setActiveWorkers(prev => {
-                    const newValue = Math.max(0, prev - 1);
-                    activeWorkersRef.current = newValue;
-                    return newValue;
-                  });
-                  
-                
-                  res(e.data.pdfBytes);
-                }
-              };
-              
-              w.onerror = (err) => {
-                console.error(`Worker ${idx} error:`, err);
-                
-              
-                setWorkerStatuses(prevStatuses => 
-                  prevStatuses.map(status => 
-                    status.id === idx
-                      ? { ...status, active: false, completed: false }
-                      : status
-                  )
-                );
-                setActiveWorkers(prev => prev - 1);
-                
-                rej(new Error(`Worker ${idx} failed: ${err.message}`));
-              };
-              
-              w.postMessage({
-                images: imgs,
-                width,
-                height,
-                orientation: isDesktop ? "landscape" : "portrait",
-                workerIndex: idx
-              });
-            } catch (err) {
-              console.error(`Failed to initialize worker ${idx}:`, err);
-              
-            
-              setWorkerStatuses(prevStatuses => 
-                prevStatuses.map(status => 
-                  status.id === idx
-                    ? { ...status, active: false, completed: false }
-                    : status
-                )
-              );
-              setActiveWorkers(prev => prev - 1);
-              
-              rej(err);
-            }
-          })
-      );
-
-      /* ---------- 3️⃣   Merge partial PDFs ------------------------- */
-    
-      const partialBuffers = await Promise.all(workerPromises);
-      setExportProgress(85);
-      
-    
-      await new Promise<void>((res, rej) => {
-        const m = new Worker(
-          new URL("../workers/pdfMergeWorker.ts", import.meta.url),
+    // 4) now pipeline each batch into its own worker
+    const workerPromises = batches.map((batch, workerIndex) => {
+      return new Promise<ArrayBuffer>(async (resolve, reject) => {
+        // spawn the worker
+        const w = new Worker(
+          new URL("../workers/pdfChunkWorker.ts", import.meta.url),
           { type: "module" }
         );
-        m.onmessage = (e: MessageEvent<{ blob: Blob }>) => {
-          const url = URL.createObjectURL(e.data.blob);
-          setPdfBlobUrl(url);
-          setExportProgress(100);
-          setExportFinished(true);
-          m.terminate();
-          res();
+
+        // hook up messages
+        w.onmessage = (e: MessageEvent<WorkerProgressEvent | WorkerCompleteEvent>) => {
+          if ("progress" in e.data) {
+            const prog = e.data.progress;
+            setWorkerStatuses(s =>
+              s.map(st =>
+                st.id === workerIndex ? { ...st, progress: prog } : st
+              )
+            );
+            // recalc overall
+            const overall = calculateOverallProgress(workerStatusesRef.current);
+            setExportProgress(15 + Math.round(overall * 0.7));
+          } else {
+            // final PDF bytes from this worker
+            setWorkerStatuses(s =>
+              s.map(st =>
+                st.id === workerIndex
+                  ? { ...st, progress: 100, completed: true, active: false }
+                  : st
+              )
+            );
+            setActiveWorkers(n => n - 1);
+            resolve(e.data.pdfBytes);
+          }
         };
-        m.onerror = rej;
-        m.postMessage(partialBuffers, partialBuffers as any);
+        w.onerror = err => {
+          setWorkerStatuses(s =>
+            s.map(st =>
+              st.id === workerIndex
+                ? { ...st, active: false, completed: false }
+                : st
+            )
+          );
+          setActiveWorkers(n => n - 1);
+          reject(err);
+        };
+
+        // 5) rasterize this worker's images one‐by‐one
+        const images: string[] = [];
+        for (let i of batch) {
+          const node = exportRefs.current[i]!;
+          const canvas = await toCanvas(node, {
+            pixelRatio: 2,
+            width,
+            height,
+            cacheBust: true,
+            backgroundColor: "#ffffff",
+            fontEmbedCSS: inlineCss,
+            fetchRequestInit: { cache: "force-cache" },
+          });
+          images.push(canvas.toDataURL("image/jpeg", 1));
+          // optional: also update your "capturing" progress here
+        }
+
+        // 6) hand off to the worker
+        w.postMessage({ images, width, height, orientation: isDesktop ? "landscape" : "portrait", workerIndex });
       });
-    
-      workers.forEach(w => w.terminate());
-    } catch (err) {
-      console.error("PDF export failed:", err);
-      alert("Export failed: " + (err instanceof Error ? err.message : String(err)));
-    } finally {
-      setIsExporting(false);
-    
-      setShowWorkerStatus(true);
-    }
-  };
+    });
+
+    // 7) wait for all chunks, then merge
+    const partials = await Promise.all(workerPromises);
+    setExportProgress(85);
+
+    await new Promise<void>((res, rej) => {
+      const m = new Worker(
+        new URL("../workers/pdfMergeWorker.ts", import.meta.url),
+        { type: "module" }
+      );
+      m.onmessage = (e: MessageEvent<{ blob: Blob }>) => {
+        setPdfBlobUrl(URL.createObjectURL(e.data.blob));
+        setExportProgress(100);
+        setExportFinished(true);
+        m.terminate();
+        res();
+      };
+      m.onerror = rej;
+      m.postMessage(partials, partials as any);
+    });
+
+  } catch (err) {
+    console.error("PDF export failed:", err);
+    alert("Export failed: " + (err as Error).message);
+  } finally {
+    setIsExporting(false);
+    setShowWorkerStatus(true);
+  }
+};
+
   
   const handleChange = (_: any, newMode: "csv" | "manual") => {
     setDataInputMode(newMode);
@@ -497,7 +447,7 @@ function Home() {
           </Stack>
         </Stack>
 
-        <Fade in={isExporting || (showWorkerStatus && exportFinished)}>
+        <Fade in={isExporting || showWorkerStatus}>
           <Stack width="80%" maxWidth="600px">
             <Typography align="center">
               {isExporting 
