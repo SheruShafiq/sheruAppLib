@@ -106,7 +106,8 @@ function Home() {
   const [dataInputMode, setDataInputMode] = useState<"csv" | "manual">(
     "manual"
   );
-
+const [pagesRendered, setPagesRendered] = useState(0);  
+const prevProgressRef = useRef<number[]>([]);
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
   const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
@@ -187,6 +188,21 @@ function Home() {
     }
   }, [isExporting]);
 
+  useEffect(() => {
+  const totalBadges = badgesData.length;
+  if (totalBadges === 0) return;
+
+  // we want the bar to run from 15 → 85 while workers do their job
+  const workPortion = 70;    // 100% − 15% start − 15% end
+  const startOffset = 15;    // we already reserved the first 15% for "canvas capture"
+ 
+  // fraction of pages done
+  const frac = pagesRendered / totalBadges;
+  // clamp 0→1
+  const pct = Math.min(1, Math.max(0, frac));
+  setExportProgress(Math.round(startOffset + pct * workPortion));
+}, [pagesRendered, badgesData.length]);
+
   const handleMode = (_: unknown, m: "csv" | "manual") => setDataInputMode(m);
 
   const MAX_WORKERS = Math.min(
@@ -235,6 +251,8 @@ function Home() {
       }));
       setWorkerStatuses(initialStatuses);
       setActiveWorkers(batches.length);
+      prevProgressRef.current = new Array(batches.length).fill(0);
+      setPagesRendered(0);
 
       // ——— yield to let React paint your empty bars ———
       await new Promise<void>((r) => setTimeout(r, 0));
@@ -254,15 +272,18 @@ function Home() {
           ) => {
             if ("progress" in e.data) {
               const prog = e.data.progress;
-              setWorkerStatuses((prevStatuses) => {
-                const newStatuses = prevStatuses.map((st) =>
-                  st.id === workerIndex ? { ...st, progress: prog } : st
-                );
-                // compute overall from the **just-updated** array
-                const overall = calculateOverallProgress(newStatuses);
-                setExportProgress(15 + Math.round(overall * 0.7));
-                return newStatuses;
-              });
+              
+               setWorkerStatuses(prev =>
+      prev.map(st =>
+        st.id === workerIndex ? { ...st, progress: prog } : st
+      )
+    );
+      setPagesRendered(prev => {
+      const prevProg = prevProgressRef.current[workerIndex];
+      const delta = prog - prevProg;
+      prevProgressRef.current[workerIndex] = prog;
+      return prev + delta;
+    });
             } else {
               // final PDF bytes
               setWorkerStatuses((prevStatuses) =>
