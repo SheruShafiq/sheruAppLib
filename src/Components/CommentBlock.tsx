@@ -344,11 +344,8 @@ function CommentBlock({
           <Collapse in={openReply} timeout="auto" unmountOnExit>
             <Stack gap={2} width={"100%"}>
               <TextField
-                label={
-                  !isLoggedIn ? "You need to login to comment" : "Add a comment"
-                }
+                label="Add a reply"
                 multiline
-                disabled={!isLoggedIn}
                 variant="standard"
                 onChange={(e) => {
                   setNewComment(e.target.value);
@@ -368,7 +365,7 @@ function CommentBlock({
                   setOpenReply(false);
                   setExpanded(true);
                 }}
-                disabled={!isLoggedIn || creatingReply || newComment.length < 1}
+                disabled={creatingReply || newComment.length < 1}
                 color="secondary"
                 className="secondaryButtonHoverStyles"
                 variant="outlined"
