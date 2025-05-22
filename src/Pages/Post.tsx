@@ -122,6 +122,7 @@ function PostPage({
 
   useEffect(() => {
     if (post && post.comments && post.comments.length > 0) {
+    
       setGeneratingCommentsChain(true);
       generateCommentsChainPaginated(
         post.comments.map(String),
@@ -382,79 +383,51 @@ function PostPage({
                 {creatingComment ? <IOSLoader /> : <SendIcon />}
               </Button>
             </Stack>
-            <Fade in={!generatingCommentsChain} timeout={1000}>
-              <Stack
-                gap={1}
-                sx={{
-                  display: generatingCommentsChain ? "none" : "flex",
-                }}
-              >
-                {reversedComments &&
-                  reversedComments.length > 0 &&
-                  reversedComments.map((comment, index) => (
-                    <CommentBlock
-                      authorID={comment.authorID}
-                      handleCommentCreate={handleCommentCreate}
-                        id={comment.id}
-                        userData={userData}
-                        key={comment.id}
-                        dateCreated={comment.dateCreated}
-                        userName={comment.authorName}
-                        commentContents={comment.text}
-                        replies={comment.replies}
-                        imageURL={comment.imageURL}
-                        amIaReply={false}
-                        depth={0}
-                        isLoggedIn={isLoggedIn}
-                        likedByCurrentUser={
-                          userData?.likedComments
-                            .map(String)
-                            .includes(String(comment.id)) || false
-                        }
-                        dislikedByCurrentUser={
-                          userData?.dislikedComments
-                            .map(String)
-                            .includes(String(comment.id)) || false
-                        }
-                        likes={comment.likes}
-                        dislikes={comment.dislikes}
-                        setGeneratingCommentsChain={setGeneratingCommentsChain}
-                        userPageVariant={false}
-                        postID={comment.postID}
-                      />
-                    ))}
-                <div ref={loadMoreRef} />
-              </Stack>
-            </Fade>
-            <Fade in={generatingCommentsChain} timeout={1000}>
-              <Stack
-                gap={2}
-                sx={{
-                  display: generatingCommentsChain ? "flex" : "none",
-                }}
-              >
-                {post?.comments.length &&
-                  [...Array(commentsPageSize)].map((_, index) => (
-                    <CommentSkeletonLoader key={index} />
+            <Stack gap={1}>
+              {/* existing comments */}
+              {reversedComments &&
+                reversedComments.map((comment) => (
+                  <CommentBlock
+                    authorID={comment.authorID}
+                    handleCommentCreate={handleCommentCreate}
+                    id={comment.id}
+                    userData={userData}
+                    key={comment.id}
+                    dateCreated={comment.dateCreated}
+                    userName={comment.authorName}
+                    commentContents={comment.text}
+                    replies={comment.replies}
+                    imageURL={comment.imageURL}
+                    amIaReply={false}
+                    depth={0}
+                    isLoggedIn={isLoggedIn}
+                    likedByCurrentUser={
+                      userData?.likedComments
+                        .map(String)
+                        .includes(String(comment.id)) || false
+                    }
+                    dislikedByCurrentUser={
+                      userData?.dislikedComments
+                        .map(String)
+                        .includes(String(comment.id)) || false
+                    }
+                    likes={comment.likes}
+                    dislikes={comment.dislikes}
+                    setGeneratingCommentsChain={setGeneratingCommentsChain}
+                    userPageVariant={false}
+                    postID={comment.postID}
+                  />
+                ))}
+              <div ref={loadMoreRef} />
+
+              {generatingCommentsChain && (
+                <Stack gap={2}>
+                  {[...Array(commentsPageSize)].map((_, idx) => (
+                    <CommentSkeletonLoader key={idx} />
                   ))}
-                {post?.comments.length === null && <CommentSkeletonLoader />}
-                {post?.comments.length === 0 && (
-                  <Stack
-                    width={"100%"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                  >
-                    <TextGlitchEffect
-                      text={`No comments yet`}
-                      speed={60}
-                      letterCase="lowercase"
-                      type="ALPHA_NUMERIC"
-                      className={"no Comments Found"}
-                    />
-                  </Stack>
-                )}
-              </Stack>
-            </Fade>
+                </Stack>
+              )}
+            </Stack>
           </Stack>
         </Stack>
         {isDesktop && (
