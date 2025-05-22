@@ -258,6 +258,9 @@ const prevProgressRef = useRef<number[]>([]);
       await new Promise<void>((r) => setTimeout(r, 0));
 
       // 4) now pipeline each batch into its own worker
+      const totalImages = indices.length;
+      let capturedCount = 0;
+
       const workerPromises = batches.map((batch, workerIndex) => {
         return new Promise<ArrayBuffer>(async (resolve, reject) => {
           // spawn the worker
@@ -323,7 +326,14 @@ const prevProgressRef = useRef<number[]>([]);
               fetchRequestInit: { cache: "force-cache" },
             });
             images.push(canvas.toDataURL("image/jpeg", 1));
-            // optional: also update your "capturing" progress here
+
+            // update progress while capturing images
+            capturedCount++;
+            const capturePct = Math.round((capturedCount / totalImages) * 15);
+            setExportProgress(capturePct);
+
+            // yield so the UI can update
+            await new Promise<void>((r) => setTimeout(r, 0));
           }
 
           // 6) hand off to the worker
