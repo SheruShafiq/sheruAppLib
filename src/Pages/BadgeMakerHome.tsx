@@ -106,8 +106,8 @@ function Home() {
   const [dataInputMode, setDataInputMode] = useState<"csv" | "manual">(
     "manual"
   );
-const [pagesRendered, setPagesRendered] = useState(0);  
-const prevProgressRef = useRef<number[]>([]);
+const [pagesRendered, setPagesRendered] = useState(0);
+const prevPageCountRef = useRef<number[]>([]);
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
   const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
@@ -251,13 +251,16 @@ const prevProgressRef = useRef<number[]>([]);
       }));
       setWorkerStatuses(initialStatuses);
       setActiveWorkers(batches.length);
-      prevProgressRef.current = new Array(batches.length).fill(0);
+      prevPageCountRef.current = new Array(batches.length).fill(0);
       setPagesRendered(0);
 
       // ——— yield to let React paint your empty bars ———
       await new Promise<void>((r) => setTimeout(r, 0));
 
       // 4) now pipeline each batch into its own worker
+      const totalImages = indices.length;
+      let capturedCount = 0;
+
       const workerPromises = batches.map((batch, workerIndex) => {
         return new Promise<ArrayBuffer>(async (resolve, reject) => {
           // spawn the worker
@@ -272,18 +275,20 @@ const prevProgressRef = useRef<number[]>([]);
           ) => {
             if ("progress" in e.data) {
               const prog = e.data.progress;
-              
-               setWorkerStatuses(prev =>
-      prev.map(st =>
-        st.id === workerIndex ? { ...st, progress: prog } : st
-      )
-    );
-      setPagesRendered(prev => {
-      const prevProg = prevProgressRef.current[workerIndex];
-      const delta = prog - prevProg;
-      prevProgressRef.current[workerIndex] = prog;
-      return prev + delta;
-    });
+
+              setWorkerStatuses((prev) =>
+                prev.map((st) =>
+                  st.id === workerIndex ? { ...st, progress: prog } : st
+                )
+              );
+
+              setPagesRendered((prev) => {
+                const prevPages = prevPageCountRef.current[workerIndex];
+                const pageCount = Math.round((prog / 100) * batch.length);
+                const delta = pageCount - prevPages;
+                prevPageCountRef.current[workerIndex] = pageCount;
+                return prev + delta;
+              });
             } else {
               // final PDF bytes
               setWorkerStatuses((prevStatuses) =>
@@ -323,7 +328,14 @@ const prevProgressRef = useRef<number[]>([]);
               fetchRequestInit: { cache: "force-cache" },
             });
             images.push(canvas.toDataURL("image/jpeg", 1));
-            // optional: also update your "capturing" progress here
+
+            // update progress while capturing images
+            capturedCount++;
+            const capturePct = Math.round((capturedCount / totalImages) * 15);
+            setExportProgress(capturePct);
+
+            // yield so the UI can update
+            await new Promise<void>((r) => setTimeout(r, 0));
           }
 
           // 6) hand off to the worker
