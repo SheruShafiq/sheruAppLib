@@ -31,6 +31,7 @@ import WorkerProgressDisplay, {
   calculateOverallProgress,
 } from "@components/WorkerProgressDisplay";
 import { distributeWorkload } from "@workers/pdfHelpers";
+import type { RowData } from "../../dataTypeDefinitions";
 
 const fontCache: { css?: string } = {};
 
@@ -84,7 +85,6 @@ async function getInlineGoogleFontsCss(): Promise<string> {
   return finalCss;
 }
 
-export type RowData = { col1: string; col2: string };
 
 type WorkerProgressEvent = { progress: number; workerIndex: number };
 type WorkerCompleteEvent = { pdfBytes: ArrayBuffer; workerIndex: number };

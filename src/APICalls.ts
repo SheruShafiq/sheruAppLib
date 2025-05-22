@@ -17,6 +17,8 @@ import {
   VoteField,
   PatchUserProps,
   PaginatedPostsResponse,
+  RowData,
+  ExcelLog,
 } from "../dataTypeDefinitions.ts";
 const now = new Date().toISOString();
 function createSafePost(post: Partial<Post>): Post {
@@ -587,6 +589,25 @@ export async function updateCateogories(
       throw new Error("Failed to update category");
     }
     const data = await response.json();
+    onSuccess(data);
+  } catch (error) {
+    onError(error);
+  }
+}
+
+export async function logExcelInput(
+  rows: RowData[],
+  onSuccess: (log: ExcelLog) => void,
+  onError: (error: any) => void
+) {
+  try {
+    const now = new Date().toISOString();
+    const log: ExcelLog = { rows, dateCreated: now };
+    const data = await apiRequest<ExcelLog>("/excelLogs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(log),
+    });
     onSuccess(data);
   } catch (error) {
     onError(error);
