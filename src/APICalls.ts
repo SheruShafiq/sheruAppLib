@@ -412,9 +412,13 @@ function getCommentByIdPromise(commentId: string): Promise<Comment> {
   });
 }
 
-function getUserByIdPromise(userId: string): Promise<any> {
-  return new Promise((resolve, reject) => {
-    fetchUserById(userId, resolve, reject);
+function getUserByIdPromise(userId: string): Promise<User | null> {
+  return new Promise((resolve) => {
+    fetchUserById(
+      userId,
+      (user) => resolve(user),
+      () => resolve(null)
+    );
   });
 }
 
@@ -423,7 +427,7 @@ async function getAuthorName(userId: string): Promise<string> {
     return userCache.get(userId)!;
   }
   const user = await getUserByIdPromise(userId);
-  const name = user?.displayName || "Unknown";
+  const name = user?.displayName || "Anonymous";
   userCache.set(userId, name);
   return name;
 }
