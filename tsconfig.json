@@ -24,6 +24,7 @@
       "@helpers/*": ["./src/Helpers/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@styles/*": ["./src/styles/*"],
+      "@workers/*": ["./src/workers/*"],
     },
     "types": [
       "vite-plugin-pwa/react",

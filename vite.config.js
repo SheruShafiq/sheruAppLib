@@ -505,6 +505,7 @@ export default defineConfig({
       "@helpers": path.resolve("./src/Helpers"),
       "@hooks": path.resolve("./src/hooks"),
       "@styles": path.resolve("./src/Styles"),
+      "@workers": path.resolve("./src/workers"),
     },
   },
   optimizeDeps: {
@@ -513,6 +514,12 @@ export default defineConfig({
   build: {
     rollupOptions: {
       external: ["@vercel/speed-insights"],
+      output: {
+        format: "es", // Ensure the output format is compatible
+      },
     },
+  },
+  worker: {
+    format: "es", // Use "es" format for workers
   },
 });
