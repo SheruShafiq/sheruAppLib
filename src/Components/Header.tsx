@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Box, Button, Fade, IconButton, Stack } from "@mui/material";
+import { Avatar, Box, Button, IconButton, Stack } from "@mui/material";
 import { TextGlitchEffect } from "./TextGlitchEffect";
 import AddIcon from "@mui/icons-material/Add";
 import CreatePostDialogue from "./CreatePostDialogue";
@@ -174,17 +174,15 @@ function Header({
           </Button>
         ) : null}
         <Box flex={1} display="flex" justifyContent="flex-end">
-          <Fade in={isLoggedIn}>
-            <Stack direction={"row"}>
-              <IconButton
-                onClick={() => {
-                  setIsCreatePostModalOpen(true);
-                }}
-              >
-                <AddIcon />
-              </IconButton>
-            </Stack>
-          </Fade>
+          <Stack direction={"row"}>
+            <IconButton
+              onClick={() => {
+                setIsCreatePostModalOpen(true);
+              }}
+            >
+              <AddIcon />
+            </IconButton>
+          </Stack>
         </Box>
       </Stack>
     </Box>
