@@ -13,7 +13,7 @@ import {
   FormControl,
 } from "@mui/material";
 import { useState } from "react";
-import { createPost, patchUser, updateCateogories } from "../APICalls";
+import { createPost, patchUser, updateCategories } from "../APICalls";
 import { TextGlitchEffect } from "./TextGlitchEffect";
 import { useSnackbar } from "notistack";
 import { Category, errorProps } from "../../dataTypeDefinitions";
@@ -60,9 +60,9 @@ function CreatePostDialogue({
             field: "posts",
             newValue: [...userData.posts, data.id],
             onSuccess: () => {
-              updateCateogories(
-                category, 
-                "posts", 
+              updateCategories(
+                category,
+                "posts",
                 [
                   ...(categories.find((cat) => cat.id === category)?.posts ||
                     []),
