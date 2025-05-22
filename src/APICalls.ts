@@ -22,6 +22,7 @@ import {
   ExcelLog,
 } from "../dataTypeDefinitions.ts";
 const now = new Date().toISOString();
+const userCache = new Map<string, string>();
 function createSafePost(post: Partial<Post>): Post {
   return {
     title: post.title ?? "",
@@ -416,6 +417,16 @@ function getUserByIdPromise(userId: string): Promise<any> {
     fetchUserById(userId, resolve, reject);
   });
 }
+
+async function getAuthorName(userId: string): Promise<string> {
+  if (userCache.has(userId)) {
+    return userCache.get(userId)!;
+  }
+  const user = await getUserByIdPromise(userId);
+  const name = user?.displayName || "Unknown";
+  userCache.set(userId, name);
+  return name;
+}
 export async function getCommentsByIDs(ids: string[]): Promise<Comment[]> {
   return Promise.all(
     ids.map(async (id) => {
@@ -432,8 +443,7 @@ export async function getCommentsByIDs(ids: string[]): Promise<Comment[]> {
 }
 async function getFullComment(commentId: string): Promise<FullComment> {
   const comment = await getCommentByIdPromise(commentId);
-  const user = await getUserByIdPromise(comment.authorID);
-  const authorName = user?.displayName || "Unknown";
+  const authorName = await getAuthorName(comment.authorID);
   
   
   let fullReplies: FullComment[] = [];
@@ -448,6 +458,7 @@ async function getFullComment(commentId: string): Promise<FullComment> {
 export async function generateCommentsChain(
   commentIds: string[]
 ): Promise<FullComment[]> {
+  userCache.clear();
   return Promise.all(commentIds.map((id) => getFullComment(id)));
 }
 
@@ -458,6 +469,7 @@ export async function generateCommentsChainPaginated(
 ): Promise<{ comments: FullComment[]; hasMore: boolean }> {
   const start = (page - 1) * pageSize;
   const slice = commentIds.slice(start, start + pageSize);
+  if (start === 0) userCache.clear();
   const comments = await Promise.all(slice.map((id) => getFullComment(id)));
   const hasMore = start + pageSize < commentIds.length;
   return { comments, hasMore };

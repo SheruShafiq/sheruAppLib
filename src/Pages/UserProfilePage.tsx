@@ -12,12 +12,12 @@ import {
   fetchUserById,
   getPostByID,
   getPostsByIds,
-  getCommentsByIDs,
+  generateCommentsChain,
   createComment,
   patchUser,
 } from "../APICalls";
 import { GIFs } from "@assets/GIFs";
-import { errorProps, Comment, User, Post } from "../../dataTypeDefinitions";
+import { errorProps, User, Post } from "../../dataTypeDefinitions";
 import { enqueueSnackbar } from "notistack";
 import UserStats from "@components/UserStats";
 import PostPreview from "@components/PostPreview";
@@ -25,32 +25,6 @@ import CommentBlock from "@components/CommentBlock";
 import PostPreviewSkeletonLoader from "../SkeletonLoaders/PostPreviewSkeletonLoader";
 import CommentSkeletonLoader from "../SkeletonLoaders/CommentSkeletonLoader";
 import SauceLayout from "../Layouts/SauceLayout";
-
-function buildCommentTree(
-  flatComments: Comment[]
-): (Comment & { replies: any[] })[] {
-  const lookup = new Map<string, Comment & { replies: any[] }>();
-  flatComments.forEach((c) => {
-    if (c.id) lookup.set(c.id, { ...c, replies: [] });
-  });
-  const childIds = new Set<string>();
-  flatComments.forEach((c) => {
-    const id = c.id;
-    if (c.replies && id) {
-      c.replies.forEach((replyId) => {
-        childIds.add(replyId);
-        const parent = lookup.get(id);
-        const child = lookup.get(replyId);
-        if (parent && child) parent.replies.push(child);
-      });
-    }
-  });
-  const roots: (Comment & { replies: any[] })[] = [];
-  lookup.forEach((node, id) => {
-    if (!childIds.has(id)) roots.push(node);
-  });
-  return roots;
-}
 
 function UserProfilePage({
   isLoggedIn,
@@ -66,7 +40,6 @@ function UserProfilePage({
   );
   const [activeDataTab, setActiveDataTab] = useState("posts");
   const [posts, setPosts] = useState<Post[]>([]);
-  const [comments, setComments] = useState<Comment[]>([]);
   const [commentsChain, setCommentsChain] = useState<any[]>([]);
   const [generatingCommentsChain, setGeneratingCommentsChain] = useState(false);
   const reversedComments = useMemo(
@@ -123,7 +96,7 @@ function UserProfilePage({
           activeDataTab
         )
       ) {
-        setComments(cached);
+        setCommentsChain(cached);
       } else {
         setPosts(cached);
       }
@@ -147,8 +120,10 @@ function UserProfilePage({
             activeDataTab
           )
         ) {
-          const fetchedComments = await getCommentsByIDs(ids);
-          setComments(fetchedComments);
+          const fetchedComments = await generateCommentsChain(
+            ids.map(String)
+          );
+          setCommentsChain(fetchedComments);
           setFetchedData((prev) => ({
             ...prev,
             [activeDataTab]: fetchedComments,
@@ -185,18 +160,6 @@ function UserProfilePage({
     fetchData();
   }, [activeDataTab, userData, id, fetchedData]);
 
-  useEffect(() => {
-    if (
-      ["comments", "likedComments", "dislikedComments"].includes(activeDataTab)
-    ) {
-      try {
-        const tree = buildCommentTree(comments);
-        setCommentsChain(tree);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  }, [comments, activeDataTab]);
 
   const handleCommentCreate = ({ reply, comment, replies }) => {
     if (!reply && !comment && !replies) setCreatingComment(true);
@@ -424,7 +387,7 @@ function UserProfilePage({
               }}
             >
               {generatingCommentsChain
-                ? [...Array(comments.length || 3)].map((_, idx) => (
+                ? [...Array(commentsChain.length || 3)].map((_, idx) => (
                     <CommentSkeletonLoader key={`comment-skeleton-${idx}`} />
                   ))
                 : reversedComments.map((comment) => (
