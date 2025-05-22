@@ -17,6 +17,7 @@ import {
   VoteField,
   PatchUserProps,
   PaginatedPostsResponse,
+  LoginUserResponse,
 } from "../dataTypeDefinitions.ts";
 const now = new Date().toISOString();
 function createSafePost(post: Partial<Post>): Post {
@@ -240,11 +241,10 @@ export async function loginUser({
       )}&password=${encodeURIComponent(password)}`
     );
 
-    const data = await response.json();
-    const user: User = data.users;
+    const { users } = (await response.json()) as LoginUserResponse;
 
-    if (Object.values(user).length > 0) {
-      onSuccess(user[0]);
+    if (users.length > 0) {
+      onSuccess(users[0]);
     } else {
       throw new Error("Invalid credentials");
     }
