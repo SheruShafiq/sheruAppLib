@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import {
   Stack,
   Divider,
@@ -34,6 +34,7 @@ import HomeInteractions from "@components/HomeInteractions";
 import IOSLoader from "@components/IOSLoader";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import SideMenu from "@components/SideMenu";
+import useInfiniteScroll from "@hooks/useInfiniteScroll";
 function SauceHome({
   isLoggedIn,
   userData,
@@ -64,6 +65,8 @@ function SauceHome({
   const [metaData, setmetaData] = useState<paginatedPostsMetaDataType | null>(
     null
   );
+  const [hasMorePosts, setHasMorePosts] = useState(true);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const fetchPostsHandeled = (
     page?: number,
     pageSize?: number,
@@ -75,13 +78,16 @@ function SauceHome({
     setFetchingPosts(true);
     fetchPostsPaginated({
       onSuccess: (data) => {
-        setPosts(data?.posts);
+        setPosts((prev) =>
+          page && page > 1 ? [...prev, ...data.posts] : data.posts
+        );
         setmetaData({
           first: data?.metadata?.first || "",
           prev: data?.metadata?.prev || "",
           next: data?.metadata?.next || "",
           last: data?.metadata?.last || "",
         });
+        setHasMorePosts(!!data?.metadata?.next);
         setFetchingPosts(false);
       },
       onError: (error: errorProps) => {
@@ -136,6 +142,16 @@ function SauceHome({
   const prevPage = metaData?.prev?.match(/_page=(\d+)/)?.[1];
   const nextPage = metaData?.next?.match(/_page=(\d+)/)?.[1];
   const lastPage = Number(metaData?.last?.match(/_page=(\d+)/)?.[1] || 1);
+  useInfiniteScroll(
+    loadMoreRef,
+    () => {
+      if (metaData?.next && !fetchingInitialPosts) {
+        const next = metaData.next.match(/_page=(\d+)/)?.[1];
+        if (next) setCuurentPage(Number(next));
+      }
+    },
+    { rootMargin: "100px" }
+  );
   const [pendingSearchTerm, setPendingSearchTerm] = useState<string>("");
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -341,12 +357,13 @@ function SauceHome({
                       downvotedByCurrentUser={userData?.downVotedPosts
                         ?.map(String)
                         .includes(String(posts[key]?.id))}
-                      reportedByCurrentUser={userData?.reportedPosts
+                  reportedByCurrentUser={userData?.reportedPosts
                         ?.map(String)
                         .includes(String(posts[key]?.id))}
-                      userData={userData}
-                    />
+                  userData={userData}
+                />
                   ))}
+                <div ref={loadMoreRef} />
                 </Stack>
               </Fade>
               {isNoPosts && !fetchingInitialPosts && (

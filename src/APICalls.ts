@@ -395,7 +395,7 @@ export async function fetchCommentByID(
 
 
 
-type FullComment = Omit<Comment, "replies"> & {
+export type FullComment = Omit<Comment, "replies"> & {
   authorName: string;
   replies: FullComment[];
 };
@@ -447,6 +447,18 @@ export async function generateCommentsChain(
   commentIds: string[]
 ): Promise<FullComment[]> {
   return Promise.all(commentIds.map((id) => getFullComment(id)));
+}
+
+export async function generateCommentsChainPaginated(
+  commentIds: string[],
+  page: number,
+  pageSize: number
+): Promise<{ comments: FullComment[]; hasMore: boolean }> {
+  const start = (page - 1) * pageSize;
+  const slice = commentIds.slice(start, start + pageSize);
+  const comments = await Promise.all(slice.map((id) => getFullComment(id)));
+  const hasMore = start + pageSize < commentIds.length;
+  return { comments, hasMore };
 }
 
 export async function patchPost(
