@@ -152,6 +152,10 @@ export type loginUserProps = {
   onError: (error: any) => void;
 };
 
+export type LoginUserResponse = {
+  users: User[];
+};
+
 export interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
   prompt(): Promise<void>;
