@@ -361,6 +361,7 @@ function PostPage({
                 {commentsChain &&
                   commentsChain.length > 0 &&
                   commentsChain
+                    .slice()
                     .reverse()
                     .map((comment, index) => (
                       <CommentBlock

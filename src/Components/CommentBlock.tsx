@@ -390,7 +390,7 @@ function CommentBlock({
 
       {replies.length > 0 && (
         <Collapse in={expanded} timeout="auto" unmountOnExit>
-          {replies.reverse().map((reply) => (
+          {replies.slice().reverse().map((reply) => (
             <CommentBlock
               handleCommentCreate={handleCommentCreate}
               setGeneratingCommentsChain={setGeneratingCommentsChain}
