@@ -1,8 +1,9 @@
 import { Button, Stack, TextField } from "@mui/material";
-import React, { useState, useEffect, useMemo, useLayoutEffect } from "react";
+import React, { useState, useEffect, useMemo, useLayoutEffect, useRef } from "react";
 import {
   fetchPostById,
   generateCommentsChain,
+  generateCommentsChainPaginated,
   createComment,
   patchUser,
   patchPost,
@@ -27,6 +28,8 @@ import { useMaximumRenderableSkeletonComments } from "@hooks/useMaximumRenderabl
 import UserProfilePage from "./UserProfilePage";
 import UserStats from "@components/UserStats";
 import { GIFs } from "@assets/GIFs";
+import useInfiniteScroll from "@hooks/useInfiniteScroll";
+import type { FullComment } from "../APICalls";
 
 function PostPage({
   isLoggedIn,
@@ -44,7 +47,21 @@ function PostPage({
   const { enqueueSnackbar } = useSnackbar();
   const [commentsChain, setCommentsChain] = useState<any>(undefined);
   const [generatingCommentsChain, setGeneratingCommentsChain] = useState(false);
+  const [commentPage, setCommentPage] = useState(1);
+  const [hasMoreComments, setHasMoreComments] = useState(false);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
+  const maxSkeletonComments = useMaximumRenderableSkeletonComments();
+  const commentsPageSize = maxSkeletonComments || 5;
+  const reversedComments = useMemo(
+    () => [...(commentsChain || [])].reverse(),
+    [commentsChain]
+  );
+  useInfiniteScroll(loadMoreRef, () => {
+    if (hasMoreComments && !generatingCommentsChain) {
+      setCommentPage((prev) => prev + 1);
+    }
+  });
   const randomGIFIndex = useMemo(
     () => Math.floor(Math.random() * Math.min(GIFs.length, 200)),
     []
@@ -100,19 +117,34 @@ function PostPage({
   }, [id]);
 
   useEffect(() => {
+    setCommentPage(1);
+  }, [post?.comments]);
+
+  useEffect(() => {
     if (post && post.comments && post.comments.length > 0) {
+    
       setGeneratingCommentsChain(true);
-      generateCommentsChain(post.comments.map(String))
-        .then((chain) => {
-          setCommentsChain(chain);
+      generateCommentsChainPaginated(
+        post.comments.map(String),
+        commentPage,
+        commentsPageSize
+      )
+        .then(({ comments, hasMore }) => {
+          setCommentsChain((prev: FullComment[] = []) =>
+            commentPage === 1 ? comments : [...prev, ...comments]
+          );
+          setHasMoreComments(hasMore);
           setGeneratingCommentsChain(false);
         })
         .catch((err: unknown) => {
           console.error(err);
           setGeneratingCommentsChain(false);
         });
+    } else {
+      setCommentsChain([]);
+      setHasMoreComments(false);
     }
-  }, [post]);
+  }, [post, commentPage, commentsPageSize]);
 
   function refreshData(id: string) {
     fetchCurrentPostData(id);
@@ -351,80 +383,51 @@ function PostPage({
                 {creatingComment ? <IOSLoader /> : <SendIcon />}
               </Button>
             </Stack>
-            <Fade in={!generatingCommentsChain} timeout={1000}>
-              <Stack
-                gap={1}
-                sx={{
-                  display: generatingCommentsChain ? "none" : "flex",
-                }}
-              >
-                {commentsChain &&
-                  commentsChain.length > 0 &&
-                  commentsChain
-                    .reverse()
-                    .map((comment, index) => (
-                      <CommentBlock
-                        authorID={comment.authorID}
-                        handleCommentCreate={handleCommentCreate}
-                        id={comment.id}
-                        userData={userData}
-                        key={comment.id}
-                        dateCreated={comment.dateCreated}
-                        userName={comment.authorName}
-                        commentContents={comment.text}
-                        replies={comment.replies}
-                        imageURL={comment.imageURL}
-                        amIaReply={false}
-                        depth={0}
-                        isLoggedIn={isLoggedIn}
-                        likedByCurrentUser={
-                          userData?.likedComments
-                            .map(String)
-                            .includes(String(comment.id)) || false
-                        }
-                        dislikedByCurrentUser={
-                          userData?.dislikedComments
-                            .map(String)
-                            .includes(String(comment.id)) || false
-                        }
-                        likes={comment.likes}
-                        dislikes={comment.dislikes}
-                        setGeneratingCommentsChain={setGeneratingCommentsChain}
-                        userPageVariant={false}
-                        postID={comment.postID}
-                      />
-                    ))}
-              </Stack>
-            </Fade>
-            <Fade in={generatingCommentsChain} timeout={1000}>
-              <Stack
-                gap={2}
-                sx={{
-                  display: generatingCommentsChain ? "flex" : "none",
-                }}
-              >
-                {post?.comments.length &&
-                  [...Array(post?.comments.length)].map((_, index) => (
-                    <CommentSkeletonLoader key={index} />
+            <Stack gap={1}>
+              {/* existing comments */}
+              {reversedComments &&
+                reversedComments.map((comment) => (
+                  <CommentBlock
+                    authorID={comment.authorID}
+                    handleCommentCreate={handleCommentCreate}
+                    id={comment.id}
+                    userData={userData}
+                    key={comment.id}
+                    dateCreated={comment.dateCreated}
+                    userName={comment.authorName}
+                    commentContents={comment.text}
+                    replies={comment.replies}
+                    imageURL={comment.imageURL}
+                    amIaReply={false}
+                    depth={0}
+                    isLoggedIn={isLoggedIn}
+                    likedByCurrentUser={
+                      userData?.likedComments
+                        .map(String)
+                        .includes(String(comment.id)) || false
+                    }
+                    dislikedByCurrentUser={
+                      userData?.dislikedComments
+                        .map(String)
+                        .includes(String(comment.id)) || false
+                    }
+                    likes={comment.likes}
+                    dislikes={comment.dislikes}
+                    setGeneratingCommentsChain={setGeneratingCommentsChain}
+                    userPageVariant={false}
+                    postID={comment.postID}
+                  />
+                ))}
+              <div ref={loadMoreRef} />
+
+              {generatingCommentsChain && (
+                <Stack gap={2}>
+                  {[...Array(commentsPageSize)].map((_, idx) => (
+                    <CommentSkeletonLoader key={idx} />
                   ))}
-                {post?.comments.length === null && <CommentSkeletonLoader />}
-                {post?.comments.length === 0 && (
-                  <Stack
-                    width={"100%"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                  >
-                    <TextGlitchEffect
-                      text={`No comments yet`}
-                      speed={60}
-                      letterCase="lowercase"
-                      type="ALPHA_NUMERIC"
-                      className={"no Comments Found"}
-                    />
-                  </Stack>
-                )}
-              </Stack>
-            </Fade>
+                </Stack>
+              )}
+            </Stack>
           </Stack>
         </Stack>
         {isDesktop && (
