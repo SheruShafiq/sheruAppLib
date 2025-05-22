@@ -1,4 +1,13 @@
-import { Button, Stack, TextField } from "@mui/material";
+import {
+  Button,
+  Stack,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  IconButton,
+} from "@mui/material";
 import React, {
   useState,
   useEffect,
@@ -28,6 +37,7 @@ import CommentBlock from "@components/CommentBlock";
 import { useNavigate } from "react-router-dom";
 import IOSLoader from "@components/IOSLoader";
 import SendIcon from "@mui/icons-material/Send";
+import SwapVertIcon from "@mui/icons-material/SwapVert";
 import CommentSkeletonLoader from "../SkeletonLoaders/CommentSkeletonLoader";
 import { useMaximumRenderableSkeletonComments } from "@hooks/useMaximumRenderableSkeletonComments";
 import UserStats from "@components/UserStats";
@@ -51,6 +61,35 @@ function PostPage({
   const { enqueueSnackbar } = useSnackbar();
   const [commentsChain, setCommentsChain] = useState<FullComment[]>([]);
   const [generatingCommentsChain, setGeneratingCommentsChain] = useState(false);
+  const [commentSortPreferences, setCommentSortPreferences] = useState({
+    sortBy: "dateCreated",
+    sortOrder: "desc",
+  });
+  const sortedComments = useMemo(() => {
+    const sorted = [...commentsChain].sort((a, b) => {
+      let aVal: number | string | Date = 0;
+      let bVal: number | string | Date = 0;
+      switch (commentSortPreferences.sortBy) {
+        case "likes":
+          aVal = a.likes;
+          bVal = b.likes;
+          break;
+        case "dislikes":
+          aVal = a.dislikes;
+          bVal = b.dislikes;
+          break;
+        default:
+          aVal = new Date(a.dateCreated).getTime();
+          bVal = new Date(b.dateCreated).getTime();
+      }
+      if (aVal < bVal)
+        return commentSortPreferences.sortOrder === "asc" ? -1 : 1;
+      if (aVal > bVal)
+        return commentSortPreferences.sortOrder === "asc" ? 1 : -1;
+      return 0;
+    });
+    return sorted;
+  }, [commentsChain, commentSortPreferences]);
   const [commentPage, setCommentPage] = useState(1);
   const [hasMoreComments, setHasMoreComments] = useState(true);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
@@ -396,9 +435,52 @@ function PostPage({
                 {creatingComment ? <IOSLoader /> : <SendIcon />}
               </Button>
             </Stack>
+            <Stack direction="row" gap={1} alignItems="center">
+              <IconButton
+                onClick={() =>
+                  setCommentSortPreferences((prev) => ({
+                    ...prev,
+                    sortOrder: prev.sortOrder === "asc" ? "desc" : "asc",
+                  }))
+                }
+              >
+                <SwapVertIcon
+                  color={
+                    commentSortPreferences.sortOrder === "asc"
+                      ? "primary"
+                      : "secondary"
+                  }
+                />
+              </IconButton>
+              <FormControl
+                sx={{
+                  width: "100%",
+                  maxWidth: globalThis.isDesktop ? "260px" : "100%",
+                }}
+                size="small"
+                variant="standard"
+              >
+                <InputLabel id="comment-sorting">Sort</InputLabel>
+                <Select
+                  labelId="comment-sorting"
+                  id="comment-sorting-select"
+                  defaultValue="dateCreated"
+                  onChange={(e) =>
+                    setCommentSortPreferences((prev) => ({
+                      ...prev,
+                      sortBy: e.target.value,
+                    }))
+                  }
+                >
+                  <MenuItem value="dateCreated">Date Created</MenuItem>
+                  <MenuItem value="likes">Likes</MenuItem>
+                  <MenuItem value="dislikes">Dislikes</MenuItem>
+                </Select>
+              </FormControl>
+            </Stack>
             <Stack gap={1}>
               {/* existing comments */}
-              {commentsChain.map((comment) => (
+              {sortedComments.map((comment) => (
                 <CommentBlock
                   authorID={comment.authorID}
                   handleCommentCreate={handleCommentCreate}
