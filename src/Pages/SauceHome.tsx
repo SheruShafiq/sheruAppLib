@@ -145,7 +145,7 @@ function SauceHome({
         if (next) setCuurentPage(Number(next));
       }
     },
-    { rootMargin: "100px" }
+    { rootMargin: "400px" }
   );
   const [pendingSearchTerm, setPendingSearchTerm] = useState<string>("");
   useEffect(() => {
