@@ -1,9 +1,8 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import {
   Stack,
   Divider,
   IconButton,
-  Button,
   TextField,
   Select,
   MenuItem,
@@ -16,10 +15,6 @@ import PostPreview from "@components/PostPreview";
 import SauceLayout from "../Layouts/SauceLayout";
 import PostPreviewSkeletonLoader from "../SkeletonLoaders/PostPreviewSkeletonLoader";
 import Fade from "@mui/material/Fade";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import { useParams } from "react-router-dom";
 import {
   fetchPostsPaginatedProps,
@@ -28,12 +23,11 @@ import {
   Category,
 } from "../../dataTypeDefinitions";
 import { errorProps } from "../../dataTypeDefinitions";
-import IOSSpinner from "@components/IOSLoader";
 import { GIFs } from "@assets/GIFs";
-import HomeInteractions from "@components/HomeInteractions";
 import IOSLoader from "@components/IOSLoader";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import SideMenu from "@components/SideMenu";
+import useInfiniteScroll from "@hooks/useInfiniteScroll";
 function SauceHome({
   isLoggedIn,
   userData,
@@ -53,7 +47,8 @@ function SauceHome({
     sortBy: "dateCreated",
     sortOrder: "desc",
   });
-  const [fetchingInitialPosts, setFetchingPosts] = useState(true);
+  const [fetchingInitialPosts, setFetchingInitialPosts] = useState(true);
+  const [loadingMorePosts, setLoadingMorePosts] = useState(false);
   const [curentPage, setCuurentPage] = useState(
     pageNumber ? Number(pageNumber) : 1
   );
@@ -64,6 +59,8 @@ function SauceHome({
   const [metaData, setmetaData] = useState<paginatedPostsMetaDataType | null>(
     null
   );
+  const [hasMorePosts, setHasMorePosts] = useState(true);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const fetchPostsHandeled = (
     page?: number,
     pageSize?: number,
@@ -72,17 +69,28 @@ function SauceHome({
       sortOrder: string;
     }
   ) => {
-    setFetchingPosts(true);
+    if (page && page > 1) {
+      setLoadingMorePosts(true);
+    } else {
+      setFetchingInitialPosts(true);
+    }
     fetchPostsPaginated({
       onSuccess: (data) => {
-        setPosts(data?.posts);
+        setPosts((prev) =>
+          page && page > 1 ? [...prev, ...data.posts] : data.posts
+        );
         setmetaData({
           first: data?.metadata?.first || "",
           prev: data?.metadata?.prev || "",
           next: data?.metadata?.next || "",
           last: data?.metadata?.last || "",
         });
-        setFetchingPosts(false);
+        setHasMorePosts(!!data?.metadata?.next);
+        if (page && page > 1) {
+          setLoadingMorePosts(false);
+        } else {
+          setFetchingInitialPosts(false);
+        }
       },
       onError: (error: errorProps) => {
         const err: errorProps = {
@@ -93,7 +101,11 @@ function SauceHome({
           error: error instanceof Error ? error : new Error("Unknown error"),
         };
         enqueueSnackbar({ variant: "error", ...err });
-        setFetchingPosts(false);
+        if (page && page > 1) {
+          setLoadingMorePosts(false);
+        } else {
+          setFetchingInitialPosts(false);
+        }
       },
       page,
       pageSize,
@@ -136,6 +148,16 @@ function SauceHome({
   const prevPage = metaData?.prev?.match(/_page=(\d+)/)?.[1];
   const nextPage = metaData?.next?.match(/_page=(\d+)/)?.[1];
   const lastPage = Number(metaData?.last?.match(/_page=(\d+)/)?.[1] || 1);
+  useInfiniteScroll(
+    loadMoreRef,
+    () => {
+      if (metaData?.next && !fetchingInitialPosts && !loadingMorePosts) {
+        const next = metaData.next.match(/_page=(\d+)/)?.[1];
+        if (next) setCuurentPage(Number(next));
+      }
+    },
+    { rootMargin: "100px" }
+  );
   const [pendingSearchTerm, setPendingSearchTerm] = useState<string>("");
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -151,12 +173,12 @@ function SauceHome({
     }
     if (searchTerm)
       (async () => {
-        setFetchingPosts(true);
+        setFetchingInitialPosts(true);
         searchPosts(
           searchTerm,
           (data) => {
             setPosts(data);
-            setFetchingPosts(false);
+            setFetchingInitialPosts(false);
           },
           (error) => {
             const err: errorProps = {
@@ -168,7 +190,7 @@ function SauceHome({
                 error instanceof Error ? error : new Error("Unknown error"),
             };
             enqueueSnackbar({ variant: "error", ...err });
-            setFetchingPosts(false);
+            setFetchingInitialPosts(false);
           }
         );
       })();
@@ -347,6 +369,14 @@ function SauceHome({
                       userData={userData}
                     />
                   ))}
+                  {loadingMorePosts &&
+                    [...Array(pageSize)].map((_, index) => (
+                      <PostPreviewSkeletonLoader
+                        key={`more-${index}`}
+                        pageVariant={false}
+                      />
+                    ))}
+                  <div ref={loadMoreRef} />
                 </Stack>
               </Fade>
               {isNoPosts && !fetchingInitialPosts && (
@@ -362,55 +392,6 @@ function SauceHome({
               )}
             </Stack>
           </Stack>
-        </Stack>
-      </Stack>
-      <Stack
-        width={"100%"}
-        height={"100%"}
-        justifyContent={"center"}
-        alignItems={"center"}
-        gap={2}
-        flexDirection={"row"}
-      >
-        <Stack flexDirection={"row"}>
-          <IconButton
-            onClick={() => {
-              setCuurentPage(firstPage);
-              window.history.pushState(null, "", `/${firstPage}`);
-            }}
-            disabled={curentPage === firstPage || fetchingInitialPosts}
-          >
-            <KeyboardDoubleArrowLeftIcon />
-          </IconButton>
-          <IconButton
-            onClick={() => {
-              setCuurentPage(prevPage ? Number(prevPage) : curentPage);
-              window.history.pushState(null, "", `/${prevPage}`);
-            }}
-            disabled={curentPage === firstPage || fetchingInitialPosts}
-          >
-            <KeyboardArrowLeftIcon />
-          </IconButton>
-        </Stack>
-        <Stack flexDirection={"row"}>
-          <IconButton
-            onClick={() => {
-              setCuurentPage(nextPage ? Number(nextPage) : curentPage);
-              window.history.pushState(null, "", `/${nextPage}`);
-            }}
-            disabled={fetchingInitialPosts || curentPage === lastPage}
-          >
-            <KeyboardArrowRightIcon />
-          </IconButton>
-          <IconButton
-            onClick={() => {
-              setCuurentPage(lastPage);
-              window.history.pushState(null, "", `/${lastPage}`);
-            }}
-            disabled={fetchingInitialPosts || curentPage === lastPage}
-          >
-            <KeyboardDoubleArrowRightIcon />
-          </IconButton>
         </Stack>
       </Stack>
     </SauceLayout>
