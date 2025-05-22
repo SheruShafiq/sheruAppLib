@@ -233,6 +233,8 @@ function CommentBlock({
       }
     })();
   }, [userName]);
+  const reversedReplies = useMemo(() => [...replies].reverse(), [replies]);
+
   return (
     <Stack
       sx={{
@@ -263,7 +265,11 @@ function CommentBlock({
           </Stack>
           <ReadMore text={commentContents} maxLength={200} />
 
-          <Stack direction="row" alignItems="center">
+          <Stack
+            direction="row"
+            alignItems="center"
+            sx={{ flexWrap: "wrap", rowGap: 1 }}
+          >
             {replies.length > 0 && (
               <Stack
                 direction="row"
@@ -390,7 +396,7 @@ function CommentBlock({
 
       {replies.length > 0 && (
         <Collapse in={expanded} timeout="auto" unmountOnExit>
-          {replies.reverse().map((reply) => (
+          {reversedReplies.map((reply) => (
             <CommentBlock
               handleCommentCreate={handleCommentCreate}
               setGeneratingCommentsChain={setGeneratingCommentsChain}
