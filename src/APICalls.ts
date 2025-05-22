@@ -569,7 +569,7 @@ export async function searchPosts(
   }
 }
 
-export async function updateCateogories(
+export async function updateCategories(
   id: string,
   field: string,
   newValue: any,
