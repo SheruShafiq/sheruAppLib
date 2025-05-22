@@ -82,8 +82,10 @@ function PostPage({
           aVal = new Date(a.dateCreated).getTime();
           bVal = new Date(b.dateCreated).getTime();
       }
-      if (aVal < bVal) return commentSortPreferences.sortOrder === "asc" ? -1 : 1;
-      if (aVal > bVal) return commentSortPreferences.sortOrder === "asc" ? 1 : -1;
+      if (aVal < bVal)
+        return commentSortPreferences.sortOrder === "asc" ? -1 : 1;
+      if (aVal > bVal)
+        return commentSortPreferences.sortOrder === "asc" ? 1 : -1;
       return 0;
     });
     return sorted;
@@ -450,7 +452,14 @@ function PostPage({
                   }
                 />
               </IconButton>
-              <FormControl size="small" variant="standard">
+              <FormControl
+                sx={{
+                  width: "100%",
+                  maxWidth: globalThis.isDesktop ? "260px" : "100%",
+                }}
+                size="small"
+                variant="standard"
+              >
                 <InputLabel id="comment-sorting">Sort</InputLabel>
                 <Select
                   labelId="comment-sorting"

@@ -80,10 +80,8 @@ function UserProfilePage({
           aVal = new Date(a.dateCreated).getTime();
           bVal = new Date(b.dateCreated).getTime();
       }
-      if (aVal < bVal)
-        return postSortPreferences.sortOrder === "asc" ? -1 : 1;
-      if (aVal > bVal)
-        return postSortPreferences.sortOrder === "asc" ? 1 : -1;
+      if (aVal < bVal) return postSortPreferences.sortOrder === "asc" ? -1 : 1;
+      if (aVal > bVal) return postSortPreferences.sortOrder === "asc" ? 1 : -1;
       return 0;
     });
     return sorted;
@@ -126,7 +124,6 @@ function UserProfilePage({
   const [loading, setLoading] = useState(true);
   const [fetchedData, setFetchedData] = useState<Record<string, any>>({});
 
-
   const randomGIFIndex = useMemo(
     () => Math.floor(Math.random() * Math.min(GIFs.length, 200)),
     []
@@ -145,7 +142,9 @@ function UserProfilePage({
 
   useInfiniteScroll(commentsLoadMoreRef, () => {
     if (
-      ["comments", "likedComments", "dislikedComments"].includes(activeDataTab) &&
+      ["comments", "likedComments", "dislikedComments"].includes(
+        activeDataTab
+      ) &&
       commentsPage * commentsPageSize < commentsChain.length
     ) {
       setCommentsPage((prev) => prev + 1);
@@ -224,9 +223,7 @@ function UserProfilePage({
             activeDataTab
           )
         ) {
-          const fetchedComments = await generateCommentsChain(
-            ids.map(String)
-          );
+          const fetchedComments = await generateCommentsChain(ids.map(String));
           setCommentsChain(fetchedComments);
           setFetchedData((prev) => ({
             ...prev,
@@ -263,7 +260,6 @@ function UserProfilePage({
 
     fetchData();
   }, [activeDataTab, userData, id, fetchedData]);
-
 
   const handleCommentCreate = ({ reply, comment, replies }) => {
     if (!reply && !comment && !replies) setCreatingComment(true);
@@ -423,12 +419,9 @@ function UserProfilePage({
             </ToggleButton>
           </ToggleButtonGroup>
         </Stack>
-        {[
-          "posts",
-          "upvotedPosts",
-          "reportedPosts",
-          "downVotedPosts",
-        ].includes(activeDataTab) && (
+        {["posts", "upvotedPosts", "reportedPosts", "downVotedPosts"].includes(
+          activeDataTab
+        ) && (
           <Stack direction="row" gap={1} alignItems="center">
             <IconButton
               onClick={() =>
@@ -446,7 +439,14 @@ function UserProfilePage({
                 }
               />
             </IconButton>
-            <FormControl size="small" variant="standard">
+            <FormControl
+              sx={{
+                width: "100%",
+                maxWidth: globalThis.isDesktop ? "260px" : "100%",
+              }}
+              size="small"
+              variant="standard"
+            >
               <InputLabel id="post-sorting">Sort</InputLabel>
               <Select
                 labelId="post-sorting"
@@ -466,11 +466,9 @@ function UserProfilePage({
             </FormControl>
           </Stack>
         )}
-        {[
-          "comments",
-          "likedComments",
-          "dislikedComments",
-        ].includes(activeDataTab) && (
+        {["comments", "likedComments", "dislikedComments"].includes(
+          activeDataTab
+        ) && (
           <Stack direction="row" gap={1} alignItems="center">
             <IconButton
               onClick={() =>
@@ -581,33 +579,33 @@ function UserProfilePage({
                     <CommentSkeletonLoader key={`comment-skeleton-${idx}`} />
                   ))
                 : visibleComments.map((comment) => (
-                      <CommentBlock
-                        authorID={comment.authorID}
-                        postID={comment.postID}
-                        userPageVariant={true}
-                        key={comment.id}
-                        id={comment.id}
-                        dateCreated={comment.dateCreated}
-                        userName={comment.userName}
-                        commentContents={comment.text}
-                        replies={comment.replies}
-                        imageURL={comment.imageURL}
-                        amIaReply={false}
-                        depth={0}
-                        isLoggedIn={isLoggedIn}
-                        likes={comment.likes}
-                        likedByCurrentUser={userData?.likedComments?.includes(
-                          comment.id
-                        )}
-                        dislikes={comment.dislikes}
-                        dislikedByCurrentUser={userData?.dislikedComments?.includes(
-                          comment.id
-                        )}
-                        userData={userData}
-                        handleCommentCreate={handleCommentCreate}
-                        setGeneratingCommentsChain={setGeneratingCommentsChain}
-                      />
-                    ))}
+                    <CommentBlock
+                      authorID={comment.authorID}
+                      postID={comment.postID}
+                      userPageVariant={true}
+                      key={comment.id}
+                      id={comment.id}
+                      dateCreated={comment.dateCreated}
+                      userName={comment.userName}
+                      commentContents={comment.text}
+                      replies={comment.replies}
+                      imageURL={comment.imageURL}
+                      amIaReply={false}
+                      depth={0}
+                      isLoggedIn={isLoggedIn}
+                      likes={comment.likes}
+                      likedByCurrentUser={userData?.likedComments?.includes(
+                        comment.id
+                      )}
+                      dislikes={comment.dislikes}
+                      dislikedByCurrentUser={userData?.dislikedComments?.includes(
+                        comment.id
+                      )}
+                      userData={userData}
+                      handleCommentCreate={handleCommentCreate}
+                      setGeneratingCommentsChain={setGeneratingCommentsChain}
+                    />
+                  ))}
               <div ref={commentsLoadMoreRef} />
             </Stack>
           </Fade>
