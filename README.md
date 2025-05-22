@@ -148,6 +148,7 @@ Product properties
 - Okay, webworkers. Holy shit. SO cool, but my god the usecase are far and few between. Regardless, Iam extremely happy with the fact that I got em working. PDF generation time is almost half when the work is divided on 2 worker threads. All be it, the issue
   regarding the browser slowing down when window not focused continues, and might only be resolved via Electron. Need to figure that out yet tho. 
 Was a bitch to setup... thanks Claude.
+- Implemented a nicer Excel input that supports pasting spreadsheet rows and logs all input to the database.
 - Idea (Hans): Hans also low key cooked, what if I made an image of the BG once, sent that to backend and let is loop over that image. That would be THE fastest way to generate badges. Some downsides tho, its not gonna be as accurate, cuz now shtits not caluclated anymore.
 
 ---

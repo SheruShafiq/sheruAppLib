@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -9,6 +9,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { logExcelInput } from "../APICalls";
+import { RowData } from "../../dataTypeDefinitions";
 
 export type ExcelInputProps = {
   rows: RowData[];
@@ -21,13 +23,37 @@ export type ExcelInputProps = {
   };
 };
 
-export type RowData = { col1: string; col2: string };
-
 const ExcelLikeTable: React.FC<ExcelInputProps> = ({
   rows,
   setRows,
   labels,
 }) => {
+  const handlePaste = (
+    e: React.ClipboardEvent,
+    startIndex: number
+  ) => {
+    const clipboard = e.clipboardData.getData("text");
+    if (!clipboard) return;
+    const lines = clipboard.split(/\r?\n/).filter((l) => l.trim() !== "");
+    if (lines.length === 0) return;
+    e.preventDefault();
+    const newRows = [...rows];
+    lines.forEach((line, i) => {
+      const cols = line.split(/\t|,/);
+      const rowIndex = startIndex + i;
+      if (!newRows[rowIndex]) newRows[rowIndex] = { col1: "", col2: "" };
+      if (cols[0] !== undefined) newRows[rowIndex].col1 = cols[0];
+      if (cols[1] !== undefined) newRows[rowIndex].col2 = cols[1];
+    });
+    if (
+      newRows[newRows.length - 1].col1 !== "" ||
+      newRows[newRows.length - 1].col2 !== ""
+    ) {
+      newRows.push({ col1: "", col2: "" });
+    }
+    setRows(newRows);
+  };
+
   const handleInputChange = (
     index: number,
     field: keyof RowData,
@@ -44,6 +70,17 @@ const ExcelLikeTable: React.FC<ExcelInputProps> = ({
       setRows([...newRows, { col1: "", col2: "" }]);
     }
   };
+
+  useEffect(() => {
+    const validRows = rows.filter(
+      (r) => r.col1.trim() !== "" || r.col2.trim() !== ""
+    );
+    if (validRows.length === 0) return;
+    const timer = setTimeout(() => {
+      logExcelInput(validRows, () => {}, () => {});
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [rows]);
 
   return (
     <TableContainer>
@@ -77,6 +114,7 @@ const ExcelLikeTable: React.FC<ExcelInputProps> = ({
                   onChange={(e) =>
                     handleInputChange(index, "col1", e.target.value)
                   }
+                  onPaste={(e) => handlePaste(e, index)}
                   fullWidth
                   variant="standard"
                   placeholder={labels.placeholder1}
@@ -89,6 +127,7 @@ const ExcelLikeTable: React.FC<ExcelInputProps> = ({
                   onChange={(e) =>
                     handleInputChange(index, "col2", e.target.value)
                   }
+                  onPaste={(e) => handlePaste(e, index)}
                   fullWidth
                   variant="standard"
                   placeholder={labels.placeholder2}

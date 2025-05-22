@@ -45,6 +45,14 @@ export type Comment = {
   dislikedBy: string[];
   postID: string;
 };
+
+export type RowData = { col1: string; col2: string };
+
+export type ExcelLog = {
+  id?: string;
+  rows: RowData[];
+  dateCreated: string;
+};
 export type Category = {
   id: number;
   name: string;
