@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useParams } from "react-router-dom";
 import {
   Stack,
@@ -7,6 +7,11 @@ import {
   ToggleButton,
   Fade,
   Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  IconButton,
 } from "@mui/material";
 import {
   fetchUserById,
@@ -25,6 +30,8 @@ import CommentBlock from "@components/CommentBlock";
 import PostPreviewSkeletonLoader from "../SkeletonLoaders/PostPreviewSkeletonLoader";
 import CommentSkeletonLoader from "../SkeletonLoaders/CommentSkeletonLoader";
 import SauceLayout from "../Layouts/SauceLayout";
+import SwapVertIcon from "@mui/icons-material/SwapVert";
+import useInfiniteScroll from "@hooks/useInfiniteScroll";
 
 function UserProfilePage({
   isLoggedIn,
@@ -42,19 +49,116 @@ function UserProfilePage({
   const [posts, setPosts] = useState<Post[]>([]);
   const [commentsChain, setCommentsChain] = useState<any[]>([]);
   const [generatingCommentsChain, setGeneratingCommentsChain] = useState(false);
-  const reversedComments = useMemo(
-    () => [...commentsChain].reverse(),
-    [commentsChain]
+  const [postSortPreferences, setPostSortPreferences] = useState({
+    sortBy: "dateCreated",
+    sortOrder: "desc",
+  });
+  const [commentSortPreferences, setCommentSortPreferences] = useState({
+    sortBy: "dateCreated",
+    sortOrder: "desc",
+  });
+  const postsPageSize = 5;
+  const commentsPageSize = 5;
+  const [postsPage, setPostsPage] = useState(1);
+  const [commentsPage, setCommentsPage] = useState(1);
+  const postsLoadMoreRef = useRef<HTMLDivElement | null>(null);
+  const commentsLoadMoreRef = useRef<HTMLDivElement | null>(null);
+  const sortedPosts = useMemo(() => {
+    const sorted = [...posts].sort((a, b) => {
+      let aVal: number | string | Date = 0;
+      let bVal: number | string | Date = 0;
+      switch (postSortPreferences.sortBy) {
+        case "upVotedPosts":
+          aVal = a.upvotes;
+          bVal = b.upvotes;
+          break;
+        case "downVotedPost":
+          aVal = a.downvotes;
+          bVal = b.downvotes;
+          break;
+        default:
+          aVal = new Date(a.dateCreated).getTime();
+          bVal = new Date(b.dateCreated).getTime();
+      }
+      if (aVal < bVal)
+        return postSortPreferences.sortOrder === "asc" ? -1 : 1;
+      if (aVal > bVal)
+        return postSortPreferences.sortOrder === "asc" ? 1 : -1;
+      return 0;
+    });
+    return sorted;
+  }, [posts, postSortPreferences]);
+  const visiblePosts = useMemo(
+    () => sortedPosts.slice(0, postsPage * postsPageSize),
+    [sortedPosts, postsPage, postsPageSize]
+  );
+  const sortedComments = useMemo(() => {
+    const sorted = [...commentsChain].sort((a, b) => {
+      let aVal: number | string | Date = 0;
+      let bVal: number | string | Date = 0;
+      switch (commentSortPreferences.sortBy) {
+        case "likes":
+          aVal = a.likes;
+          bVal = b.likes;
+          break;
+        case "dislikes":
+          aVal = a.dislikes;
+          bVal = b.dislikes;
+          break;
+        default:
+          aVal = new Date(a.dateCreated).getTime();
+          bVal = new Date(b.dateCreated).getTime();
+      }
+      if (aVal < bVal)
+        return commentSortPreferences.sortOrder === "asc" ? -1 : 1;
+      if (aVal > bVal)
+        return commentSortPreferences.sortOrder === "asc" ? 1 : -1;
+      return 0;
+    });
+    return sorted;
+  }, [commentsChain, commentSortPreferences]);
+  const visibleComments = useMemo(
+    () => sortedComments.slice(0, commentsPage * commentsPageSize),
+    [sortedComments, commentsPage, commentsPageSize]
   );
   const [creatingComment, setCreatingComment] = useState(false);
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
   const [fetchedData, setFetchedData] = useState<Record<string, any>>({});
 
+
   const randomGIFIndex = useMemo(
     () => Math.floor(Math.random() * Math.min(GIFs.length, 200)),
     []
   );
+
+  useInfiniteScroll(postsLoadMoreRef, () => {
+    if (
+      ["posts", "upvotedPosts", "reportedPosts", "downVotedPosts"].includes(
+        activeDataTab
+      ) &&
+      postsPage * postsPageSize < posts.length
+    ) {
+      setPostsPage((prev) => prev + 1);
+    }
+  });
+
+  useInfiniteScroll(commentsLoadMoreRef, () => {
+    if (
+      ["comments", "likedComments", "dislikedComments"].includes(activeDataTab) &&
+      commentsPage * commentsPageSize < commentsChain.length
+    ) {
+      setCommentsPage((prev) => prev + 1);
+    }
+  });
+
+  useEffect(() => {
+    setPostsPage(1);
+  }, [activeDataTab, posts.length, postSortPreferences]);
+
+  useEffect(() => {
+    setCommentsPage(1);
+  }, [activeDataTab, commentsChain.length, commentSortPreferences]);
 
   const handleChange = (
     _event: React.MouseEvent<HTMLElement>,
@@ -319,6 +423,91 @@ function UserProfilePage({
             </ToggleButton>
           </ToggleButtonGroup>
         </Stack>
+        {[
+          "posts",
+          "upvotedPosts",
+          "reportedPosts",
+          "downVotedPosts",
+        ].includes(activeDataTab) && (
+          <Stack direction="row" gap={1} alignItems="center">
+            <IconButton
+              onClick={() =>
+                setPostSortPreferences((prev) => ({
+                  ...prev,
+                  sortOrder: prev.sortOrder === "asc" ? "desc" : "asc",
+                }))
+              }
+            >
+              <SwapVertIcon
+                color={
+                  postSortPreferences.sortOrder === "asc"
+                    ? "primary"
+                    : "secondary"
+                }
+              />
+            </IconButton>
+            <FormControl size="small" variant="standard">
+              <InputLabel id="post-sorting">Sort</InputLabel>
+              <Select
+                labelId="post-sorting"
+                id="post-sorting-select"
+                defaultValue="dateCreated"
+                onChange={(e) =>
+                  setPostSortPreferences((prev) => ({
+                    ...prev,
+                    sortBy: e.target.value,
+                  }))
+                }
+              >
+                <MenuItem value="dateCreated">Date Created</MenuItem>
+                <MenuItem value="upVotedPosts">Upvotes</MenuItem>
+                <MenuItem value="downVotedPost">Downvotes</MenuItem>
+              </Select>
+            </FormControl>
+          </Stack>
+        )}
+        {[
+          "comments",
+          "likedComments",
+          "dislikedComments",
+        ].includes(activeDataTab) && (
+          <Stack direction="row" gap={1} alignItems="center">
+            <IconButton
+              onClick={() =>
+                setCommentSortPreferences((prev) => ({
+                  ...prev,
+                  sortOrder: prev.sortOrder === "asc" ? "desc" : "asc",
+                }))
+              }
+            >
+              <SwapVertIcon
+                color={
+                  commentSortPreferences.sortOrder === "asc"
+                    ? "primary"
+                    : "secondary"
+                }
+              />
+            </IconButton>
+            <FormControl size="small" variant="standard">
+              <InputLabel id="comment-sort">Sort</InputLabel>
+              <Select
+                labelId="comment-sort"
+                id="comment-sort-select"
+                defaultValue="dateCreated"
+                onChange={(e) =>
+                  setCommentSortPreferences((prev) => ({
+                    ...prev,
+                    sortBy: e.target.value,
+                  }))
+                }
+              >
+                <MenuItem value="dateCreated">Date Created</MenuItem>
+                <MenuItem value="likes">Likes</MenuItem>
+                <MenuItem value="dislikes">Dislikes</MenuItem>
+              </Select>
+            </FormControl>
+          </Stack>
+        )}
         {loading && !generatingCommentsChain && (
           <Stack gap={1}>
             {[...Array(3)].map((_, index) => (
@@ -343,7 +532,7 @@ function UserProfilePage({
           ) && (
             <Fade in={!loading} timeout={1000}>
               <Stack gap={1} sx={{ display: !loading ? "flex" : "none" }}>
-                {posts.map(
+                {visiblePosts.map(
                   (post) =>
                     post.id && (
                       <PostPreview
@@ -372,6 +561,7 @@ function UserProfilePage({
                       />
                     )
                 )}
+                <div ref={postsLoadMoreRef} />
               </Stack>
             </Fade>
           )}
@@ -390,7 +580,7 @@ function UserProfilePage({
                 ? [...Array(commentsChain.length || 3)].map((_, idx) => (
                     <CommentSkeletonLoader key={`comment-skeleton-${idx}`} />
                   ))
-                : reversedComments.map((comment) => (
+                : visibleComments.map((comment) => (
                       <CommentBlock
                         authorID={comment.authorID}
                         postID={comment.postID}
@@ -418,6 +608,7 @@ function UserProfilePage({
                         setGeneratingCommentsChain={setGeneratingCommentsChain}
                       />
                     ))}
+              <div ref={commentsLoadMoreRef} />
             </Stack>
           </Fade>
         )}
