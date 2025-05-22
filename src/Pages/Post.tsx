@@ -44,6 +44,7 @@ import UserStats from "@components/UserStats";
 import { GIFs } from "@assets/GIFs";
 import useInfiniteScroll from "@hooks/useInfiniteScroll";
 import type { FullComment } from "../APICalls";
+import { getOrCreateAnonId } from "../Helpers/cookies";
 
 function PostPage({
   isLoggedIn,
@@ -208,88 +209,85 @@ function PostPage({
     if (!reply && !comment && !replies) {
       setcreatingComment(true);
     }
-    createComment(
-      userData.id!,
-      post?.id!,
-      reply ? comment : newComment,
-      (comment) => {
-        patchUser({
-          userID: userData.id!,
-          field: "comments",
-          newValue: [...(userData.comments || []), comment.id],
-          onSuccess: (user) => {
-            if (reply) {
-              patchComment(
-                reply,
-                "replies",
-                [...replies.map((r) => r.id), comment.id],
-                (comment) => {
-                  refreshData(post?.id!);
-                  setcreatingComment(false);
-                },
-                (error) => {
-                  const err: errorProps = {
-                    id: "failed to add comment to post",
-                    userFriendlyMessage:
-                      "Something went wrong when creating comment",
-                    errorMessage:
-                      error instanceof Error ? error.message : "Unknown error",
-                    error:
-                      error instanceof Error
-                        ? error
-                        : new Error("Unknown error"),
-                  };
-                  enqueueSnackbar({ variant: "error", ...err });
-                  setcreatingComment(false);
-                }
-              );
-            } else
-              patchPost(
-                post?.id!,
-                "comments",
-                [...(post?.comments || []), comment.id],
-                (post) => {
-                  refreshData(post.id!);
-                  setcreatingComment(false);
-                  setNewComment("");
-                },
-                (error) => {
-                  const err: errorProps = {
-                    id: "failed to add comment to post",
-                    userFriendlyMessage:
-                      "Something went wrong when creating comment",
-                    errorMessage:
-                      error instanceof Error ? error.message : "Unknown error",
-                    error:
-                      error instanceof Error
-                        ? error
-                        : new Error("Unknown error"),
-                  };
-                  enqueueSnackbar({ variant: "error", ...err });
-                  setcreatingComment(false);
-                }
-              );
+
+    const authorID = isLoggedIn ? userData.id : getOrCreateAnonId();
+
+    const finalize = (createdComment) => {
+      if (reply) {
+        patchComment(
+          reply,
+          "replies",
+          [...replies.map((r) => r.id), createdComment.id],
+          () => {
+            refreshData(post?.id!);
+            setcreatingComment(false);
           },
-          onError: (error) => {
+          (error) => {
             const err: errorProps = {
-              id: "failed to create comment in user",
+              id: "failed to add comment to post",
               userFriendlyMessage: "Something went wrong when creating comment",
-              errorMessage:
-                error instanceof Error ? error.message : "Unknown error",
-              error:
-                error instanceof Error ? error : new Error("Unknown error"),
+              errorMessage: error instanceof Error ? error.message : "Unknown error",
+              error: error instanceof Error ? error : new Error("Unknown error"),
             };
             enqueueSnackbar({ variant: "error", ...err });
             setcreatingComment(false);
+          }
+        );
+      } else {
+        patchPost(
+          post?.id!,
+          "comments",
+          [...(post?.comments || []), createdComment.id],
+          (post) => {
+            refreshData(post.id!);
+            setcreatingComment(false);
+            setNewComment("");
           },
-        });
+          (error) => {
+            const err: errorProps = {
+              id: "failed to add comment to post",
+              userFriendlyMessage: "Something went wrong when creating comment",
+              errorMessage: error instanceof Error ? error.message : "Unknown error",
+              error: error instanceof Error ? error : new Error("Unknown error"),
+            };
+            enqueueSnackbar({ variant: "error", ...err });
+            setcreatingComment(false);
+          }
+        );
+      }
+    };
+
+    createComment(
+      authorID!,
+      post?.id!,
+      reply ? comment : newComment,
+      (createdComment) => {
+        if (isLoggedIn) {
+          patchUser({
+            userID: userData.id!,
+            field: "comments",
+            newValue: [...(userData.comments || []), createdComment.id],
+            onSuccess: () => finalize(createdComment),
+            onError: (error) => {
+              const err: errorProps = {
+                id: "failed to create comment in user",
+                userFriendlyMessage: "Something went wrong when creating comment",
+                errorMessage: error instanceof Error ? error.message : "Unknown error",
+                error: error instanceof Error ? error : new Error("Unknown error"),
+              };
+              enqueueSnackbar({ variant: "error", ...err });
+              setcreatingComment(false);
+            },
+          });
+        } else {
+          finalize(createdComment);
+        }
       },
       (error) => {
         const err: errorProps = {
           id: "failed to create comment",
           userFriendlyMessage: "Something went wrong when creating comment",
-          errorMessage:
-            error instanceof Error ? error.message : "Unknown error",
+          errorMessage: error instanceof Error ? error.message : "Unknown error",
           error: error instanceof Error ? error : new Error("Unknown error"),
         };
         enqueueSnackbar({ variant: "error", ...err });
@@ -403,12 +401,9 @@ function PostPage({
             />
             <Stack gap={2} width={"100%"}>
               <TextField
-                label={
-                  !isLoggedIn ? "You need to login to comment" : "Add a comment"
-                }
+                label="Add a comment"
                 multiline
                 placeholder="Like for one good luck, ignore for chinchin en kintama torture"
-                disabled={!isLoggedIn}
                 variant="standard"
                 onChange={(e) => {
                   setNewComment(e.target.value);
@@ -424,9 +419,7 @@ function PostPage({
                     replies: false,
                   });
                 }}
-                disabled={
-                  !isLoggedIn || creatingComment || newComment.length < 1
-                }
+                disabled={creatingComment || newComment.length < 1}
                 color="secondary"
                 className="secondaryButtonHoverStyles"
                 variant="outlined"
