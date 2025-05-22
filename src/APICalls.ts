@@ -18,6 +18,8 @@ import {
   PatchUserProps,
   PaginatedPostsResponse,
   LoginUserResponse,
+  RowData,
+  ExcelLog,
 } from "../dataTypeDefinitions.ts";
 const now = new Date().toISOString();
 function createSafePost(post: Partial<Post>): Post {
@@ -395,7 +397,7 @@ export async function fetchCommentByID(
 
 
 
-type FullComment = Omit<Comment, "replies"> & {
+export type FullComment = Omit<Comment, "replies"> & {
   authorName: string;
   replies: FullComment[];
 };
@@ -447,6 +449,18 @@ export async function generateCommentsChain(
   commentIds: string[]
 ): Promise<FullComment[]> {
   return Promise.all(commentIds.map((id) => getFullComment(id)));
+}
+
+export async function generateCommentsChainPaginated(
+  commentIds: string[],
+  page: number,
+  pageSize: number
+): Promise<{ comments: FullComment[]; hasMore: boolean }> {
+  const start = (page - 1) * pageSize;
+  const slice = commentIds.slice(start, start + pageSize);
+  const comments = await Promise.all(slice.map((id) => getFullComment(id)));
+  const hasMore = start + pageSize < commentIds.length;
+  return { comments, hasMore };
 }
 
 export async function patchPost(
@@ -587,6 +601,25 @@ export async function updateCateogories(
       throw new Error("Failed to update category");
     }
     const data = await response.json();
+    onSuccess(data);
+  } catch (error) {
+    onError(error);
+  }
+}
+
+export async function logExcelInput(
+  rows: RowData[],
+  onSuccess: (log: ExcelLog) => void,
+  onError: (error: any) => void
+) {
+  try {
+    const now = new Date().toISOString();
+    const log: ExcelLog = { rows, dateCreated: now };
+    const data = await apiRequest<ExcelLog>("/excelLogs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(log),
+    });
     onSuccess(data);
   } catch (error) {
     onError(error);

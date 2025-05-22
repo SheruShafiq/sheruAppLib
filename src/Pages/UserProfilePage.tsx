@@ -69,6 +69,10 @@ function UserProfilePage({
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentsChain, setCommentsChain] = useState<any[]>([]);
   const [generatingCommentsChain, setGeneratingCommentsChain] = useState(false);
+  const reversedComments = useMemo(
+    () => [...commentsChain].reverse(),
+    [commentsChain]
+  );
   const [creatingComment, setCreatingComment] = useState(false);
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
@@ -423,10 +427,7 @@ function UserProfilePage({
                 ? [...Array(comments.length || 3)].map((_, idx) => (
                     <CommentSkeletonLoader key={`comment-skeleton-${idx}`} />
                   ))
-                : commentsChain
-                    .slice()
-                    .reverse()
-                    .map((comment) => (
+                : reversedComments.map((comment) => (
                       <CommentBlock
                         authorID={comment.authorID}
                         postID={comment.postID}
