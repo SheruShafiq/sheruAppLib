@@ -1,8 +1,9 @@
 import { Button, Stack, TextField } from "@mui/material";
-import React, { useState, useEffect, useMemo, useLayoutEffect } from "react";
+import React, { useState, useEffect, useMemo, useLayoutEffect, useRef } from "react";
 import {
   fetchPostById,
   generateCommentsChain,
+  generateCommentsChainPaginated,
   createComment,
   patchUser,
   patchPost,
@@ -27,6 +28,8 @@ import { useMaximumRenderableSkeletonComments } from "@hooks/useMaximumRenderabl
 import UserProfilePage from "./UserProfilePage";
 import UserStats from "@components/UserStats";
 import { GIFs } from "@assets/GIFs";
+import useInfiniteScroll from "@hooks/useInfiniteScroll";
+import type { FullComment } from "../APICalls";
 
 function PostPage({
   isLoggedIn,
@@ -44,7 +47,21 @@ function PostPage({
   const { enqueueSnackbar } = useSnackbar();
   const [commentsChain, setCommentsChain] = useState<any>(undefined);
   const [generatingCommentsChain, setGeneratingCommentsChain] = useState(false);
+  const [commentPage, setCommentPage] = useState(1);
+  const [hasMoreComments, setHasMoreComments] = useState(false);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
+  const maxSkeletonComments = useMaximumRenderableSkeletonComments();
+  const commentsPageSize = maxSkeletonComments || 5;
+  const reversedComments = useMemo(
+    () => [...(commentsChain || [])].reverse(),
+    [commentsChain]
+  );
+  useInfiniteScroll(loadMoreRef, () => {
+    if (hasMoreComments && !generatingCommentsChain) {
+      setCommentPage((prev) => prev + 1);
+    }
+  });
   const randomGIFIndex = useMemo(
     () => Math.floor(Math.random() * Math.min(GIFs.length, 200)),
     []
@@ -100,19 +117,33 @@ function PostPage({
   }, [id]);
 
   useEffect(() => {
+    setCommentPage(1);
+  }, [post?.comments]);
+
+  useEffect(() => {
     if (post && post.comments && post.comments.length > 0) {
       setGeneratingCommentsChain(true);
-      generateCommentsChain(post.comments.map(String))
-        .then((chain) => {
-          setCommentsChain(chain);
+      generateCommentsChainPaginated(
+        post.comments.map(String),
+        commentPage,
+        commentsPageSize
+      )
+        .then(({ comments, hasMore }) => {
+          setCommentsChain((prev: FullComment[] = []) =>
+            commentPage === 1 ? comments : [...prev, ...comments]
+          );
+          setHasMoreComments(hasMore);
           setGeneratingCommentsChain(false);
         })
         .catch((err: unknown) => {
           console.error(err);
           setGeneratingCommentsChain(false);
         });
+    } else {
+      setCommentsChain([]);
+      setHasMoreComments(false);
     }
-  }, [post]);
+  }, [post, commentPage, commentsPageSize]);
 
   function refreshData(id: string) {
     fetchCurrentPostData(id);
@@ -358,14 +389,12 @@ function PostPage({
                   display: generatingCommentsChain ? "none" : "flex",
                 }}
               >
-                {commentsChain &&
-                  commentsChain.length > 0 &&
-                  commentsChain
-                    .reverse()
-                    .map((comment, index) => (
-                      <CommentBlock
-                        authorID={comment.authorID}
-                        handleCommentCreate={handleCommentCreate}
+                {reversedComments &&
+                  reversedComments.length > 0 &&
+                  reversedComments.map((comment, index) => (
+                    <CommentBlock
+                      authorID={comment.authorID}
+                      handleCommentCreate={handleCommentCreate}
                         id={comment.id}
                         userData={userData}
                         key={comment.id}
@@ -394,6 +423,7 @@ function PostPage({
                         postID={comment.postID}
                       />
                     ))}
+                <div ref={loadMoreRef} />
               </Stack>
             </Fade>
             <Fade in={generatingCommentsChain} timeout={1000}>
@@ -404,7 +434,7 @@ function PostPage({
                 }}
               >
                 {post?.comments.length &&
-                  [...Array(post?.comments.length)].map((_, index) => (
+                  [...Array(commentsPageSize)].map((_, index) => (
                     <CommentSkeletonLoader key={index} />
                   ))}
                 {post?.comments.length === null && <CommentSkeletonLoader />}
