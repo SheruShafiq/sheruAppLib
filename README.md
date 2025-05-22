@@ -49,6 +49,7 @@ Product properties
 10. I might not be as good of a dev as I thought I was
 11. I know very little in the grand scheme of things of web app development and should send a formal appology to both Rein and Erik
 12. position sticky requires top to defined
+13. Web workers are cool as shit, but I dont think I'll have another use case anytime soon.
 
 ---
 
@@ -109,6 +110,7 @@ Product properties
 54. [MaybeBUG?] 3D model can just unalive itself if you are on a different tab
 55. [Featuer expansion] Interactions like liking or disliking are locked behind an account system, but posting and commenting isnt.
 56. [Dating crypto app] Track the streets your partner has been to, every relation is more than a relation, its TANGIBLE.
+57. <del>[Feature] PDF generation is blocking UI thread and is slow as shit, move it to either server or something else. The current speed is unacceptable</del>
 
 ---
 
@@ -138,7 +140,15 @@ Product properties
 - So, after years being take of my life for each export off of badgeMaker. Apparently jsPDF has a bug, the librry itself that exports the entire export in a single string, a string so long (when 200+ badges) that node crashes as it exceeds the maximum
   length. So thank lord, some guy in the tickets made a fork with a fix cuz the bastards themselves refuse to take the PR in.
 - ALSO HOLY SHIT I MANAGED TO MOVE THE WHOLE THING TO TYPESCRIPT
-- I do need to double check some logic, there's too much of "Why would u do that" going on in functions for sauce app
+- I do need to double check some logic, there's too much of "Why would u do that" going on in functions for sauce app.
+- Holy shit balls, figuring out an effecient way to generate DOM elements as PDFs is a bitch. I tried moving the logic to server, as backend languages tend to be multi theaded and this much most compared to abusing the singular UI thread on my browser. But hey, I have some ideas.
+- Idea 1: Lets send the whole DOM over network to the server, that oughta work right? NOPE. Its breaking all sorts of styles due to missing inherited styles...
+- Idea 2: Alright, what if I rewrote the whole thing in HTML/CSS in the backend. Inconssistent, so inconsistent compared to what's on the frontned. Its actually embarassing.
+- Idea 3: Okay okay hold on. PUPETEER! Lets have some headless clients running in the backend using Node, an- STFU. Why the fuck would you just replicate the problem you have in the frontend in the backend. Its litteraly what ARM did, they moved the pain from x86 to software instead. 
+- Okay, webworkers. Holy shit. SO cool, but my god the usecase are far and few between. Regardless, Iam extremely happy with the fact that I got em working. PDF generation time is almost half when the work is divided on 2 worker threads. All be it, the issue
+  regarding the browser slowing down when window not focused continues, and might only be resolved via Electron. Need to figure that out yet tho. 
+Was a bitch to setup... thanks Claude.
+- Idea (Hans): Hans also low key cooked, what if I made an image of the BG once, sent that to backend and let is loop over that image. That would be THE fastest way to generate badges. Some downsides tho, its not gonna be as accurate, cuz now shtits not caluclated anymore.
 
 ---
 
