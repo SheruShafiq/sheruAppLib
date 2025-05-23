@@ -136,16 +136,8 @@ function PostPage({
       (userData) => {
         setAuthorData(userData);
       },
-      (error: any) => {
-        const err: errorProps = {
-          id: "fetching author data Error",
-          userFriendlyMessage:
-            "An error occurred while fetching post's author data.",
-          errorMessage:
-            error instanceof Error ? error.message : "Unknown error",
-          error: error instanceof Error ? error : new Error("Unknown error"),
-        };
-        enqueueSnackbar({ variant: "error", ...err });
+      () => {
+        setAuthorData(null);
       }
     );
   }, [post?.authorID]);
