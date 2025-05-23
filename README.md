@@ -27,7 +27,7 @@ Product properties
    if (Resource === legit) ? upvote : downvote
 3. Home feed based off of upvotes.
 4. A report button to report inactive resources that were active before
-5. <del>No accounts system. Anyone can make a post without any signup and comment on it as well. Username will be generated automatically and kept track of locally via cookies.</del>
+5. Creating posts and comments do not require an account. Liking, disliking, and reporting still require login.
 
 > Nice to have 6. Topic based filtering to be able to look up resources with specific assosciations. 7. Resource requesting. 8. Feedbased off "Sauces" where audio based is mustard, more explicit is chili etc
 
@@ -108,7 +108,7 @@ Product properties
 52. [Feature] Admin dashboard to manage existing categories and such
 53. [Feature] Dont force 3D backdrop, ask user I guess? Or make it a toggle?
 54. [MaybeBUG?] 3D model can just unalive itself if you are on a different tab
-55. [Featuer expansion] Interactions like liking or disliking are locked behind an account system, but posting and commenting isnt.
+55. [Featuer expansion] Interactions like liking, disliking, and reporting are locked behind an account system, but creating posts and comments does not require login.
 56. [Dating crypto app] Track the streets your partner has been to, every relation is more than a relation, its TANGIBLE.
 57. <del>[Feature] PDF generation is blocking UI thread and is slow as shit, move it to either server or something else. The current speed is unacceptable</del>
 
