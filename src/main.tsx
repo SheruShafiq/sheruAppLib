@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { registerSW } from "virtual:pwa-register";
 import "./Styles/index.css";
+import "../global.d.ts";
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {

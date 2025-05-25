@@ -16,6 +16,16 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@components/*": ["./src/Components/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@helpers/*": ["./src/Helpers/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@workers/*": ["./src/workers/*"],
+    },
     "types": [
       "vite-plugin-pwa/react",
       "vite-plugin-pwa/preact",
@@ -25,5 +35,5 @@
       "vite-plugin-pwa/vue"
     ]
   },
-  "include": ["src"]
+  "include": ["./src"]
 }

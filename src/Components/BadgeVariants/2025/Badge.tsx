@@ -1,11 +1,11 @@
-import React, { useRef, useState, useLayoutEffect } from "react";
+import React, { useRef, useState, useLayoutEffect, useMemo } from "react";
 import { Box, Stack, Typography } from "@mui/material";
-import Minara from "../../../assets/Minara.png";
-import Flower from "../../../assets/bgFlower.png";
+import Minara from "@assets/Minara.png";
+import Flower from "@assets/bgFlower.png";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import AhmadiyyaFlag from "../../../assets/ahmadiyyaFlag.png";
-import useDynamicFont from "../../../hooks/useDynamicFontSize";
+import AhmadiyyaFlag from "@assets/ahmadiyyaFlag.png";
+import useDynamicFont from "@hooks/useDynamicFontSize";
 export type badgeProps = {
   role: string;
   name: string;
@@ -17,12 +17,20 @@ const ROLE_MAX = 70;
 const NAME_MIN = 12;
 const NAME_MAX = 30;
 
+// Create a pre-loaded image object outside component to ensure caching
+const preloadFlag = new Image();
+preloadFlag.src = AhmadiyyaFlag;
+preloadFlag.crossOrigin = "anonymous";
+
 function Badge({ role, name, preview }: badgeProps) {
   const roleRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLDivElement>(null);
 
   const roleFontSize = useDynamicFont(roleRef, [role], ROLE_MIN, ROLE_MAX);
   const nameFontSize = useDynamicFont(nameRef, [name], NAME_MIN, NAME_MAX);
+
+  // Use memoized image URL to prevent unnecessary re-renders
+  const flagUrl = useMemo(() => AhmadiyyaFlag, []);
 
   return (
     <Stack mx="auto" width="660px" height="350px" bgcolor="white">
@@ -46,9 +54,13 @@ function Badge({ role, name, preview }: badgeProps) {
         >
           <Box sx={{ width: "150px", height: "75px", backgroundColor: "red" }}>
             <img
+              crossOrigin="anonymous"
               style={{ width: "100%", height: "100%", objectFit: "contain" }}
-              src={AhmadiyyaFlag}
+              src={flagUrl}
               alt="Ahmadiyya flag"
+              loading="eager"
+              // Add image rendering optimizations
+              decoding="sync"
             />
           </Box>
           <Stack px={2} mt={1} alignItems="center">

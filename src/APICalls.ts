@@ -17,8 +17,12 @@ import {
   VoteField,
   PatchUserProps,
   PaginatedPostsResponse,
+  LoginUserResponse,
+  RowData,
+  ExcelLog,
 } from "../dataTypeDefinitions.ts";
 const now = new Date().toISOString();
+const userCache = new Map<string, string>();
 function createSafePost(post: Partial<Post>): Post {
   return {
     title: post.title ?? "",
@@ -240,11 +244,10 @@ export async function loginUser({
       )}&password=${encodeURIComponent(password)}`
     );
 
-    const data = await response.json();
-    const user: User = data.users;
+    const { users } = (await response.json()) as LoginUserResponse;
 
-    if (Object.values(user).length > 0) {
-      onSuccess(user[0]);
+    if (users.length > 0) {
+      onSuccess(users[0]);
     } else {
       throw new Error("Invalid credentials");
     }
@@ -395,7 +398,7 @@ export async function fetchCommentByID(
 
 
 
-type FullComment = Omit<Comment, "replies"> & {
+export type FullComment = Omit<Comment, "replies"> & {
   authorName: string;
   replies: FullComment[];
 };
@@ -414,6 +417,16 @@ function getUserByIdPromise(userId: string): Promise<any> {
     fetchUserById(userId, resolve, reject);
   });
 }
+
+async function getAuthorName(userId: string): Promise<string> {
+  if (userCache.has(userId)) {
+    return userCache.get(userId)!;
+  }
+  const user = await getUserByIdPromise(userId);
+  const name = user?.displayName || "Unknown";
+  userCache.set(userId, name);
+  return name;
+}
 export async function getCommentsByIDs(ids: string[]): Promise<Comment[]> {
   return Promise.all(
     ids.map(async (id) => {
@@ -430,8 +443,7 @@ export async function getCommentsByIDs(ids: string[]): Promise<Comment[]> {
 }
 async function getFullComment(commentId: string): Promise<FullComment> {
   const comment = await getCommentByIdPromise(commentId);
-  const user = await getUserByIdPromise(comment.authorID);
-  const authorName = user?.displayName || "Unknown";
+  const authorName = await getAuthorName(comment.authorID);
   
   
   let fullReplies: FullComment[] = [];
@@ -446,7 +458,21 @@ async function getFullComment(commentId: string): Promise<FullComment> {
 export async function generateCommentsChain(
   commentIds: string[]
 ): Promise<FullComment[]> {
+  userCache.clear();
   return Promise.all(commentIds.map((id) => getFullComment(id)));
+}
+
+export async function generateCommentsChainPaginated(
+  commentIds: string[],
+  page: number,
+  pageSize: number
+): Promise<{ comments: FullComment[]; hasMore: boolean }> {
+  const start = (page - 1) * pageSize;
+  const slice = commentIds.slice(start, start + pageSize);
+  if (start === 0) userCache.clear();
+  const comments = await Promise.all(slice.map((id) => getFullComment(id)));
+  const hasMore = start + pageSize < commentIds.length;
+  return { comments, hasMore };
 }
 
 export async function patchPost(
@@ -569,7 +595,7 @@ export async function searchPosts(
   }
 }
 
-export async function updateCateogories(
+export async function updateCategories(
   id: string,
   field: string,
   newValue: any,
@@ -587,6 +613,25 @@ export async function updateCateogories(
       throw new Error("Failed to update category");
     }
     const data = await response.json();
+    onSuccess(data);
+  } catch (error) {
+    onError(error);
+  }
+}
+
+export async function logExcelInput(
+  rows: RowData[],
+  onSuccess: (log: ExcelLog) => void,
+  onError: (error: any) => void
+) {
+  try {
+    const now = new Date().toISOString();
+    const log: ExcelLog = { rows, dateCreated: now };
+    const data = await apiRequest<ExcelLog>("/excelLogs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(log),
+    });
     onSuccess(data);
   } catch (error) {
     onError(error);

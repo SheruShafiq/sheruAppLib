@@ -1,22 +1,17 @@
-import React, { useRef, useState, useLayoutEffect } from "react";
+import React, { useRef } from "react";
 import { Box, Stack, Typography } from "@mui/material";
-import Minara from "../../../assets/Minara.png";
-import Flower from "../../../assets/bgFlower.png";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import AhmadiyyaFlag from "../../../assets/ahmadiyyaFlag.png";
-import useDynamicFont from "../../../hooks/useDynamicFontSize";
+import AhmadiyyaFlag from "@assets/ahmadiyyaFlag.png";
+import useDynamicFont from "@hooks/useDynamicFontSize";
 export type badgeProps = {
   role: string;
   name: string;
   preview?: boolean;
 };
 
-
 const ROLE_MIN = 12;
-const ROLE_MAX = 70;
+const ROLE_MAX = 100;
 const NAME_MIN = 12;
-const NAME_MAX = 30;
+const NAME_MAX = 50;
 
 function Shura({ role, name, preview }: badgeProps) {
   const roleRef = useRef<HTMLDivElement>(null);
@@ -26,7 +21,13 @@ function Shura({ role, name, preview }: badgeProps) {
   const nameFontSize = useDynamicFont(nameRef, [name], NAME_MIN, NAME_MAX);
 
   return (
-    <Stack mx="auto" width="660px" height="350px" bgcolor="white">
+    <Stack
+      border={"1px solid #000"}
+      mx="auto"
+      width="660px"
+      height="400px"
+      bgcolor="white"
+    >
       <Stack
         sx={{
           backgroundSize: "560px 500px, 110px 200px",
@@ -38,7 +39,6 @@ function Shura({ role, name, preview }: badgeProps) {
         justifyContent="center"
         alignItems="center"
       >
-       
         <Stack
           direction="row"
           width="100%"
@@ -47,13 +47,23 @@ function Shura({ role, name, preview }: badgeProps) {
         >
           <Box sx={{ width: "150px", height: "75px", backgroundColor: "red" }}>
             <img
+              crossOrigin="anonymous"
               style={{ width: "100%", height: "100%", objectFit: "contain" }}
               src={AhmadiyyaFlag}
               alt="Ahmadiyya flag"
             />
           </Box>
-          <Stack px={2} mt={1} alignItems="center">
-            <Typography color="#AF1623">
+          <Stack
+            gap={1}
+            px={2}
+            mt={1}
+            alignItems="center"
+            position="relative"
+          >
+            <Typography
+              color="#AF1623"
+              fontFamily="'Roboto Condensed', sans-serif"
+            >
               Ahmadiyya Moslim Gemeenschap
             </Typography>
             <Typography
@@ -62,6 +72,7 @@ function Shura({ role, name, preview }: badgeProps) {
                 lineHeight: "40px",
                 mt: "6px",
                 pb: "4px",
+                fontFamily: "'Roboto Condensed', sans-serif",
               }}
               fontWeight={500}
               color="black"
@@ -73,9 +84,11 @@ function Shura({ role, name, preview }: badgeProps) {
               sx={{
                 textShadow: "0 0 8px rgb(0, 0, 0), 0 0 16px rgb(0, 0, 0)",
                 fontWeight: 700,
+                fontFamily: "'Roboto Condensed', sans-serif",
+                position: "relative",
+                zIndex: 5,
               }}
               mt={1}
-              fontWeight={200}
               color="white"
               fontSize="3em"
               lineHeight={1}
@@ -90,25 +103,19 @@ function Shura({ role, name, preview }: badgeProps) {
           </Stack>
         </Stack>
 
-       
         <Stack
           width="100%"
           height="100%"
           justifyContent="center"
           alignItems="center"
         >
-          <Box
-            
-            py={2}
-            
-            width="100%"
-            overflow="hidden"
-          >
+          <Box py={2} pt={1} width="100%" overflow="hidden">
             <Typography
               ref={roleRef}
               sx={{
                 whiteSpace: "nowrap",
                 fontWeight: 500,
+                fontFamily: "'Roboto Condensed', sans-serif",
                 color: "black",
                 fontSize: `${roleFontSize}px`,
                 textAlign: "center",
@@ -123,13 +130,13 @@ function Shura({ role, name, preview }: badgeProps) {
             height={"50%"}
             width="100%"
             overflow="hidden"
-            
           >
             <Typography
               ref={nameRef}
               sx={{
                 whiteSpace: "nowrap",
                 fontWeight: 500,
+                fontFamily: "'Roboto Condensed', sans-serif",
                 color: "black",
                 fontSize: `${nameFontSize}px`,
                 textAlign: "center",

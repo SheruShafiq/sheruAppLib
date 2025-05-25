@@ -1,12 +1,12 @@
 import { Button, Fade, Stack } from "@mui/material";
 import { lazy, Suspense, useState, useEffect } from "react";
-import Logo from "../Components/Logo";
+import Logo from "@components/Logo";
 import { useNavigate } from "react-router-dom";
 const CyberpunkStoreFront = lazy(
-  () => import("../Components/3D Renderers/CyberpunkStoreFront")
+  () => import("@components/3D Renderers/CyberpunkStoreFront")
 );
 import { Loader } from "@react-three/drei";
-import IOSLoader from "../Components/IOSLoader";
+import IOSLoader from "@components/IOSLoader";
 
 function Home() {
   const navigate = useNavigate();
@@ -38,7 +38,6 @@ function Home() {
           left: "50%",
         }}
       >
-        
         <Loader
           containerStyles={{
             backgroundColor: "rgba(0, 0, 0, 0)",
@@ -64,7 +63,6 @@ function Home() {
         />
       </div>
       <Suspense fallback={<IOSLoader />}>
-        
         <Fade in={true} timeout={3000} mountOnEnter>
           <div
             style={{
@@ -78,14 +76,11 @@ function Home() {
               zIndex: 0,
             }}
           >
-            
-
             <CyberpunkStoreFront />
-            
           </div>
         </Fade>
       </Suspense>
-      
+
       <Stack
         minHeight={"100vh"}
         minWidth={"100vw"}
@@ -94,7 +89,7 @@ function Home() {
         justifyContent={"center"}
         alignItems={"center"}
         gap={4}
-        zIndex={2} 
+        zIndex={2}
       >
         <Logo
           logoName={"Sheru"}
@@ -109,7 +104,7 @@ function Home() {
           >
             Badge Maker{" "}
           </Button>
-          
+
           <Button
             size="large"
             variant="outlined"

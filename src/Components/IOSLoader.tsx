@@ -1,5 +1,5 @@
 import React from "react";
-import "../Styles/IOSLoader.css";
+import "@styles/IOSLoader.css";
 
 interface IOSLoaderProps {
   size?: number;

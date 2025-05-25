@@ -1,8 +1,23 @@
-import { Button, Stack, TextField } from "@mui/material";
-import React, { useState, useEffect, useMemo, useLayoutEffect } from "react";
+import {
+  Button,
+  Stack,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  IconButton,
+} from "@mui/material";
+import React, {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useMemo,
+} from "react";
 import {
   fetchPostById,
-  generateCommentsChain,
+  generateCommentsChainPaginated,
   createComment,
   patchUser,
   patchPost,
@@ -11,22 +26,24 @@ import {
 } from "../APICalls";
 import { useParams } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import PostPreview from "../Components/PostPreview";
+import PostPreview from "@components/PostPreview";
 import SauceLayout from "../Layouts/SauceLayout";
 import Divider from "@mui/material/Divider";
 import PostPreviewSkeletonLoader from "../SkeletonLoaders/PostPreviewSkeletonLoader";
 import Fade from "@mui/material/Fade";
-import { TextGlitchEffect } from "../Components/TextGlitchEffect";
+import { TextGlitchEffect } from "@components/TextGlitchEffect";
 import { Post, Comment, errorProps, User } from "../../dataTypeDefinitions";
-import CommentBlock from "../Components/CommentBlock";
+import CommentBlock from "@components/CommentBlock";
 import { useNavigate } from "react-router-dom";
-import IOSLoader from "../Components/IOSLoader";
+import IOSLoader from "@components/IOSLoader";
 import SendIcon from "@mui/icons-material/Send";
+import SwapVertIcon from "@mui/icons-material/SwapVert";
 import CommentSkeletonLoader from "../SkeletonLoaders/CommentSkeletonLoader";
-import { useMaximumRenderableSkeletonComments } from "../hooks/useMaximumRenderableSkeletonComments";
-import UserProfilePage from "./UserProfilePage";
-import UserStats from "../Components/UserStats";
-import { GIFs } from "../assets/GIFs";
+import { useMaximumRenderableSkeletonComments } from "@hooks/useMaximumRenderableSkeletonComments";
+import UserStats from "@components/UserStats";
+import { GIFs } from "@assets/GIFs";
+import useInfiniteScroll from "@hooks/useInfiniteScroll";
+import type { FullComment } from "../APICalls";
 
 function PostPage({
   isLoggedIn,
@@ -42,9 +59,49 @@ function PostPage({
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
-  const [commentsChain, setCommentsChain] = useState<any>(undefined);
+  const [commentsChain, setCommentsChain] = useState<FullComment[]>([]);
   const [generatingCommentsChain, setGeneratingCommentsChain] = useState(false);
+  const [commentSortPreferences, setCommentSortPreferences] = useState({
+    sortBy: "dateCreated",
+    sortOrder: "desc",
+  });
+  const sortedComments = useMemo(() => {
+    const sorted = [...commentsChain].sort((a, b) => {
+      let aVal: number | string | Date = 0;
+      let bVal: number | string | Date = 0;
+      switch (commentSortPreferences.sortBy) {
+        case "likes":
+          aVal = a.likes;
+          bVal = b.likes;
+          break;
+        case "dislikes":
+          aVal = a.dislikes;
+          bVal = b.dislikes;
+          break;
+        default:
+          aVal = new Date(a.dateCreated).getTime();
+          bVal = new Date(b.dateCreated).getTime();
+      }
+      if (aVal < bVal)
+        return commentSortPreferences.sortOrder === "asc" ? -1 : 1;
+      if (aVal > bVal)
+        return commentSortPreferences.sortOrder === "asc" ? 1 : -1;
+      return 0;
+    });
+    return sorted;
+  }, [commentsChain, commentSortPreferences]);
+  const [commentPage, setCommentPage] = useState(1);
+  const [hasMoreComments, setHasMoreComments] = useState(true);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
+  const maxSkeletonComments = useMaximumRenderableSkeletonComments();
+  const commentsPageSize = maxSkeletonComments || 5;
+
+  useInfiniteScroll(loadMoreRef, () => {
+    if (hasMoreComments && !generatingCommentsChain) {
+      setCommentPage((prev) => prev + 1);
+    }
+  });
   const randomGIFIndex = useMemo(
     () => Math.floor(Math.random() * Math.min(GIFs.length, 200)),
     []
@@ -91,7 +148,6 @@ function PostPage({
       }
     );
   }, [post?.authorID]);
-  const history = useNavigate();
   useEffect(() => {
     if (userData?.id) {
       refreshUserData(userData.id!);
@@ -100,19 +156,47 @@ function PostPage({
   }, [id]);
 
   useEffect(() => {
-    if (post && post.comments && post.comments.length > 0) {
+    setCommentPage(1);
+    setCommentsChain([]);
+    setHasMoreComments(true);
+  }, [post?.id, post?.comments?.length, commentsPageSize]);
+
+  useEffect(() => {
+    if (post && post.comments && post.comments.length > 0 && hasMoreComments) {
       setGeneratingCommentsChain(true);
-      generateCommentsChain(post.comments.map(String))
-        .then((chain) => {
-          setCommentsChain(chain);
+      generateCommentsChainPaginated(
+        post.comments.map(String),
+        commentPage,
+        commentsPageSize
+      )
+        .then(({ comments, hasMore }) => {
+          setCommentsChain((prevComments) =>
+            commentPage === 1 ? comments : [...prevComments, ...comments]
+          );
+          setHasMoreComments(hasMore);
           setGeneratingCommentsChain(false);
         })
         .catch((err: unknown) => {
-          console.error(err);
+          console.error("Failed to generate comments chain:", err);
+          enqueueSnackbar({
+            variant: "error",
+            userFriendlyMessage:
+              "Could not load comments. Please try again later.",
+            id: "comments-load-error",
+          });
           setGeneratingCommentsChain(false);
         });
+    } else if (!(post && post.comments && post.comments.length > 0)) {
+      setCommentsChain([]);
+      setHasMoreComments(false);
     }
-  }, [post]);
+  }, [
+    post?.comments,
+    commentPage,
+    commentsPageSize,
+    hasMoreComments,
+    enqueueSnackbar,
+  ]);
 
   function refreshData(id: string) {
     fetchCurrentPostData(id);
@@ -351,80 +435,93 @@ function PostPage({
                 {creatingComment ? <IOSLoader /> : <SendIcon />}
               </Button>
             </Stack>
-            <Fade in={!generatingCommentsChain} timeout={1000}>
-              <Stack
-                gap={1}
-                sx={{
-                  display: generatingCommentsChain ? "none" : "flex",
-                }}
+            <Stack direction="row" gap={1} alignItems="center">
+              <IconButton
+                onClick={() =>
+                  setCommentSortPreferences((prev) => ({
+                    ...prev,
+                    sortOrder: prev.sortOrder === "asc" ? "desc" : "asc",
+                  }))
+                }
               >
-                {commentsChain &&
-                  commentsChain.length > 0 &&
-                  commentsChain
-                    .reverse()
-                    .map((comment, index) => (
-                      <CommentBlock
-                        authorID={comment.authorID}
-                        handleCommentCreate={handleCommentCreate}
-                        id={comment.id}
-                        userData={userData}
-                        key={comment.id}
-                        dateCreated={comment.dateCreated}
-                        userName={comment.authorName}
-                        commentContents={comment.text}
-                        replies={comment.replies}
-                        imageURL={comment.imageURL}
-                        amIaReply={false}
-                        depth={0}
-                        isLoggedIn={isLoggedIn}
-                        likedByCurrentUser={
-                          userData?.likedComments
-                            .map(String)
-                            .includes(String(comment.id)) || false
-                        }
-                        dislikedByCurrentUser={
-                          userData?.dislikedComments
-                            .map(String)
-                            .includes(String(comment.id)) || false
-                        }
-                        likes={comment.likes}
-                        dislikes={comment.dislikes}
-                        setGeneratingCommentsChain={setGeneratingCommentsChain}
-                        userPageVariant={false}
-                        postID={comment.postID}
-                      />
-                    ))}
-              </Stack>
-            </Fade>
-            <Fade in={generatingCommentsChain} timeout={1000}>
-              <Stack
-                gap={2}
+                <SwapVertIcon
+                  color={
+                    commentSortPreferences.sortOrder === "asc"
+                      ? "primary"
+                      : "secondary"
+                  }
+                />
+              </IconButton>
+              <FormControl
                 sx={{
-                  display: generatingCommentsChain ? "flex" : "none",
+                  width: "100%",
+                  maxWidth: globalThis.isDesktop ? "260px" : "100%",
                 }}
+                size="small"
+                variant="standard"
               >
-                {post?.comments.length &&
-                  [...Array(post?.comments.length)].map((_, index) => (
-                    <CommentSkeletonLoader key={index} />
+                <InputLabel id="comment-sorting">Sort</InputLabel>
+                <Select
+                  labelId="comment-sorting"
+                  id="comment-sorting-select"
+                  defaultValue="dateCreated"
+                  onChange={(e) =>
+                    setCommentSortPreferences((prev) => ({
+                      ...prev,
+                      sortBy: e.target.value,
+                    }))
+                  }
+                >
+                  <MenuItem value="dateCreated">Date Created</MenuItem>
+                  <MenuItem value="likes">Likes</MenuItem>
+                  <MenuItem value="dislikes">Dislikes</MenuItem>
+                </Select>
+              </FormControl>
+            </Stack>
+            <Stack gap={1}>
+              {/* existing comments */}
+              {sortedComments.map((comment) => (
+                <CommentBlock
+                  authorID={comment.authorID}
+                  handleCommentCreate={handleCommentCreate}
+                  id={comment.id}
+                  userData={userData}
+                  key={comment.id}
+                  dateCreated={comment.dateCreated}
+                  userName={comment.authorName}
+                  commentContents={comment.text}
+                  replies={comment.replies}
+                  imageURL={comment.imageURL}
+                  amIaReply={false}
+                  depth={0}
+                  isLoggedIn={isLoggedIn}
+                  likedByCurrentUser={
+                    userData?.likedComments
+                      .map(String)
+                      .includes(String(comment.id)) || false
+                  }
+                  dislikedByCurrentUser={
+                    userData?.dislikedComments
+                      .map(String)
+                      .includes(String(comment.id)) || false
+                  }
+                  likes={comment.likes}
+                  dislikes={comment.dislikes}
+                  setGeneratingCommentsChain={setGeneratingCommentsChain}
+                  userPageVariant={false}
+                  postID={comment.postID}
+                />
+              ))}
+              <div ref={loadMoreRef} />
+
+              {generatingCommentsChain && (
+                <Stack gap={2}>
+                  {[...Array(commentsPageSize)].map((_, idx) => (
+                    <CommentSkeletonLoader key={idx} />
                   ))}
-                {post?.comments.length === null && <CommentSkeletonLoader />}
-                {post?.comments.length === 0 && (
-                  <Stack
-                    width={"100%"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                  >
-                    <TextGlitchEffect
-                      text={`No comments yet`}
-                      speed={60}
-                      letterCase="lowercase"
-                      type="ALPHA_NUMERIC"
-                      className={"no Comments Found"}
-                    />
-                  </Stack>
-                )}
-              </Stack>
-            </Fade>
+                </Stack>
+              )}
+            </Stack>
           </Stack>
         </Stack>
         {isDesktop && (

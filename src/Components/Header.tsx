@@ -5,13 +5,13 @@ import AddIcon from "@mui/icons-material/Add";
 import CreatePostDialogue from "./CreatePostDialogue";
 import Logo from "./Logo";
 import { useMemo } from "react";
-import { GIFs } from "../assets/GIFs";
+import { GIFs } from "@assets/GIFs";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { getRandomGIFBasedOffof } from "../APICalls";
-import { usePWAInstallPrompt } from "../hooks/usePWAInstallPrompt";
+import { usePWAInstallPrompt } from "@hooks/usePWAInstallPrompt";
 function Header({
   isLoggedIn,
   userData,

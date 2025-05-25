@@ -11,7 +11,7 @@ import { useSnackbar } from "notistack";
 import Chip from "@mui/material/Chip";
 import Avatar from "@mui/material/Avatar";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { GIFs } from "../assets/GIFs";
+import { GIFs } from "@assets/GIFs";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import HeartBrokenIcon from "@mui/icons-material/HeartBroken";
 import {
@@ -49,8 +49,6 @@ function CommentBlock({
 }) {
   const { enqueueSnackbar } = useSnackbar();
   const [expanded, setExpanded] = useState(false);
-  const [likingComment, setLikingComment] = useState(false);
-
   const [voteStatus, setVoteStatus] = useState<"up" | "down" | "none">("none");
   const [localLikes, setLocalLikes] = useState(likes);
   const [localDislikes, setLocalDislikes] = useState(dislikes);
@@ -71,17 +69,6 @@ function CommentBlock({
   };
 
   const gipyAPIKey = import.meta.env.REACT_APP_GIPHY_API_KEY;
-  async function fetchImage() {
-    const response = await fetch(
-      `https://api.giphy.com/v1/gifs/random?api_key=${gipyAPIKey}&tag=cyberpunkProfilePicture&rating=g`
-    );
-    const data = await response.json();
-    if (response.ok) {
-      return data.data.images.original.url;
-    } else {
-      return null;
-    }
-  }
   const [imageUrl, setImageUrl] = useState(imageURL);
   const randomGIFIndex = useMemo(
     () => Math.floor(Math.random() * Math.min(GIFs.length, 200)),
@@ -233,6 +220,8 @@ function CommentBlock({
       }
     })();
   }, [userName]);
+  const reversedReplies = useMemo(() => [...replies].reverse(), [replies]);
+
   return (
     <Stack
       sx={{
@@ -241,7 +230,6 @@ function CommentBlock({
         pl: amIaReply ? 2 : 0,
       }}
     >
-      
       <Stack direction="row" spacing={2} py={1}>
         <Avatar src={imageUrl || GIFs[randomGIFIndex]} alt={userName} />
         <Stack gap={1} width={"100%"}>
@@ -264,8 +252,11 @@ function CommentBlock({
           </Stack>
           <ReadMore text={commentContents} maxLength={200} />
 
-          
-          <Stack direction="row" alignItems="center">
+          <Stack
+            direction="row"
+            alignItems="center"
+            sx={{ flexWrap: "wrap", rowGap: 1 }}
+          >
             {replies.length > 0 && (
               <Stack
                 direction="row"
@@ -299,7 +290,7 @@ function CommentBlock({
                 e.stopPropagation();
                 handleCommentVote("upvote");
               }}
-              disabled={!!loadingAction || userPageVariant || userPageVariant}
+              disabled={!!loadingAction || userPageVariant}
               startIcon={
                 loadingAction === "upvote" ? (
                   <IOSLoader />
@@ -390,10 +381,9 @@ function CommentBlock({
         </Stack>
       </Stack>
 
-      
       {replies.length > 0 && (
         <Collapse in={expanded} timeout="auto" unmountOnExit>
-          {replies.reverse().map((reply) => (
+          {reversedReplies.map((reply) => (
             <CommentBlock
               handleCommentCreate={handleCommentCreate}
               setGeneratingCommentsChain={setGeneratingCommentsChain}
@@ -420,7 +410,7 @@ function CommentBlock({
                   .includes(String(reply.id)) || false
               }
               userData={userData}
-              userPageVariant={false}
+              userPageVariant={userPageVariant ? userPageVariant : false}
               postID={reply.postID}
               authorID={reply.authorID}
             />
@@ -431,4 +421,4 @@ function CommentBlock({
   );
 }
 
-export default CommentBlock;
+export default React.memo(CommentBlock);

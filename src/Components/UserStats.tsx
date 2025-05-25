@@ -1,6 +1,6 @@
 import { Stack, Avatar, Chip, Button, Link } from "@mui/material";
 import React, { useEffect, useMemo } from "react";
-import { GIFs } from "../assets/GIFs";
+import { GIFs } from "@assets/GIFs";
 import { formatDateRedditStyle } from "../globalFunctions";
 import { TextGlitchEffect } from "./TextGlitchEffect";
 import MessageOutlinedIcon from "@mui/icons-material/MessageOutlined";
