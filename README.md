@@ -1,4 +1,4 @@
-# Sauce
+# Sheru App Library
 _A community driven resource sharing application_
 
 **Sauce** is a simple application developed solely for research purposes. **Sauce** aims to provide it's users with a convinient access to resources that may be harder to find via manual browsing. The reason I started this project was for the frontend exam at Uni. Hence the funny backend, that will be replaced with a proper one when I get to backend exam.
