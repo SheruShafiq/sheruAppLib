@@ -111,7 +111,11 @@ Product properties
 55. [Featuer expansion] Interactions like liking or disliking are locked behind an account system, but posting and commenting isnt.
 56. [Dating crypto app] Track the streets your partner has been to, every relation is more than a relation, its TANGIBLE.
 57. <del>[Feature] PDF generation is blocking UI thread and is slow as shit, move it to either server or something else. The current speed is unacceptable</del>
-
+58. New Project!! Remote Parsec activator.
+     - Uses a random github file as status (so no cold start, aka no delay)
+     - Windows service to ping every hour or so
+     - Webpage to update
+     - SFW and NSFW version with a spread.
 ---
 
 - Frontend Server:
