@@ -29,7 +29,10 @@ Product properties
 4. A report button to report inactive resources that were active before
 5. <del>No accounts system. Anyone can make a post without any signup and comment on it as well. Username will be generated automatically and kept track of locally via cookies.</del>
 
-> Nice to have 6. Topic based filtering to be able to look up resources with specific assosciations. 7. Resource requesting. 8. Feedbased off "Sauces" where audio based is mustard, more explicit is chili etc
+> Nice to have:
+6. Topic based filtering to be able to look up resources with specific assosciations.
+7. Resource requesting.
+8. Feedbased off "Sauces" where audio based is mustard, more explicit is chili etc
 
 #### _Will use JSON server till I get to the backend exam._
 
@@ -41,7 +44,7 @@ Product properties
 2. How epic JSON server is
 3. You can make a shitty DB out of Vercel cache (And it worked WOOO IT FEELS SO GOOD)!
 4. MUI doesn't let u do OLED black as body BG (You need to tell it how `!important` it is)
-5. for some messed up reason, iOS (as far as I can tell only iOS) scales your website to make font be 16px. In result destroying every formating. Need to put a meta tag on top to stop that.
+5. For some messed up reason, iOS (as far as I can tell only iOS) scales your website to make font be 16px. In result destroying every formating. Need to put a meta tag on top to stop that.
 6. GitHUB is an excellent file storage system API, it's free, rate limit of 1K and its fast and easy. So db.json is going there.
 7. Render also doesnt persists for free (bitch), so github api it is.
 8. Node has a maximum string length
