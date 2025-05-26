@@ -100,19 +100,19 @@ Product properties
 41. [Feature] MUSIC
 42. [Feature] implementing categorisation with category based pages and filtering
 43. [BUG] Comments chain overflow on mobile
-44. [Feature] Infinite scroll on posts and comments
-45. [Feature] Left bar on home with quick links around the sheru app librar
-46. [Expansion] Sheru app library
+44. <del>[Feature] Infinite scroll on posts and comments</del>
+45.  <del>[Feature] Left bar on home with quick links around the sheru app library</del>
+46. <del>[Expansion] Sheru app library</del>
 47. [Feature] Shareable links of posts
-48. [Security] Backend LIVE server only accepts requests from frontend LIVE server
-49. [Bug not bug?] Posts should technically scroll backup on pagination change, but then again the final idea is infinite scroll so..... idk?
-50. [DB Error] On prod, one of the user's(dev) liked posts array contains ID: 0. Which is non existing. I'll try to see if thats new or always been there. Also the error snckbar is blanco, gotta look into that as well.
+48. <del>[Security] Backend LIVE server only accepts requests from frontend LIVE server</del>
+49. <del>[Bug not bug?] Posts should technically scroll backup on pagination change, but then again the final idea is infinite scroll so..... idk?</del>
+50. <del>[DB Error] On prod, one of the user's(dev) liked posts array contains ID: 0. Which is non existing. I'll try to see if thats new or always been there. Also the error snckbar is blanco, gotta look into that as well.</del>
 51. [Feature] Edit and delete posts/comments if user is owner or super user
 52. [Feature] Admin dashboard to manage existing categories and such
 53. [Feature] Dont force 3D backdrop, ask user I guess? Or make it a toggle?
 54. [MaybeBUG?] 3D model can just unalive itself if you are on a different tab
 55. [Featuer expansion] Interactions like liking or disliking are locked behind an account system, but posting and commenting isnt.
-56. [Dating crypto app] Track the streets your partner has been to, every relation is more than a relation, its TANGIBLE.
+56. <del>[Dating crypto app] Track the streets your partner has been to, every relation is more than a relation, its TANGIBLE.</del>
 57. <del>[Feature] PDF generation is blocking UI thread and is slow as shit, move it to either server or something else. The current speed is unacceptable</del>
 58. New Project!! Remote Parsec activator.
      - Uses a random github file as status (so no cold start, aka no delay)
@@ -161,8 +161,40 @@ Was a bitch to setup... thanks Claude.
 ---
 
 > # Future
+[26/05/2025] After a lot, and I mean ALOT of research and stressing chat GPT deep research to it's limits and driving a guy on stack overflow to the top of burj khalifa with questions. I have decided to make two drastic changes:
+ 1) Move the app to NextJS
+ 2) Use Google's fire store.
+Here's my reasoning:
+The fowllowing were the contendors for the potential backend.
+1) Java (Spring Boot)
+   - Why? Would be great learning experience, cuz also works nicely with my uni stuff. Plenty libraries to work with. Fast as they come.
+   - Why not: It's a nightmare to host. I would rather have heels in my kneehole than attempt to host a Java application ever again.
+2) Phoenix Live view
+   - Why? Cuz its cool as all hell. As far as I can tell, the best backend framework as far as typical backend frameowkrs go. And ofc, BEAM.
+   - Why not: Liveview is cool as shit but its not React. Its simply too niche to learn.
+3) Convex
+   - Why? Works excellently with React. Litteraly the DREAM backend framework from what I can tell. Very cool codebased everything.
+   - Why not: Same problem as Live view. Too niche. And the company is going in a weird direction with the whole AI hype. I would love to use it for something else at some point. But yeah.
+   - Iam realising I don't have a very good reason to say no. SO my reason is, that the vibes are off.
+4) Supabase
+   - Why? Modern DB solution. Has all the fancy bells and whistles. Realtime as well. Very cool and poggies in all regards.
+   - Why not: (MAXIMUM REALTIME CONCURRENT CONNECTIONS ON FREE TIER IS 200)[https://supabase.com/docs/guides/realtime/quotas]
+5) Firebase
+   - Why? Supabase but better
+   - Why not: Vendor lock. (Who cares???? Not me.)
 
-I am far too happy with the setup of this website, the frontend I mean. So happy in fact that I want to make it an Apps library. Where sauce and badgeMaker are one of the apps.
+So yeah. Thats why firebase. Its also yk. Google. So the knowledge value is waay higher than convex.
+So wtf is up with NextJs. React is perfectly fine right?
+Well.... There are alot of really nice features, that I would otherwise have to avail myself.
+ - SSR, SGR
+ - Image optimisation
+ - Never having to expose server side logic etc etc
+It just makes no sense to skip on all of that, when its just figured out of the box.
+Plus security, scalablity etc etc.
+
+So yeah. Next JS and firestore are the backend I have settled on for now. Will start working on migration right away.
+
+[26/04/2025-13/05/2025] [DONE] I am far too happy with the setup of this website, the frontend I mean. So happy in fact that I want to make it an Apps library. Where sauce and badgeMaker are one of the apps.
 I want to be able to host all sorts of apps here, my own CV with a GIF for a pfp like those harry potter newspapers, any tool I need like a pasteBin or something?
 Or just anything cool really, whatever tools I use on a regular basis, and then make a full fledged little web app store of apps of my own.
 
