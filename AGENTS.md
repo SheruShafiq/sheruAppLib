@@ -21,3 +21,8 @@ Tech stack:
 
 Backend (no concrete implementation yet, using JSON server at the moment. Plans to replace soon with something a bit more robust):
 - JSON server
+
+Important to know:
+dataTypeDefinitions.ts is the technical documentation of all forms of data that goes around across all apps. SO if there's any form of data in the apps, it is declared in this application to define what
+its supposed to be across all its instances.
+Readme.md contains extensive documentation of the entire project and all the breaking changes it has been through as well as the reasoning behind them.
