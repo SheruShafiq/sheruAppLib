@@ -169,7 +169,7 @@ FRONTEND_URL
 **26/05/2025**  
 After a lot, and I mean **ALOT**, of research and stressing ChatGPT deep‑research to its limits—and driving a guy on Stack Overflow to the top of Burj Khalifa with questions—I have decided to make two drastic changes:  
 - Move the app to **Next.js**  
-- Use Google's **Firestore**
+- <del>Use Google's **Firestore**</del> NEVER THE FUCK MIND. IT doesnt have joins. DO you have any idea the sheer amounts of reads I'd have to do for a single user scrolling for 10 minutes on a nonSQL db? TOO MANY. 
 
 ### My reasoning
 
@@ -180,12 +180,16 @@ The following were the contenders for the potential backend.
 | 1 | Java (Spring Boot) | Would be a great learning experience, plus it aligns nicely with my uni stuff. Plenty of libraries to work with. Fast as they come. | It's a nightmare to host. I would rather have heels in my kneehole than attempt to host a Java application ever again. |
 | 2 | Phoenix LiveView | Because it's cool as all hell. As far as I can tell, the best backend framework as far as typical backend frameworks go. And of course, **BEAM**. | LiveView is cool as shit but it's not React. It's simply too niche to learn. |
 | 3 | Convex | Works excellently with React. Literally the **DREAM** backend framework from what I can tell. Very cool code‑based everything. | Same problem as LiveView—too niche. And the company is going in a weird direction with the whole AI hype. I would love to use it for something else at some point. But yeah... I'm realising I don't have a very good reason to say no. So my reason is that the vibes are off. |
-| 4 | Supabase | Modern DB solution. Has all the fancy bells and whistles. Realtime as well—very cool and poggies in all regards. | **MAXIMUM REALTIME CONCURRENT CONNECTIONS ON FREE TIER IS 200** |
-| 5 | Firebase | Supabase but **better** | Vendor lock. (Who cares???? Not me.) |
+<del>| 4 | Supabase | Modern DB solution. Has all the fancy bells and whistles. Realtime as well—very cool and poggies in all regards. | **MAXIMUM REALTIME CONCURRENT CONNECTIONS ON FREE TIER IS 200** |</del>
+<del>| 5 | Firebase | Supabase but **better** | Vendor lock. (Who cares???? Not me.) |</del>
+| 4 | Supabase | Modern DB solution. Has all the fancy bells and whistles. Realtime as well—very cool and poggies in all regards. | **MAXIMUM REALTIME CONCURRENT CONNECTIONS ON FREE TIER IS 200. WHICH IS FINE. CUZ AT LEAST IT HAS SQL.**  |
+| 5 | Firebase | Supabase but **better** | Vendor lock. (Who cares???? Not me.) AND THE FACT THAT ITS NoSQL Makes it COMPLETELY useless for a social media app on scale. |
 
-So yeah. That's why Firebase. It's also, yk, Google. So the knowledge value is waaay higher than Convex.
+<del>So yeah. That's why Firebase. It's also, yk, Google. So the knowledge value is waaay higher than Convex.</del>
+Nope nope nope nope NOPE. Good god. What was I thinking. 
+Anyway now its between Supabase and convex. So yeah lets see.
 
-So wtf is up with Next.js? React is perfectly fine, right?  
+As for wtf is up with Next.js? React is perfectly fine, right?  
 Well... There are **a lot** of really nice features that I would otherwise have to implement myself:
 
 - SSR / SSG  
@@ -195,7 +199,7 @@ Well... There are **a lot** of really nice features that I would otherwise have 
 It just makes no sense to skip on all of that when it's figured out **out of the box**.  
 Plus security, scalability, etc.
 
-So yeah—**Next.js** and **Firestore** are the backend stack I have settled on for now. Will start working on migration right away.
+So yeah—**Next.js** and <del>**Firestore**</del> are the backend stack I have settled on for now. Will start working on migration right away.
 
 ---
 
