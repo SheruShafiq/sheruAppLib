@@ -148,7 +148,7 @@ FRONTEND_URL
 
 ---
 
-## Notes of insanity (A log of shit I did, and lost life years over)
+## Notes of insanity (A log of shit I did, and lost life years over. Think of it as the Caelid of my mind.)
 
 > - After multiple hours of scrootny and discovery, I have come to the conclusion, that the problem is in my function and not the makeshift cache backend in vercel cuz it's also breaking in onRender. All be it, onRender does feel a bit more reliable as far as reliablity goes. Need to look into as to why the likes array of user isn't being updated properly.  
 > - So, after years being take of my life for each export off of badgeMaker. Apparently jsPDF has a bug, the library itself that exports the entire export in a single string, a string so long (when 200+ badges) that node crashes as it exceeds the maximum length. So thank lord, some guy in the tickets made a fork with a fix cuz the bastards themselves refuse to take the PR in.  
@@ -160,7 +160,13 @@ FRONTEND_URL
 >   - **Idea 3:** Okay okay hold on. **PUPPETEER!** Let's have some headless clients running in the backend using Node and—**STFU.** Why the fuck would you just replicate the problem you have in the frontend in the backend?  
 > - Okay, webworkers. Holy shit. **SO** cool, but my god the use‑cases are far and few between. Regardless, I am extremely happy with the fact that I got ’em working. PDF generation time is almost half when the work is divided on 2 worker threads. All be it, the issue regarding the browser slowing down when the window isn't focused continues, and might only be resolved via Electron. Need to figure that out yet tho.  
 > - Implemented a nicer Excel input that supports pasting spreadsheet rows and logs all input to the database.  
-> - **Idea (Hans):** Hans also low key cooked. What if I made an image of the BG once, sent that to backend and let it loop over that image. That would be THE fastest way to generate badges. Some downsides tho—it's not gonna be as accurate, cuz now shit's not calculated anymore.  
+> - **Idea (Hans):** Hans also low key cooked. What if I made an image of the BG once, sent that to backend and let it loop over that image. That would be THE fastest way to generate badges. Some downsides tho—it's not gonna be as accurate, cuz now shit's not calculated anymore.
+> - Jesus fucking christ, I spent, no kidding. 9 hours. Browsing the web, scrolling documentations of backend frameworks, trying to understand and choose the best one. Holy shit. Id rather have a heel in my kneehole next time, than have to choose a techstack ever again.
+Silverlining: I have sources to back up my steamy turds on every backend framework ever. But yeah here's a short summary of my 9 hour journey:
+So, in this fucked up adventure through the gullag. My requirements were as fowllows:
+1) I want realtime pub/sub connection
+2) I want it to be cheap, ideally stick to big ol Zero.
+3) I want it to easily deployable (Dont look up how to deploy a JAVA application. Just get take cock and ball torture instead. NEVER ATTEMPT TO DEPLOY A JAVA APPLICATION).
 
 ---
 
@@ -169,7 +175,8 @@ FRONTEND_URL
 **26/05/2025**  
 After a lot, and I mean **ALOT**, of research and stressing ChatGPT deep‑research to its limits—and driving a guy on Stack Overflow to the top of Burj Khalifa with questions—I have decided to make two drastic changes:  
 - Move the app to **Next.js**  
-- <del>Use Google's **Firestore**</del> NEVER THE FUCK MIND. IT doesnt have joins. DO you have any idea the sheer amounts of reads I'd have to do for a single user scrolling for 10 minutes on a nonSQL db? TOO MANY. 
+- <del>Use Google's **Firestore**</del> NEVER THE FUCK MIND. IT doesnt have joins. DO you have any idea the sheer amounts of reads I'd have to do for a single user scrolling for 10 minutes on a nonSQL db? TOO MANY.
+- Use Convex as backend
 
 ### My reasoning
 
@@ -179,13 +186,14 @@ The following were the contenders for the potential backend.
 |---|--------|------|----------|
 | 1 | Java (Spring Boot) | Would be a great learning experience, plus it aligns nicely with my uni stuff. Plenty of libraries to work with. Fast as they come. | It's a nightmare to host. I would rather have heels in my kneehole than attempt to host a Java application ever again. |
 | 2 | Phoenix LiveView | Because it's cool as all hell. As far as I can tell, the best backend framework as far as typical backend frameworks go. And of course, **BEAM**. | LiveView is cool as shit but it's not React. It's simply too niche to learn. |
-| 3 | Convex | Works excellently with React. Literally the **DREAM** backend framework from what I can tell. Very cool code‑based everything. | Same problem as LiveView—too niche. And the company is going in a weird direction with the whole AI hype. I would love to use it for something else at some point. But yeah... I'm realising I don't have a very good reason to say no. So my reason is that the vibes are off. |
-| 4 | Supabase | Modern DB solution. Has all the fancy bells and whistles. Realtime as well—very cool and poggies in all regards. | **MAXIMUM REALTIME CONCURRENT CONNECTIONS ON FREE TIER IS 200. WHICH IS FINE. CUZ AT LEAST IT HAS SQL.**  |
+| 3 | Convex | Works excellently with React. Doesnt charge per read or write but CPU sost per query, so I can get away with multiple queries as long as they are lightweight... compared to firestore, which charges per query. Literally the **DREAM** backend framework from what I can tell. Very cool code‑based everything. | Same problem as LiveView—too niche. And the company is going in a weird direction with the whole AI hype. I would love to use it for something else at some point. But yeah... I'm realising I don't have a very good reason to say no. So my reason is that the vibes <del>are</del> were off. WE ARE ON BABAAYYY |
+| 4 | Supabase | Modern DB solution. Has all the fancy bells and whistles. Realtime as well—very cool and poggies in all regards. | **MAXIMUM REALTIME CONCURRENT CONNECTIONS ON FREE TIER IS 200. WHICH IS FINE. CUZ AT LEAST IT HAS SQL.** Too expensive tho. Convex is cheaper.  |
 | 5 | Firebase | Supabase but **better** | Vendor lock. (Who cares???? Not me.) AND THE FACT THAT ITS NoSQL Makes it COMPLETELY useless for a social media app on scale. |
 
 <del>So yeah. That's why Firebase. It's also, yk, Google. So the knowledge value is waaay higher than Convex.</del>
 Nope nope nope nope NOPE. Good god. What was I thinking. 
 Anyway now its between Supabase and convex. So yeah lets see.
+I have seen; I am going with Convex. It simply makes too much sense. The pricing is better. The DX is more fun. Yes, I probably wont be using it for work anytime soon. But good god its good.
 
 As for wtf is up with Next.js? React is perfectly fine, right?  
 Well... There are **a lot** of really nice features that I would otherwise have to implement myself:
@@ -197,7 +205,7 @@ Well... There are **a lot** of really nice features that I would otherwise have 
 It just makes no sense to skip on all of that when it's figured out **out of the box**.  
 Plus security, scalability, etc.
 
-So yeah—**Next.js** and <del>**Firestore**</del> are the backend stack I have settled on for now. Will start working on migration right away.
+So yeah—**Next.js** and <del>**Firestore**</del> Convex are the backend stack I have settled on for now. Will start working on migration to NextJs right away via a test project. Get my hands warmed up. And the will attempt to move this project.
 
 ---
 
