@@ -137,7 +137,7 @@ Product properties
 
 ---
 
-> Notes of insanity (A log of shit I did, and lost life years overw )
+> ## Notes of insanity (A log of shit I did, and lost life years overw )
 
 - After multiple hours of scrootny and discovery, I have come to the conclusion, that the problem is in
   my function and not the makeshift cache backend in vercel cuz it's also breaking in onRender. All be it, onRender does feel a bit more reliable as far as reliablity goes. Need to look into as to why the likes array of user isn't being updated properly.
