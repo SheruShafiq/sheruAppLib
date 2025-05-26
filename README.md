@@ -166,22 +166,22 @@ Was a bitch to setup... thanks Claude.
  2) Use Google's fire store.
 Here's my reasoning:
 The fowllowing were the contendors for the potential backend.
-1) Java (Spring Boot)
-   - Why? Would be great learning experience, cuz also works nicely with my uni stuff. Plenty libraries to work with. Fast as they come.
-   - Why not: It's a nightmare to host. I would rather have heels in my kneehole than attempt to host a Java application ever again.
-2) Phoenix Live view
-   - Why? Cuz its cool as all hell. As far as I can tell, the best backend framework as far as typical backend frameowkrs go. And ofc, BEAM.
-   - Why not: Liveview is cool as shit but its not React. Its simply too niche to learn.
-3) Convex
-   - Why? Works excellently with React. Litteraly the DREAM backend framework from what I can tell. Very cool codebased everything.
-   - Why not: Same problem as Live view. Too niche. And the company is going in a weird direction with the whole AI hype. I would love to use it for something else at some point. But yeah.
-   - Iam realising I don't have a very good reason to say no. SO my reason is, that the vibes are off.
-4) Supabase
-   - Why? Modern DB solution. Has all the fancy bells and whistles. Realtime as well. Very cool and poggies in all regards.
-   - Why not: (MAXIMUM REALTIME CONCURRENT CONNECTIONS ON FREE TIER IS 200)[https://supabase.com/docs/guides/realtime/quotas]
-5) Firebase
-   - Why? Supabase but better
-   - Why not: Vendor lock. (Who cares???? Not me.)
+   1) Java (Spring Boot)
+      - Why? Would be great learning experience, cuz also works nicely with my uni stuff. Plenty libraries to work with. Fast as they come.
+      - Why not: It's a nightmare to host. I would rather have heels in my kneehole than attempt to host a Java application ever again.
+   2) Phoenix Live view
+      - Why? Cuz its cool as all hell. As far as I can tell, the best backend framework as far as typical backend frameowkrs go. And ofc, BEAM.
+      - Why not: Liveview is cool as shit but its not React. Its simply too niche to learn.
+   3) Convex
+      - Why? Works excellently with React. Litteraly the DREAM backend framework from what I can tell. Very cool codebased everything.
+      - Why not: Same problem as Live view. Too niche. And the company is going in a weird direction with the whole AI hype. I would love to use it for something else at some point. But yeah.
+      - Iam realising I don't have a very good reason to say no. SO my reason is, that the vibes are off.
+   4) Supabase
+      - Why? Modern DB solution. Has all the fancy bells and whistles. Realtime as well. Very cool and poggies in all regards.
+      - Why not: (MAXIMUM REALTIME CONCURRENT CONNECTIONS ON FREE TIER IS 200)[https://supabase.com/docs/guides/realtime/quotas]
+   5) Firebase
+      - Why? Supabase but better
+      - Why not: Vendor lock. (Who cares???? Not me.)
 
 So yeah. Thats why firebase. Its also yk. Google. So the knowledge value is waay higher than convex.
 So wtf is up with NextJs. React is perfectly fine right?
