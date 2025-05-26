@@ -180,8 +180,6 @@ The following were the contenders for the potential backend.
 | 1 | Java (Spring Boot) | Would be a great learning experience, plus it aligns nicely with my uni stuff. Plenty of libraries to work with. Fast as they come. | It's a nightmare to host. I would rather have heels in my kneehole than attempt to host a Java application ever again. |
 | 2 | Phoenix LiveView | Because it's cool as all hell. As far as I can tell, the best backend framework as far as typical backend frameworks go. And of course, **BEAM**. | LiveView is cool as shit but it's not React. It's simply too niche to learn. |
 | 3 | Convex | Works excellently with React. Literally the **DREAM** backend framework from what I can tell. Very cool code‑based everything. | Same problem as LiveView—too niche. And the company is going in a weird direction with the whole AI hype. I would love to use it for something else at some point. But yeah... I'm realising I don't have a very good reason to say no. So my reason is that the vibes are off. |
-<del>| 4 | Supabase | Modern DB solution. Has all the fancy bells and whistles. Realtime as well—very cool and poggies in all regards. | **MAXIMUM REALTIME CONCURRENT CONNECTIONS ON FREE TIER IS 200** |</del>
-<del>| 5 | Firebase | Supabase but **better** | Vendor lock. (Who cares???? Not me.) |</del>
 | 4 | Supabase | Modern DB solution. Has all the fancy bells and whistles. Realtime as well—very cool and poggies in all regards. | **MAXIMUM REALTIME CONCURRENT CONNECTIONS ON FREE TIER IS 200. WHICH IS FINE. CUZ AT LEAST IT HAS SQL.**  |
 | 5 | Firebase | Supabase but **better** | Vendor lock. (Who cares???? Not me.) AND THE FACT THAT ITS NoSQL Makes it COMPLETELY useless for a social media app on scale. |
 
