@@ -162,8 +162,8 @@ Was a bitch to setup... thanks Claude.
 
 > # Future
 [26/05/2025] After a lot, and I mean ALOT of research and stressing chat GPT deep research to it's limits and driving a guy on stack overflow to the top of burj khalifa with questions. I have decided to make two drastic changes:
- 1) Move the app to NextJS
- 2) Use Google's fire store.
+ -  Move the app to NextJS
+ -  Use Google's fire store.
 Here's my reasoning:
 The fowllowing were the contendors for the potential backend.
    1) Java (Spring Boot)
