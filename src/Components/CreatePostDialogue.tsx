@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { createPost, patchUser, updateCategories } from "../APICalls";
+import { getOrCreateAnonId } from "../Helpers/cookies";
 import { TextGlitchEffect } from "./TextGlitchEffect";
 import { useSnackbar } from "notistack";
 import { Category, errorProps } from "../../dataTypeDefinitions";
@@ -42,7 +43,7 @@ function CreatePostDialogue({
     setDescription("");
     setCategory("");
   };
-  const userID: string = userData?.id;
+  const authorID: string = userData?.id ?? getOrCreateAnonId();
   const handleSubmit = (event) => {
     setCreatingPost(true);
     event.preventDefault();
@@ -50,52 +51,53 @@ function CreatePostDialogue({
     createPost({
       title,
       resource,
-      authorID: userID,
+      authorID: authorID,
       categoryID: category,
       description,
       onSuccess: (data) => {
-        if (onPostCreated) {
+        const finalize = () => {
+          updateCategories(
+            category,
+            "posts",
+            [
+              ...(categories.find((cat) => cat.id === category)?.posts || []),
+              data.id,
+            ],
+            () => {
+              if (onPostCreated) {
+                if (callerIdentifier === "postPage") {
+                  onPostCreated(data.id);
+                  setCreatingPost(false);
+                } else {
+                  onPostCreated();
+                }
+              }
+              enqueueSnackbar("Post created successfully!", {
+                variant: "success",
+              });
+            },
+            (error) => {
+              const err: errorProps = {
+                id: "failed to add post to category",
+                userFriendlyMessage:
+                  "An error occurred while updating the category.",
+                errorMessage:
+                  error instanceof Error ? error.message : "Unknown error",
+                error:
+                  error instanceof Error ? error : new Error("Unknown error"),
+              };
+              enqueueSnackbar({ variant: "error", ...err });
+              setCreatingPost(false);
+            }
+          );
+        };
+
+        if (userData) {
           patchUser({
             userID: userData.id!,
             field: "posts",
             newValue: [...userData.posts, data.id],
-            onSuccess: () => {
-              updateCategories(
-                category,
-                "posts",
-                [
-                  ...(categories.find((cat) => cat.id === category)?.posts ||
-                    []),
-                  data.id,
-                ], 
-                () => {
-                  if (callerIdentifier === "postPage") {
-                    onPostCreated(data.id);
-                    setCreatingPost(false);
-                  } else {
-                    onPostCreated();
-                  }
-                  enqueueSnackbar("Post created successfully!", {
-                    variant: "success",
-                  });
-                },
-                (error) => {
-                  const err: errorProps = {
-                    id: "failed to add post to category",
-                    userFriendlyMessage:
-                      "An error occurred while updating the category.",
-                    errorMessage:
-                      error instanceof Error ? error.message : "Unknown error",
-                    error:
-                      error instanceof Error
-                        ? error
-                        : new Error("Unknown error"),
-                  };
-                  enqueueSnackbar({ variant: "error", ...err });
-                  setCreatingPost(false);
-                }
-              );
-            },
+            onSuccess: finalize,
             onError: (error) => {
               const err: errorProps = {
                 id: "failed to add post to user",
@@ -110,7 +112,10 @@ function CreatePostDialogue({
               setCreatingPost(false);
             },
           });
+        } else {
+          finalize();
         }
+
         handleClose();
       },
 
