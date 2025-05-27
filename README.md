@@ -3,13 +3,14 @@ _A collection of Software by Sheru_
 
 ## Currently the App Library Contains the Fowllowing projects
 - ### Sauce
- - _A community driven resource sharing application_
+_A community driven resource sharing application_
 - ### Badge Maker
- - _A PDF Generating App for the Jalsa Community_
+_A PDF Generating App for the Jalsa Community_
 - ### CV APP
- - _An interactive CV showcasing Sheru_
+_An interactive CV showcasing Sheru_
 - ### Parsec status tool (Coming soon)
- - _A simple tool to see if my remote systems are online, and if not, the ability to remotey start them up and prepare to take connections_
+- _A simple tool to see if my remote systems are online, and if not, the ability to remotey start them up and prepare to take connections_
+
 ---
  ## **ROADMAP**
  1) Move the project to NextJs
@@ -17,9 +18,10 @@ _A collection of Software by Sheru_
  3) Parsec status tool
  4) CV APP
 ---
-> ### **Sauce** is a simple application developed solely for research purposes. **Sauce** aims to provide it's users with a convinient access to resources that may be harder to find via manual browsing. The reason I started this project was for the frontend exam at Uni. Hence the funny backend, that will be replaced with a proper one when I get to backend exam.
 
-#### Features
+
+
+### Sauce Feature list (outdated)
 1. Convinient sharing using shortened links  
 2. Stellar and blazing fast resource searching  
 3. Points system to promote legitmacy  
