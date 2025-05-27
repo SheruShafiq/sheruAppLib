@@ -1,9 +1,25 @@
 # Sheru App Library
-_A community driven resource sharing application_
+_A collection of Software by Sheru_
 
-**Sauce** is a simple application developed solely for research purposes. **Sauce** aims to provide it's users with a convinient access to resources that may be harder to find via manual browsing. The reason I started this project was for the frontend exam at Uni. Hence the funny backend, that will be replaced with a proper one when I get to backend exam.
+## Currently the App Library Contains the Fowllowing projects
+- ### Sauce
+ - _A community driven resource sharing application_
+- ### Badge Maker
+ - _A PDF Generating App for the Jalsa Community_
+- ### CV APP
+ - _An interactive CV showcasing Sheru_
+- ### Parsec status tool (Coming soon)
+ - _A simple tool to see if my remote systems are online, and if not, the ability to remotey start them up and prepare to take connections_
+---
+ ## **ROADMAP**
+ 1) Move the project to NextJs
+ 2) Implenent a proper backend using Convex (See more reasoning in the nightmare log)
+ 3) Parsec status tool
+ 4) CV APP
+---
+> ### **Sauce** is a simple application developed solely for research purposes. **Sauce** aims to provide it's users with a convinient access to resources that may be harder to find via manual browsing. The reason I started this project was for the frontend exam at Uni. Hence the funny backend, that will be replaced with a proper one when I get to backend exam.
 
-## Features
+#### Features
 1. Convinient sharing using shortened links  
 2. Stellar and blazing fast resource searching  
 3. Points system to promote legitmacy  
@@ -12,11 +28,9 @@ _A community driven resource sharing application_
 
 ---
 
-## Design
+#### Product properties
 
-### Product properties
-
-#### Must haves
+##### Must haves
 1. **SHARE DATA** (WHAT IS DATA? DATA: {Resource Name, Resource Value, Resource Description})  
 2. Data can be evalunted by other users on its legitimacy.  
    `if (Resource === legit) ? upvote : downvote`  
@@ -29,7 +43,6 @@ _A community driven resource sharing application_
 7. Resource requesting.  
 8. Feedbased off "Sauces" where audio based is mustard, more explicit is chili etc  
 
-> _Will use JSON server till I get to the backend exam._
 
 ---
 
@@ -46,7 +59,11 @@ _A community driven resource sharing application_
 10. I might not be as good of a dev as I thought I was  
 11. I know very little in the grand scheme of things of web app development and should send a formal appology to both Rein and Erik  
 12. position sticky requires top to defined  
-13. Web workers are cool as shit, but I dont think I'll have another use case anytime soon.  
+13. Web workers are cool as shit, but I dont think I'll have another use case anytime soon.
+14. Java is a nightmare to deploy
+15. Concurency on scale is tuff (suddenly making Erlang so much cooler than it already was)
+16. Bash is very strong and exactly is what I thought python would be.
+
 
 ---
 
