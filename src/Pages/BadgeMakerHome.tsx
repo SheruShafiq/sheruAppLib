@@ -25,11 +25,8 @@ import { toCanvas } from "html-to-image";
 import Logo from "@components/Logo";
 import IOSLoader from "@components/IOSLoader";
 import "@styles/BadgeMakerMain.css";
-import { chunk, mergePdfBuffers } from "@workers/pdfHelpers";
 import WorkerConfig from "@components/WorkerConfig";
-import WorkerProgressDisplay, {
-  calculateOverallProgress,
-} from "@components/WorkerProgressDisplay";
+import WorkerProgressDisplay from "@components/WorkerProgressDisplay";
 import { distributeWorkload } from "@workers/pdfHelpers";
 import type { RowData } from "../../dataTypeDefinitions";
 
@@ -85,10 +82,8 @@ async function getInlineGoogleFontsCss(): Promise<string> {
   return finalCss;
 }
 
-
 type WorkerProgressEvent = { progress: number; workerIndex: number };
 type WorkerCompleteEvent = { pdfBytes: ArrayBuffer; workerIndex: number };
-type WorkerEvent = { data: WorkerProgressEvent | WorkerCompleteEvent };
 
 type WorkerStatus = {
   id: number;
@@ -106,13 +101,12 @@ function Home() {
   const [dataInputMode, setDataInputMode] = useState<"csv" | "manual">(
     "manual"
   );
-const [pagesRendered, setPagesRendered] = useState(0);
-const prevPageCountRef = useRef<number[]>([]);
+  const [pagesRendered, setPagesRendered] = useState(0);
+  const prevPageCountRef = useRef<number[]>([]);
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
   const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
   const [visibleCount, setVisibleCount] = useState(0);
-  const [workerProgress, setWorkerProgress] = useState<number[]>([]);
   const [workerStatuses, setWorkerStatuses] = useState<WorkerStatus[]>([]);
   const [activeWorkers, setActiveWorkers] = useState(0);
   const [configOpen, setConfigOpen] = useState(false);
@@ -129,8 +123,6 @@ const prevPageCountRef = useRef<number[]>([]);
   useEffect(() => {
     activeWorkersRef.current = activeWorkers;
   }, [activeWorkers]);
-
-  const pdfWorkerRef = useRef<Worker | null>(null);
 
   const [badgeVariant, setBadgeVariant] = useState<number>(1);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -189,21 +181,14 @@ const prevPageCountRef = useRef<number[]>([]);
   }, [isExporting]);
 
   useEffect(() => {
-  const totalBadges = badgesData.length;
-  if (totalBadges === 0) return;
-
-  // we want the bar to run from 15 → 85 while workers do their job
-  const workPortion = 70;    // 100% − 15% start − 15% end
-  const startOffset = 15;    // we already reserved the first 15% for "canvas capture"
- 
-  // fraction of pages done
-  const frac = pagesRendered / totalBadges;
-  // clamp 0→1
-  const pct = Math.min(1, Math.max(0, frac));
-  setExportProgress(Math.round(startOffset + pct * workPortion));
-}, [pagesRendered, badgesData.length]);
-
-  const handleMode = (_: unknown, m: "csv" | "manual") => setDataInputMode(m);
+    const totalBadges = badgesData.length;
+    if (totalBadges === 0) return;
+    const workPortion = 70;
+    const startOffset = 15;
+    const frac = pagesRendered / totalBadges;
+    const pct = Math.min(1, Math.max(0, frac));
+    setExportProgress(Math.round(startOffset + pct * workPortion));
+  }, [pagesRendered, badgesData.length]);
 
   const MAX_WORKERS = Math.min(
     Number(
@@ -211,7 +196,7 @@ const prevPageCountRef = useRef<number[]>([]);
         navigator.hardwareConcurrency ||
         4
     ),
-    8 // cap at 8 workers maximum
+    8
   );
 
   const handleExportPDF = async () => {
@@ -229,19 +214,16 @@ const prevPageCountRef = useRef<number[]>([]);
     }
 
     try {
-      // 1) ready fonts & inline CSS
       await document.fonts.ready;
       const inlineCss = await getInlineGoogleFontsCss();
       const { width, height } =
         variantDimensions[badgeVariant - 1] || variantDimensions[0];
 
-      // 2) split your badges into N pipelines up front
       const indices = exportRefs.current
         .map((_, i) => i)
         .filter((i) => exportRefs.current[i] != null);
       const batches = distributeWorkload(indices, MAX_WORKERS);
 
-      // 3) set up all workers *before* blocking loops
       const initialStatuses: WorkerStatus[] = batches.map((batch, idx) => ({
         id: idx,
         progress: 0,
@@ -254,22 +236,18 @@ const prevPageCountRef = useRef<number[]>([]);
       prevPageCountRef.current = new Array(batches.length).fill(0);
       setPagesRendered(0);
 
-      // ——— yield to let React paint your empty bars ———
       await new Promise<void>((r) => setTimeout(r, 0));
 
-      // 4) now pipeline each batch into its own worker
       const totalImages = indices.length;
       let capturedCount = 0;
 
       const workerPromises = batches.map((batch, workerIndex) => {
         return new Promise<ArrayBuffer>(async (resolve, reject) => {
-          // spawn the worker
           const w = new Worker(
             new URL("../workers/pdfChunkWorker.ts", import.meta.url),
             { type: "module" }
           );
 
-          // hook up messages
           w.onmessage = (
             e: MessageEvent<WorkerProgressEvent | WorkerCompleteEvent>
           ) => {
@@ -290,7 +268,6 @@ const prevPageCountRef = useRef<number[]>([]);
                 return prev + delta;
               });
             } else {
-              // final PDF bytes
               setWorkerStatuses((prevStatuses) =>
                 prevStatuses.map((st) =>
                   st.id === workerIndex
@@ -314,7 +291,6 @@ const prevPageCountRef = useRef<number[]>([]);
             reject(err);
           };
 
-          // 5) rasterize this worker's images one‐by‐one
           const images: string[] = [];
           for (let i of batch) {
             const node = exportRefs.current[i]!;
@@ -329,16 +305,13 @@ const prevPageCountRef = useRef<number[]>([]);
             });
             images.push(canvas.toDataURL("image/jpeg", 1));
 
-            // update progress while capturing images
             capturedCount++;
             const capturePct = Math.round((capturedCount / totalImages) * 15);
             setExportProgress(capturePct);
 
-            // yield so the UI can update
             await new Promise<void>((r) => setTimeout(r, 0));
           }
 
-          // 6) hand off to the worker
           w.postMessage({
             images,
             width,
@@ -349,7 +322,6 @@ const prevPageCountRef = useRef<number[]>([]);
         });
       });
 
-      // 7) wait for all chunks, then merge
       const partials = await Promise.all(workerPromises);
       setExportProgress(85);
 
