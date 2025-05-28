@@ -20,6 +20,8 @@ _A simple PWA to stream family guy audio to sleep to even when device is on slee
  2) Implenent a proper backend using Convex (See more reasoning in the nightmare log)
  3) Parsec status tool
  4) CV APP
+ 5) Family Guy
+ 6) New Game...?
 ---
 
 
@@ -33,7 +35,7 @@ _A simple PWA to stream family guy audio to sleep to even when device is on slee
 
 ---
 
-#### Product properties
+#### Sauce Product properties
 
 ##### Must haves
 1. **SHARE DATA** (WHAT IS DATA? DATA: {Resource Name, Resource Value, Resource Description})  
@@ -48,6 +50,14 @@ _A simple PWA to stream family guy audio to sleep to even when device is on slee
 7. Resource requesting.  
 8. Feedbased off "Sauces" where audio based is mustard, more explicit is chili etc  
 
+
+### API(s) I found for the family guy project
+https://vidsrc.me/
+https://embed.su/
+https://vidlink.pro/
+https://vidsrc.icu/
+https://autoembed.cc/
+https://vidsrc.to/
 
 ---
 
