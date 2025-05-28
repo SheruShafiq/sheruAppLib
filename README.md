@@ -52,12 +52,12 @@ _A simple PWA to stream family guy audio to sleep to even when device is on slee
 
 
 ### API(s) I found for the family guy project
-https://vidsrc.me/
-https://embed.su/
-https://vidlink.pro/
-https://vidsrc.icu/
-https://autoembed.cc/
-https://vidsrc.to/
+- https://vidsrc.me/
+- https://embed.su/
+- https://vidlink.pro/
+- https://vidsrc.icu/
+- https://autoembed.cc/
+- https://vidsrc.to/
 
 ---
 
