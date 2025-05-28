@@ -10,6 +10,9 @@ _A PDF Generating App for the Jalsa Community_
 _An interactive CV showcasing Sheru_
 - ### Parsec status tool (Coming soon)
 - _A simple tool to see if my remote systems are online, and if not, the ability to remotey start them up and prepare to take connections_
+- ### Family guy to sleep app (Coming soon)
+- _A simple PWA to stream family guy audio to sleep to even when device is on sleep_
+
 
 ---
  ## **ROADMAP**
