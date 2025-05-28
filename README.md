@@ -199,6 +199,12 @@ So, in this fucked up adventure through the gullag. My requirements were as fowl
 1) I want realtime pub/sub connection
 2) I want it to be cheap, ideally stick to big ol Zero.
 3) I want it to easily deployable (Dont look up how to deploy a JAVA application. Just get take cock and ball torture instead. NEVER ATTEMPT TO DEPLOY A JAVA APPLICATION).
+So yeah, with some additional context and requirements reasoning, I started the deep search thing on GPT and started looking into niches myself that GPT usually doesnt consider.
+GPT came up with some damn nice options (see the table in the bottom, in the future section.) So I kept arguing back and forth on each of them. Concurency, active connection limit, pricing, scaling. Intergration with React.
+Integration with Vercel. Self hosting, cloud provider bla bla. And finnalyy setteled on firestore. Until moments later during a test setup, I realised that Iam gonna have to reuse my nightmare architecture because the DB is NoSQL.
+So I switched back to Supabase, because it had more or less the Firebase package, just with SQL. Which then also got dropped moments later because of a miserably low concurrent user limit and cheapo free tier.
+So I finnalyy caved and went with Convex. Even though its NoSQL, since it doesnt charge per query. My data assembly costs should stay down. It works wonders with React (almost made for it), and is supa easy to deploy.
+Currently playing around with it in another repo. As soon as I have the API(s) live, then I'll start the migration fully.
 
 ---
 
