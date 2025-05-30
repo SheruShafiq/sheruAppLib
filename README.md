@@ -147,7 +147,8 @@ _A simple PWA to stream family guy audio to sleep to even when device is on slee
    - Uses a random github file as status (so no cold start, aka no delay)  
    - Windows service to ping every hour or so  
    - Webpage to update  
-   - SFW and NSFW version with a spread.  
+   - SFW and NSFW version with a spread.
+59. [BUG] Sauce posts dont have skeleton loading for the GIF if the Giphy API is taking its time. It just shows nothing.
 
 </details>
 
