@@ -23,15 +23,13 @@ async function fetchEpisodeUrl(
   season: number,
   episode: number,
 ): Promise<string | undefined> {
+  const embedUrl =
+    `https://vidsrc.xyz/embed/tv/${tmdbId}/${season}-${episode}?autoplay=1&autonext=1`;
   try {
-    const res = await fetch(
-      `https://vidsrc.xyz/api/episode/${tmdbId}/${season}/${episode}`,
-    );
-    const data = await res.json();
-    return (
-      data?.sources?.find((s: { type: string }) => s.type === "hls")?.url ||
-      data?.stream
-    );
+    const res = await fetch(embedUrl);
+    const text = await res.text();
+    const match = text.match(/(https?:\/\/[^"']+\.m3u8)/);
+    return match?.[1];
   } catch (err) {
     console.error(err);
     return undefined;
