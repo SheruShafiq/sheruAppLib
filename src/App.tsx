@@ -20,6 +20,7 @@ import UserProfilePage from "./Pages/UserProfilePage";
 import { Global } from "@emotion/react";
 import Home from "./Pages/Home.tsx";
 import CV from "./Pages/CV.js";
+import FamilyGuy from "./Pages/FamilyGuy.tsx";
 
 
 
@@ -284,6 +285,12 @@ function App() {
                 isLoggedIn={isLoggedIn}
                 categories={categories}
               />
+            }
+          />
+               <Route
+            path="/test"
+            element={
+           <FamilyGuy />
             }
           />
           <Route
