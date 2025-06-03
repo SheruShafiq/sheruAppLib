@@ -10,8 +10,13 @@ _A PDF Generating App for the Jalsa Community_
 _An interactive CV showcasing Sheru_
 - ### Parsec status tool (Coming soon)
 _A simple tool to see if my remote systems are online, and if not, the ability to remotey start them up and prepare to take connections_
-- ### Family guy to sleep app (Coming soon)
-_A simple PWA to stream family guy audio to sleep to even when device is on sleep_
+- ### Family Guy Sleep App
+_Stream Family Guy episodes with audio even when your device is locked_
+
+Navigate to `/familyguy` to access the player. Tap **Play** to start
+the first episode. Playback continues automatically with the next
+episode when one finishes and will keep running while your device is
+locked thanks to the PWA service worker.
 
 
 ---

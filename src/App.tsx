@@ -287,11 +287,9 @@ function App() {
               />
             }
           />
-               <Route
-            path="/test"
-            element={
-           <FamilyGuy />
-            }
+          <Route
+            path="/familyguy"
+            element={<FamilyGuy />}
           />
           <Route
             path="/sheru/appLibrary/badgeMaker"
