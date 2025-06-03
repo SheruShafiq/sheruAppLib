@@ -9,7 +9,10 @@ _A PDF Generating App for the Jalsa Community_
 - ### CV APP
 _An interactive CV showcasing Sheru_
 - ### Parsec status tool (Coming soon)
-- _A simple tool to see if my remote systems are online, and if not, the ability to remotey start them up and prepare to take connections_
+_A simple tool to see if my remote systems are online, and if not, the ability to remotey start them up and prepare to take connections_
+- ### Family guy to sleep app (Coming soon)
+_A simple PWA to stream family guy audio to sleep to even when device is on sleep_
+
 
 ---
  ## **ROADMAP**
@@ -17,6 +20,8 @@ _An interactive CV showcasing Sheru_
  2) Implenent a proper backend using Convex (See more reasoning in the nightmare log)
  3) Parsec status tool
  4) CV APP
+ 5) Family Guy
+ 6) New Game...?
 ---
 
 
@@ -30,7 +35,7 @@ _An interactive CV showcasing Sheru_
 
 ---
 
-#### Product properties
+#### Sauce Product properties
 
 ##### Must haves
 1. **SHARE DATA** (WHAT IS DATA? DATA: {Resource Name, Resource Value, Resource Description})  
@@ -45,6 +50,14 @@ _An interactive CV showcasing Sheru_
 7. Resource requesting.  
 8. Feedbased off "Sauces" where audio based is mustard, more explicit is chili etc  
 
+
+### API(s) I found for the family guy project
+- https://vidsrc.me/
+- https://embed.su/
+- https://vidlink.pro/
+- https://vidsrc.icu/
+- https://autoembed.cc/
+- https://vidsrc.to/
 
 ---
 
@@ -134,7 +147,8 @@ _An interactive CV showcasing Sheru_
    - Uses a random github file as status (so no cold start, aka no delay)  
    - Windows service to ping every hour or so  
    - Webpage to update  
-   - SFW and NSFW version with a spread.  
+   - SFW and NSFW version with a spread.
+59. [BUG] Sauce posts dont have skeleton loading for the GIF if the Giphy API is taking its time. It just shows nothing.
 
 </details>
 
@@ -169,23 +183,29 @@ FRONTEND_URL
 
 ## Notes of insanity (A log of shit I did, and lost life years over. Think of it as the Caelid of my mind.)
 
-> - After multiple hours of scrootny and discovery, I have come to the conclusion, that the problem is in my function and not the makeshift cache backend in vercel cuz it's also breaking in onRender. All be it, onRender does feel a bit more reliable as far as reliablity goes. Need to look into as to why the likes array of user isn't being updated properly.  
-> - So, after years being take of my life for each export off of badgeMaker. Apparently jsPDF has a bug, the library itself that exports the entire export in a single string, a string so long (when 200+ badges) that node crashes as it exceeds the maximum length. So thank lord, some guy in the tickets made a fork with a fix cuz the bastards themselves refuse to take the PR in.  
-> - ALSO HOLY SHIT I MANAGED TO MOVE THE WHOLE THING TO TYPESCRIPT  
-> - I do need to double check some logic, there's too much of "Why would u do that" going on in functions for sauce app.  
-> - Holy shit balls, figuring out an effecient way to generate DOM elements as PDFs is a bitch. I tried moving the logic to server, as backend languages tend to be multi-threaded and thus capable of doing more compared to abusing the singular UI thread on my browser. But hey, I have some ideas.  
->   - **Idea 1:** Lets send the whole DOM over network to the server, that oughta work right? **NOPE.** It's breaking all sorts of styles due to missing inherited styles...  
->   - **Idea 2:** Alright, what if I rewrote the whole thing in HTML/CSS in the backend? Inconsistent—so inconsistent compared to what's on the frontend. It's actually embarassing.  
->   - **Idea 3:** Okay okay hold on. **PUPPETEER!** Let's have some headless clients running in the backend using Node and—**STFU.** Why the fuck would you just replicate the problem you have in the frontend in the backend?  
-> - Okay, webworkers. Holy shit. **SO** cool, but my god the use‑cases are far and few between. Regardless, I am extremely happy with the fact that I got ’em working. PDF generation time is almost half when the work is divided on 2 worker threads. All be it, the issue regarding the browser slowing down when the window isn't focused continues, and might only be resolved via Electron. Need to figure that out yet tho.  
-> - Implemented a nicer Excel input that supports pasting spreadsheet rows and logs all input to the database.  
-> - **Idea (Hans):** Hans also low key cooked. What if I made an image of the BG once, sent that to backend and let it loop over that image. That would be THE fastest way to generate badges. Some downsides tho—it's not gonna be as accurate, cuz now shit's not calculated anymore.
-> - Jesus fucking christ, I spent, no kidding. 9 hours. Browsing the web, scrolling documentations of backend frameworks, trying to understand and choose the best one. Holy shit. Id rather have a heel in my kneehole next time, than have to choose a techstack ever again.
+- After multiple hours of scrootny and discovery, I have come to the conclusion, that the problem is in my function and not the makeshift cache backend in vercel cuz it's also breaking in onRender. All be it, onRender does feel a bit more reliable as far as reliablity goes. Need to look into as to why the likes array of user isn't being updated properly.  
+- So, after years being take of my life for each export off of badgeMaker. Apparently jsPDF has a bug, the library itself that exports the entire export in a single string, a string so long (when 200+ badges) that node crashes as it exceeds the maximum length. So thank lord, some guy in the tickets made a fork with a fix cuz the bastards themselves refuse to take the PR in.  
+- ALSO HOLY SHIT I MANAGED TO MOVE THE WHOLE THING TO TYPESCRIPT  
+- I do need to double check some logic, there's too much of "Why would u do that" going on in functions for sauce app.  
+- Holy shit balls, figuring out an effecient way to generate DOM elements as PDFs is a bitch. I tried moving the logic to server, as backend languages tend to be multi-threaded and thus capable of doing more compared to abusing the singular UI thread on my browser. But hey, I have some ideas.  
+1) **Idea 1:** Lets send the whole DOM over network to the server, that oughta work right? **NOPE.** It's breaking all sorts of styles due to missing inherited styles...  
+2) **Idea 2:** Alright, what if I rewrote the whole thing in HTML/CSS in the backend? Inconsistent—so inconsistent compared to what's on the frontend. It's actually embarassing.  
+3) **Idea 3:** Okay okay hold on. **PUPPETEER!** Let's have some headless clients running in the backend using Node and—**STFU.** Why the fuck would you just replicate the problem you have in the frontend in the backend?  
+- Okay, webworkers. Holy shit. **SO** cool, but my god the use‑cases are far and few between. Regardless, I am extremely happy with the fact that I got ’em working. PDF generation time is almost half when the work is divided on 2 worker threads. All be it, the issue regarding the browser slowing down when the window isn't focused continues, and might only be resolved via Electron. Need to figure that out yet tho.  
+- Implemented a nicer Excel input that supports pasting spreadsheet rows and logs all input to the database.  
+- **Idea (Hans):** Hans also low key cooked. What if I made an image of the BG once, sent that to backend and let it loop over that image. That would be THE fastest way to generate badges. Some downsides tho—it's not gonna be as accurate, cuz now shit's not calculated anymore.
+- Jesus fucking christ, I spent, no kidding. 9 hours. Browsing the web, scrolling documentations of backend frameworks, trying to understand and choose the best one. Holy shit. Id rather have a heel in my kneehole next time, than have to choose a techstack ever again.
 Silverlining: I have sources to back up my steamy turds on every backend framework ever. But yeah here's a short summary of my 9 hour journey:
 So, in this fucked up adventure through the gullag. My requirements were as fowllows:
 1) I want realtime pub/sub connection
 2) I want it to be cheap, ideally stick to big ol Zero.
 3) I want it to easily deployable (Dont look up how to deploy a JAVA application. Just get take cock and ball torture instead. NEVER ATTEMPT TO DEPLOY A JAVA APPLICATION).
+So yeah, with some additional context and requirements reasoning, I started the deep search thing on GPT and started looking into niches myself that GPT usually doesnt consider.
+GPT came up with some damn nice options (see the table in the bottom, in the future section.) So I kept arguing back and forth on each of them. Concurency, active connection limit, pricing, scaling. Intergration with React.
+Integration with Vercel. Self hosting, cloud provider bla bla. And finnalyy setteled on firestore. Until moments later during a test setup, I realised that Iam gonna have to reuse my nightmare architecture because the DB is NoSQL.
+So I switched back to Supabase, because it had more or less the Firebase package, just with SQL. Which then also got dropped moments later because of a miserably low concurrent user limit and cheapo free tier.
+So I finnalyy caved and went with Convex. Even though its NoSQL, since it doesnt charge per query. My data assembly costs should stay down. It works wonders with React (almost made for it), and is supa easy to deploy.
+Currently playing around with it in another repo. As soon as I have the API(s) live, then I'll start the migration fully.
 
 ---
 
