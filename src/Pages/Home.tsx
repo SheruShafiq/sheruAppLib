@@ -120,6 +120,13 @@ function Home() {
           >
             CV
           </Button>
+          <Button
+            size="large"
+            variant="outlined"
+            onClick={() => navigate("/test")}
+          >
+            Sleep App
+          </Button>
         </Stack>
       </Stack>
     </>
