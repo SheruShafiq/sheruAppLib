@@ -12,6 +12,8 @@ _An interactive CV showcasing Sheru_
 _A simple tool to see if my remote systems are online, and if not, the ability to remotey start them up and prepare to take connections_
 - ### Family guy to sleep app (Coming soon)
 _A simple PWA to stream family guy audio to sleep to even when device is on sleep_
+- ### 3x3 Maker (with API intergrations for MAL, Steam and IMBD)
+_An easy to use 3x3 generator with a builtin search engine_
 
 
 ---
