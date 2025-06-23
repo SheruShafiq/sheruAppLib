@@ -288,7 +288,7 @@ function App() {
             }
           />
                <Route
-            path="/test"
+            path="/familyguy"
             element={
            <FamilyGuy />
             }
