@@ -1,5 +1,5 @@
-import { useRef, useEffect, useState } from 'react';
-
+import { useRef, useEffect, useState, use } from 'react';
+import { WebExtensionBlocker } from '@ghostery/adblocker-webextension';
 // Type declaration for Vite environment variables
 declare global {
   interface ImportMetaEnv {
@@ -49,7 +49,7 @@ function Page() {
   { "season_number": 22, "episode_count": 15 },
   { "season_number": 23, "episode_count": 15 }   // ongoing
 ]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   // include mute=0 and allow autoplay
@@ -165,6 +165,15 @@ function Page() {
   const handleEpisodeChange = (newEpisode: number) => {
     setCurrentEpisode(newEpisode);
   };
+
+  useEffect(() => {
+WebExtensionBlocker.fromPrebuiltAdsAndTracking().then((blocker) => {
+      blocker.enableBlockingInBrowser(
+        window
+      );
+    });
+
+  }, []);
 
   return (
     <>
