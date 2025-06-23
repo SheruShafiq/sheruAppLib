@@ -123,7 +123,7 @@ function Home() {
           <Button
             size="large"
             variant="outlined"
-            onClick={() => navigate("/test")}
+            onClick={() => navigate("/familyguy")}
           >
             Sleep App
           </Button>
