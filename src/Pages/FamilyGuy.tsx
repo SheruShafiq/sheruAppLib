@@ -1,5 +1,19 @@
-import { useRef, useEffect, useState, use } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { WebExtensionBlocker } from '@ghostery/adblocker-webextension';
+import { TextGlitchEffect } from '@/Components/TextGlitchEffect';
+import {
+  Box,
+  Stack,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Typography
+} from '@mui/material';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+
 // Type declaration for Vite environment variables
 declare global {
   interface ImportMetaEnv {
@@ -16,9 +30,6 @@ interface SeasonData {
   episode_count: number;
 }
 
-interface TMDBResponse {
-  seasons: SeasonData[];
-}
 
 function Page() {
   const tmdb_id = "tt0182576"; // Family Guy TMDB ID
@@ -49,10 +60,8 @@ function Page() {
   { "season_number": 22, "episode_count": 15 },
   { "season_number": 23, "episode_count": 15 }   // ongoing
 ]);
-  const [loading, setLoading] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  // include mute=0 and allow autoplay
   const src = `https://vidsrc.xyz/embed/tv/${tmdb_id}/${currentSeason}-${currentEpisode}?autoplay=1&autonext=1&mute=0`;
 
   // Ad blocking and popup prevention
@@ -177,7 +186,6 @@ WebExtensionBlocker.fromPrebuiltAdsAndTracking().then((blocker) => {
 
   return (
     <>
-      {/* CSP and ad blocking styles */}
       <style dangerouslySetInnerHTML={{
         __html: `
           /* Hide common ad elements */
@@ -210,99 +218,124 @@ WebExtensionBlocker.fromPrebuiltAdsAndTracking().then((blocker) => {
         `
       }} />
       
-      <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ padding: '10px' }}>
-          <h1>Family Guy Sleep Client</h1>
-          
-          {loading ? (
-            <p>Loading season data...</p>
-          ) : (
-            <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
-              {/* Season Controls */}
-              <button onClick={handlePreviousSeason} disabled={currentSeason === 1}>
-                ← Previous Season
-              </button>
-              
-              <select 
-                value={currentSeason} 
+      <Stack height="100vh" flexDirection="column">
+        <Box p={2}>
+          <TextGlitchEffect
+            className="userProfilePageUserName"
+            text={`Family Guy Sleep S${currentSeason}E${currentEpisode}`}
+          />
+          <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap">
+            <Button
+              variant="outlined"
+              startIcon={<NavigateBeforeIcon />}
+              onClick={handlePreviousSeason}
+              disabled={currentSeason === 1}
+            >
+              Previous Season
+            </Button>
+            <FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
+              <InputLabel id="season-select-label">Season</InputLabel>
+              <Select
+                labelId="season-select-label"
+                id="season-select"
+                value={currentSeason}
                 onChange={(e) => handleSeasonChange(Number(e.target.value))}
+                label="Season"
               >
-                {seasons.map(season => (
-                  <option key={season.season_number} value={season.season_number}>
-                    Season {season.season_number}
-                  </option>
+               {seasons.map((s) => (
+                  <MenuItem key={s.season_number} value={s.season_number}>
+                    Season {s.season_number}
+                  </MenuItem>
                 ))}
-              </select>
+           
+              </Select>
+            </FormControl>
+            <Button
+              variant="outlined"
+              endIcon={<NavigateNextIcon />}
+              onClick={handleNextSeason}
+              disabled={currentSeason === Math.max(...seasons.map((s) => s.season_number))}
+            >
+              Next Season
+            </Button>
 
-              <button 
-                onClick={handleNextSeason} 
-                disabled={currentSeason === Math.max(...seasons.map(s => s.season_number))}
-              >
-                Next Season →
-              </button>
-
-              {/* Episode Controls */}
-              <button onClick={handlePreviousEpisode} disabled={currentSeason === 1 && currentEpisode === 1}>
-                ← Previous Episode
-              </button>
-
-              <select 
-                value={currentEpisode} 
+            {/* Episode Controls */}
+            <Button
+              variant="outlined"
+              startIcon={<NavigateBeforeIcon />}
+              onClick={handlePreviousEpisode}
+              disabled={currentSeason === 1 && currentEpisode === 1}
+            >
+              Previous Episode
+            </Button>
+            <FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
+              <InputLabel id="episode-select-label">Episode</InputLabel>
+              <Select
+                labelId="episode-select-label"
+                id="episode-select"
+                value={currentEpisode}
                 onChange={(e) => handleEpisodeChange(Number(e.target.value))}
+                label="Episode"
               >
-                {getCurrentSeasonData() && Array.from(
-                  { length: getCurrentSeasonData()!.episode_count }, 
-                  (_, i) => i + 1
-                ).map(ep => (
-                  <option key={ep} value={ep}>
-                    Episode {ep}
-                  </option>
-                ))}
-              </select>
-
-              <button 
-                onClick={handleNextEpisode} 
-                disabled={
-                  getCurrentSeasonData() && 
-                  currentEpisode === getCurrentSeasonData()!.episode_count &&
-                  currentSeason === Math.max(...seasons.map(s => s.season_number))
-                }
-              >
-                Next Episode →
-              </button>
-
-              <span style={{ marginLeft: '20px', fontWeight: 'bold' }}>
-                S{currentSeason}E{currentEpisode}
-              </span>
-            </div>
-          )}
-        </div>
-
-        <iframe
-          ref={iframeRef}
-          src={src}
-          allow="autoplay"
-          style={{ flex: 1, border: 'none' }}
-          sandbox="allow-scripts allow-same-origin allow-forms"
-          onLoad={() => {
-            // Additional ad blocking for iframe content
-            try {
-              const iframe = iframeRef.current;
-              if (iframe && iframe.contentWindow) {
-                const iframeWindow = iframe.contentWindow as any;
-                if (iframeWindow.open) {
-                  iframeWindow.open = () => null;
-                }
+                {(() => {
+                  const seasonData = getCurrentSeasonData();
+                  if (!seasonData || seasonData.episode_count <= 0) return null;
+                  
+                  return Array.from(
+                    { length: seasonData.episode_count },
+                    (_, i) => i + 1
+                  ).map((ep) => (
+                    <MenuItem key={ep} value={ep}>
+                      Episode {ep}
+                    </MenuItem>
+                  ));
+                })()}
+              </Select>
+            </FormControl>
+            <Button
+              variant="outlined"
+              endIcon={<NavigateNextIcon />}
+              onClick={handleNextEpisode}
+              disabled={
+                getCurrentSeasonData()?.episode_count === currentEpisode &&
+                currentSeason === Math.max(...seasons.map((s) => s.season_number))
               }
-            } catch (e) {
-              // Cross-origin restrictions prevent access, which is expected
-              console.log('Cross-origin iframe access blocked (this is normal)');
-            }
-          }}
-        />
-      </div>
+            >
+              Next Episode
+            </Button>
+            <Typography variant="subtitle1" fontWeight="bold" ml={2}>
+              S{currentSeason}E{currentEpisode}
+            </Typography>
+          </Stack>
+        </Box>
+        <Box flex={1}>
+          <iframe
+            ref={iframeRef}
+            src={src}
+            allow="autoplay"
+            style={{ width: '100%', height: '100%', border: 'none' }}
+            sandbox="allow-scripts allow-same-origin allow-forms"
+            onLoad={() => {
+              // Additional ad blocking for iframe content
+              try {
+                const iframe = iframeRef.current;
+                if (iframe && iframe.contentWindow) {
+                  const iframeWindow = iframe.contentWindow as any;
+                  if (iframeWindow.open) {
+                    iframeWindow.open = () => null;
+                  }
+                }
+              } catch (e) {
+                // Cross-origin restrictions prevent access, which is expected
+                console.log('Cross-origin iframe access blocked (this is normal)');
+              }
+            }}
+          />
+        </Box>
+      </Stack>
     </>
   );
 }
 
 export default Page;
+
