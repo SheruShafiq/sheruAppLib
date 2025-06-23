@@ -31,6 +31,62 @@ function Page() {
   // include mute=0 and allow autoplay
   const src = `https://vidsrc.xyz/embed/tv/${tmdb_id}/${currentSeason}-${currentEpisode}?autoplay=1&autonext=1&mute=0`;
 
+  // Ad blocking and popup prevention
+  useEffect(() => {
+    // Block popups and redirects
+    const originalOpen = window.open;
+    window.open = () => null;
+    
+    const originalLocation = window.location;
+    
+    // Prevent unwanted navigation
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+
+    // Block common popup events
+    const blockPopups = (e: Event) => {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    };
+
+    // Add event listeners to block popups
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target && (
+        target.tagName === 'A' || 
+        target.closest('a') ||
+        target.onclick ||
+        target.getAttribute('onclick')
+      )) {
+        const link = target.closest('a') || target;
+        const href = link.getAttribute?.('href');
+        if (href && (href.includes('ad') || href.includes('popup') || href.startsWith('javascript:'))) {
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        }
+      }
+    }, true);
+
+    // Block context menu on iframe
+    const iframe = iframeRef.current;
+    if (iframe) {
+      iframe.addEventListener('contextmenu', blockPopups);
+    }
+
+    // Cleanup
+    return () => {
+      window.open = originalOpen;
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      if (iframe) {
+        iframe.removeEventListener('contextmenu', blockPopups);
+      }
+    };
+  }, []);
+
   // Fetch season and episode data from TMDB
   useEffect(() => {
     const fetchSeasonData = async () => {
@@ -121,84 +177,133 @@ function Page() {
     setCurrentEpisode(newEpisode);
   };
 
-  // ...existing code...
-
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <div style={{ padding: '10px' }}>
-        <h1>Family Guy Sleep Client</h1>
-        
-        {loading ? (
-          <p>Loading season data...</p>
-        ) : (
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
-            {/* Season Controls */}
-            <button onClick={handlePreviousSeason} disabled={currentSeason === 1}>
-              ← Previous Season
-            </button>
-            
-            <select 
-              value={currentSeason} 
-              onChange={(e) => handleSeasonChange(Number(e.target.value))}
-            >
-              {seasons.map(season => (
-                <option key={season.season_number} value={season.season_number}>
-                  Season {season.season_number}
-                </option>
-              ))}
-            </select>
+    <>
+      {/* CSP and ad blocking styles */}
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          /* Hide common ad elements */
+          [class*="ad"], [id*="ad"], [class*="popup"], [id*="popup"],
+          [class*="banner"], [id*="banner"], [class*="overlay"], [id*="overlay"],
+          .advertisement, .sponsored, .promo, .marketing,
+          iframe[src*="ads"], iframe[src*="doubleclick"], iframe[src*="googlesyndication"],
+          div[style*="position: fixed"], div[style*="z-index: 999"],
+          .modal-backdrop, .popup-overlay, .ad-overlay {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            position: absolute !important;
+            left: -9999px !important;
+            width: 0 !important;
+            height: 0 !important;
+            pointer-events: none !important;
+          }
+          
+          /* Prevent unwanted scrolling and overflow */
+          body {
+            overflow-x: hidden !important;
+          }
+          
+          /* Hide elements that appear on top */
+          div[style*="position: absolute"][style*="top: 0"],
+          div[style*="position: fixed"][style*="top: 0"] {
+            display: none !important;
+          }
+        `
+      }} />
+      
+      <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ padding: '10px' }}>
+          <h1>Family Guy Sleep Client</h1>
+          
+          {loading ? (
+            <p>Loading season data...</p>
+          ) : (
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+              {/* Season Controls */}
+              <button onClick={handlePreviousSeason} disabled={currentSeason === 1}>
+                ← Previous Season
+              </button>
+              
+              <select 
+                value={currentSeason} 
+                onChange={(e) => handleSeasonChange(Number(e.target.value))}
+              >
+                {seasons.map(season => (
+                  <option key={season.season_number} value={season.season_number}>
+                    Season {season.season_number}
+                  </option>
+                ))}
+              </select>
 
-            <button 
-              onClick={handleNextSeason} 
-              disabled={currentSeason === Math.max(...seasons.map(s => s.season_number))}
-            >
-              Next Season →
-            </button>
+              <button 
+                onClick={handleNextSeason} 
+                disabled={currentSeason === Math.max(...seasons.map(s => s.season_number))}
+              >
+                Next Season →
+              </button>
 
-            {/* Episode Controls */}
-            <button onClick={handlePreviousEpisode} disabled={currentSeason === 1 && currentEpisode === 1}>
-              ← Previous Episode
-            </button>
+              {/* Episode Controls */}
+              <button onClick={handlePreviousEpisode} disabled={currentSeason === 1 && currentEpisode === 1}>
+                ← Previous Episode
+              </button>
 
-            <select 
-              value={currentEpisode} 
-              onChange={(e) => handleEpisodeChange(Number(e.target.value))}
-            >
-              {getCurrentSeasonData() && Array.from(
-                { length: getCurrentSeasonData()!.episode_count }, 
-                (_, i) => i + 1
-              ).map(ep => (
-                <option key={ep} value={ep}>
-                  Episode {ep}
-                </option>
-              ))}
-            </select>
+              <select 
+                value={currentEpisode} 
+                onChange={(e) => handleEpisodeChange(Number(e.target.value))}
+              >
+                {getCurrentSeasonData() && Array.from(
+                  { length: getCurrentSeasonData()!.episode_count }, 
+                  (_, i) => i + 1
+                ).map(ep => (
+                  <option key={ep} value={ep}>
+                    Episode {ep}
+                  </option>
+                ))}
+              </select>
 
-            <button 
-              onClick={handleNextEpisode} 
-              disabled={
-                getCurrentSeasonData() && 
-                currentEpisode === getCurrentSeasonData()!.episode_count &&
-                currentSeason === Math.max(...seasons.map(s => s.season_number))
+              <button 
+                onClick={handleNextEpisode} 
+                disabled={
+                  getCurrentSeasonData() && 
+                  currentEpisode === getCurrentSeasonData()!.episode_count &&
+                  currentSeason === Math.max(...seasons.map(s => s.season_number))
+                }
+              >
+                Next Episode →
+              </button>
+
+              <span style={{ marginLeft: '20px', fontWeight: 'bold' }}>
+                S{currentSeason}E{currentEpisode}
+              </span>
+            </div>
+          )}
+        </div>
+
+        <iframe
+          ref={iframeRef}
+          src={src}
+          allow="autoplay"
+          style={{ flex: 1, border: 'none' }}
+          sandbox="allow-scripts allow-same-origin allow-forms"
+          onLoad={() => {
+            // Additional ad blocking for iframe content
+            try {
+              const iframe = iframeRef.current;
+              if (iframe && iframe.contentWindow) {
+                const iframeWindow = iframe.contentWindow as any;
+                if (iframeWindow.open) {
+                  iframeWindow.open = () => null;
+                }
               }
-            >
-              Next Episode →
-            </button>
-
-            <span style={{ marginLeft: '20px', fontWeight: 'bold' }}>
-              S{currentSeason}E{currentEpisode}
-            </span>
-          </div>
-        )}
+            } catch (e) {
+              // Cross-origin restrictions prevent access, which is expected
+              console.log('Cross-origin iframe access blocked (this is normal)');
+            }
+          }}
+        />
       </div>
-
-      <iframe
-        ref={iframeRef}
-        src={src}
-        allow="autoplay"
-        style={{ flex: 1, border: 'none' }}
-      />
-    </div>
+    </>
   );
 }
 
