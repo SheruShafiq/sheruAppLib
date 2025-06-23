@@ -24,7 +24,31 @@ function Page() {
   const tmdb_id = "tt0182576"; // Family Guy TMDB ID
   const [currentSeason, setCurrentSeason] = useState(1);
   const [currentEpisode, setCurrentEpisode] = useState(1);
-  const [seasons, setSeasons] = useState<SeasonData[]>([]);
+  const [seasons, setSeasons] = useState<SeasonData[]>([
+  { "season_number": 1,  "episode_count": 7  },
+  { "season_number": 2,  "episode_count": 21 },
+  { "season_number": 3,  "episode_count": 22 },
+  { "season_number": 4,  "episode_count": 30 },
+  { "season_number": 5,  "episode_count": 18 },
+  { "season_number": 6,  "episode_count": 12 },
+  { "season_number": 7,  "episode_count": 16 },
+  { "season_number": 8,  "episode_count": 21 },
+  { "season_number": 9,  "episode_count": 18 },
+  { "season_number": 10, "episode_count": 23 },
+  { "season_number": 11, "episode_count": 22 },
+  { "season_number": 12, "episode_count": 21 },
+  { "season_number": 13, "episode_count": 18 },
+  { "season_number": 14, "episode_count": 20 },
+  { "season_number": 15, "episode_count": 20 },
+  { "season_number": 16, "episode_count": 20 },
+  { "season_number": 17, "episode_count": 20 },
+  { "season_number": 18, "episode_count": 20 },
+  { "season_number": 19, "episode_count": 20 },
+  { "season_number": 20, "episode_count": 20 },
+  { "season_number": 21, "episode_count": 20 },
+  { "season_number": 22, "episode_count": 15 },
+  { "season_number": 23, "episode_count": 15 }   // ongoing
+]);
   const [loading, setLoading] = useState(true);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -87,42 +111,7 @@ function Page() {
     };
   }, []);
 
-  // Fetch season and episode data from TMDB
-  useEffect(() => {
-    const fetchSeasonData = async () => {
-      try {
-        // Replace with your TMDB API key or use import.meta.env for Vite
-        const apiKey = import.meta.env?.VITE_TMDB_API_KEY || 'your-api-key-here';
-        if (!apiKey || apiKey === 'your-api-key-here') {
-          throw new Error('TMDB API key not found');
-        }
-        const response = await fetch(
-          `https://api.themoviedb.org/3/tv/1434?api_key=${apiKey}`
-        );
-        const data: TMDBResponse = await response.json();
-        setSeasons(data.seasons.filter(season => season.season_number > 0));
-        setLoading(false);
-      } catch (error) {
-        console.error('Failed to fetch season data:', error);
-        // Fallback data for Family Guy (approximate)
-        setSeasons([
-          { season_number: 1, episode_count: 7 },
-          { season_number: 2, episode_count: 21 },
-          { season_number: 3, episode_count: 22 },
-          { season_number: 4, episode_count: 30 },
-          { season_number: 5, episode_count: 18 },
-          { season_number: 6, episode_count: 12 },
-          { season_number: 7, episode_count: 16 },
-          { season_number: 8, episode_count: 20 },
-          { season_number: 9, episode_count: 18 },
-          { season_number: 10, episode_count: 24 },
-        ]);
-        setLoading(false);
-      }
-    };
 
-    fetchSeasonData();
-  }, []);
 
   const getCurrentSeasonData = () => {
     return seasons.find(s => s.season_number === currentSeason);
