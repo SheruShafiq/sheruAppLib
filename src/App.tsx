@@ -21,6 +21,7 @@ import { Global } from "@emotion/react";
 import Home from "./Pages/Home.tsx";
 import CV from "./Pages/CV.js";
 import FamilyGuy from "./Pages/FamilyGuy.tsx";
+import Parsec from "./Pages/ParsecStatus/Parsec.tsx";
 
 
 
@@ -228,6 +229,7 @@ function App() {
         />
         <Routes>
           <Route path="/" element={<Home />} />
+           <Route path="/parsec" element={<Parsec />} />
           <Route path="/cv" element={<CV />} />
           <Route
             path="/sauce/:pageNumber?"

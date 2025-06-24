@@ -96,7 +96,7 @@ function Home() {
           URL={"/"}
           additionalClassName={"homePageTitleDrop"}
         />
-        <Stack direction={"row"} gap={1}>
+        <Stack direction={"row"} gap={1} flexWrap={"wrap"} justifyContent={"center"}>
           <Button
             size="large"
             variant="outlined"
@@ -126,6 +126,14 @@ function Home() {
             onClick={() => navigate("/familyguy")}
           >
             Sleep App
+          </Button>
+
+          <Button
+            size="large"
+            variant="outlined"
+            onClick={() => navigate("/parsec")}
+          >
+            Parsec
           </Button>
         </Stack>
       </Stack>
