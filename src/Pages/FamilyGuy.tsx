@@ -34,6 +34,7 @@ function Page() {
   const tmdb_id = "tt0182576"; // Family Guy TMDB ID
   const [currentSeason, setCurrentSeason] = useState(1);
   const [currentEpisode, setCurrentEpisode] = useState(1);
+  const [selectedServer, setSelectedServer] = useState(0);
   const [seasons, setSeasons] = useState<SeasonData[]>([
     { season_number: 1, episode_count: 7 },
     { season_number: 2, episode_count: 21 },
@@ -61,7 +62,26 @@ function Page() {
   ]);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  const src = `https://vidsrc.xyz/embed/tv/${tmdb_id}/${currentSeason}-${currentEpisode}?autoplay=1&autonext=1&mute=0`;
+  const servers = [
+    {
+      name: "VidSrc (Primary)",
+      url: `https://vidsrc.xyz/embed/tv/${tmdb_id}/${currentSeason}-${currentEpisode}?autoplay=1&autonext=1&mute=0`
+    },
+    {
+      name: "Embed.su",
+      url: `https://embed.su/embed/tv/${tmdb_id}/${currentSeason}/${currentEpisode}?autoplay=1&autonext=1&mute=0`
+    },
+    {
+      name: "VidLink",
+      url: `https://vidlink.pro/tv/${tmdb_id}/${currentSeason}/${currentEpisode}?autoplay=1&autonext=1&mute=0`
+    },
+    {
+      name: "VidlinkPro",
+      url: `https://vidlink.pro/tv/${tmdb_id}/${currentSeason}/${currentEpisode}?autoplay=1&autonext=1&mute=0`
+    },
+  ];
+
+  const src = servers[selectedServer].url;
 
   // Ad blocking and popup prevention
   useEffect(() => {
@@ -248,6 +268,31 @@ function Page() {
                   ))}
                 </Select>
               </FormControl>
+
+              <FormControl
+                variant="outlined"
+                size="small"
+                sx={{
+                  minWidth: { xs: "100%", sm: 150 },
+                  flex: { sm: 1, md: "none" },
+                }}
+              >
+                <InputLabel id="server-select-label">Server</InputLabel>
+                <Select
+                  fullWidth
+                  labelId="server-select-label"
+                  id="server-select"
+                  value={selectedServer}
+                  onChange={(e) => setSelectedServer(Number(e.target.value))}
+                  label="Server"
+                >
+                  {servers.map((server, index) => (
+                    <MenuItem key={index} value={index}>
+                      {server.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Stack>
 
             {/* Episode Controls Row */}
@@ -321,7 +366,7 @@ function Page() {
               top: 0,
               left: 0,
             }}
-            sandbox="allow-scripts allow-same-origin allow-forms"
+            {...(selectedServer !== 1 && { sandbox: "allow-scripts allow-same-origin allow-forms" })}
             onLoad={() => {
               // Additional ad blocking for iframe content
               try {
