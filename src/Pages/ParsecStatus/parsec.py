@@ -9,7 +9,24 @@ import subprocess
 import logging
 import sys
 from pathlib import Path
+import ctypes, os, sys
 
+def is_admin() -> bool:
+    """True if we already have an elevated token"""
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except OSError:
+        return False          # non-Windows or unexpected failure
+
+if not is_admin():
+    # rebuild the original command line so that arguments survive the relaunch
+    params = " ".join(map(lambda a: f'"{a}"', sys.argv[1:]))
+    script  = os.path.abspath(__file__)
+    # ShellExecuteW + verb "runas" = standard, MS-blessed elevation prompt
+    ctypes.windll.shell32.ShellExecuteW(
+        None, "runas", sys.executable, f'"{script}" {params}', None, 1
+    )
+    sys.exit(0)               # parent exits; the elevated copy continues
 # Configuration
 GITHUB_REPO = "SheruShafiq/sauceBackend"
 STATUS_FILE = "parsec_status.json"
