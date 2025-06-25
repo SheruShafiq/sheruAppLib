@@ -128,13 +128,13 @@ function Home() {
             Sleep App
           </Button>
 
-          <Button
+          {/* <Button
             size="large"
             variant="outlined"
             onClick={() => navigate("/parsec")}
           >
             Parsec
-          </Button>
+          </Button> */}
         </Stack>
       </Stack>
     </>
