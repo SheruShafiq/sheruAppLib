@@ -18,7 +18,7 @@ const preloadFlag = new Image();
 preloadFlag.src = AhmadiyyaFlag;
 preloadFlag.crossOrigin = "anonymous";
 
-function Badge({ role, name, preview }: badgeProps) {
+function NationalIjtema({ role, name, preview }: badgeProps) {
   const roleRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLDivElement>(null);
 
@@ -156,4 +156,4 @@ function Badge({ role, name, preview }: badgeProps) {
   );
 }
 
-export default Badge;
+export default NationalIjtema;

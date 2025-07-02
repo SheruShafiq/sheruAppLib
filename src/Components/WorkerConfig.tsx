@@ -16,16 +16,16 @@ interface WorkerConfigProps {
   open: boolean;
   onClose: () => void;
 }
+  const maxWorkers = Math.min(navigator.hardwareConcurrency * 2 || 8, 16);
 
 export default function WorkerConfig({ open, onClose }: WorkerConfigProps) {
   const [workerCount, setWorkerCount] = useState(
-    Number(localStorage.getItem("badge.workers")) || navigator.hardwareConcurrency || 4
+   Math.min(maxWorkers / 3, 4)
   );
   const [autoDownload, setAutoDownload] = useState(
     localStorage.getItem("badge.autoDownload") === "true"
   );
   
-  const maxWorkers = Math.min(navigator.hardwareConcurrency * 2 || 8, 16);
 
   const handleSave = () => {
     localStorage.setItem("badge.workers", workerCount.toString());

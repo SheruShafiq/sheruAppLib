@@ -4,7 +4,7 @@ import MinaraLogo from "@assets/minaraLogo.png";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import JalsaLogo from "@assets/jalsaLogo.png";
-import { badgeProps } from "./Badge";
+import { badgeProps } from "./index";
 import useDynamicFont from "@hooks/useDynamicFontSize";
 
 const ROLE_MIN = 12;
@@ -16,8 +16,6 @@ function CarPass({ role, name, preview }: badgeProps) {
   const roleRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLDivElement>(null);
 
-  const roleFontSize = useDynamicFont(roleRef, [role], ROLE_MIN, ROLE_MAX);
-  const nameFontSize = useDynamicFont(nameRef, [name], NAME_MIN, NAME_MAX);
   return (
     <Stack mx="auto" width="660px" height="350px" bgcolor="white">
       <Stack

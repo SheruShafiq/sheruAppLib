@@ -9,7 +9,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Typography,
 } from "@mui/material";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
@@ -71,14 +70,8 @@ function Page() {
       name: "Embed.su",
       url: `https://embed.su/embed/tv/${tmdb_id}/${currentSeason}/${currentEpisode}?autoplay=1&autonext=1&mute=0`
     },
-    {
-      name: "VidLink",
-      url: `https://vidlink.pro/tv/${tmdb_id}/${currentSeason}/${currentEpisode}?autoplay=1&autonext=1&mute=0`
-    },
-    {
-      name: "VidlinkPro",
-      url: `https://vidlink.pro/tv/${tmdb_id}/${currentSeason}/${currentEpisode}?autoplay=1&autonext=1&mute=0`
-    },
+   
+    
   ];
 
   const src = servers[selectedServer].url;
@@ -228,7 +221,6 @@ function Page() {
             className="HeaderLogo"
             text={`Family Guy S${currentSeason}E${currentEpisode}`}
           />
-          {/* Mobile-first responsive controls */}
           <Stack spacing={2} mt={2}>
             <Stack
               direction={{ xs: "column", sm: "row" }}
@@ -354,20 +346,15 @@ function Page() {
             height: { xs: "calc(100vh - 200px)", sm: "calc(100vh - 180px)" },
           }}
         >
-          <iframe
-            ref={iframeRef}
-            src={src}
-            allow="autoplay"
-            style={{
-              width: "100%",
-              height: "100%",
-              border: "none",
-              position: "absolute",
-              top: 0,
-              left: 0,
-            }}
-            {...(selectedServer !== 1 && { sandbox: "allow-scripts allow-same-origin allow-forms" })}
-            onLoad={() => {
+         
+            <iframe
+          ref={iframeRef}
+          src="https://vidsrc.xyz/embed/tv?imdb=tt0182576&season=1&episode=1"
+          style={{ width: "100%", height: "100%" }}
+          frameBorder={0}
+          referrerPolicy="origin"
+          allowFullScreen
+              onLoad={() => {
               // Additional ad blocking for iframe content
               try {
                 const iframe = iframeRef.current;
@@ -384,7 +371,7 @@ function Page() {
                 );
               }
             }}
-          />
+        />
         </Box>
         <Stack direction="row" gap={1} p={0.5}>
           <Button

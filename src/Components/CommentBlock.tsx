@@ -68,7 +68,6 @@ function CommentBlock({
     setExpanded(!expanded);
   };
 
-  const gipyAPIKey = import.meta.env.REACT_APP_GIPHY_API_KEY;
   const [imageUrl, setImageUrl] = useState(imageURL);
   const randomGIFIndex = useMemo(
     () => Math.floor(Math.random() * Math.min(GIFs.length, 200)),
