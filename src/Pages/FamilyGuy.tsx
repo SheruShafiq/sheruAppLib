@@ -64,7 +64,7 @@ function Page() {
   const servers = [
     {
       name: "VidSrc (Primary)",
-      url: `https://vidsrc.xyz/embed/tv/${tmdb_id}/${currentSeason}-${currentEpisode}?autoplay=1&autonext=1&mute=0`
+      url: `https://vidsrc.xyz/embed/tv?imdb=${tmdb_id}&season=${currentSeason}&episode=${currentEpisode}`
     },
     {
       name: "Embed.su",
@@ -349,7 +349,7 @@ function Page() {
          
             <iframe
           ref={iframeRef}
-          src="https://vidsrc.xyz/embed/tv?imdb=tt0182576&season=1&episode=1"
+          src={src}
           style={{ width: "100%", height: "100%" }}
           frameBorder={0}
           referrerPolicy="origin"
