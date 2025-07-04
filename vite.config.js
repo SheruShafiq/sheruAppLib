@@ -29,7 +29,7 @@ export default defineConfig({
             },
           },
           {
-            urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
             handler: "CacheFirst",
             options: {
               cacheName: "images-cache",

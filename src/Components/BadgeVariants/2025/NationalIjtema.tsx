@@ -51,9 +51,7 @@ function NationalIjtema({ role, name, preview }: badgeProps) {
               decoding="sync"
             />
           </Box>
-          <Stack px={1} mt={1} alignItems="center" sx={{
-            backgroundImage: `url(/ijtema/2025.png)`,
-          }}>
+          <Stack px={1} mt={1} alignItems="center">
 
             <Typography
               sx={{
