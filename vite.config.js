@@ -11,7 +11,7 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       injectRegister: "auto",
-      includeAssets: ["**/*.glb"],
+      includeAssets: ["**/*.glb", "**/*.webp"],
       devOptions: {
         enabled: true,
         type: "module",

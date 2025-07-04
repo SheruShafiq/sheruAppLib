@@ -20,7 +20,6 @@ function NationalIjtema({ role, name, preview }: badgeProps) {
     <Stack mx="auto" width="650px" height="440px" bgcolor="white">
       <Stack
         sx={{
-          background: `linear-gradient( rgba(255,255,255,0.8)), url(/ijtema/width_2400.webp})`,
           backgroundSize: "560px 500px",
           backgroundRepeat: "no-repeat",
           backgroundPosition: " 100% 90px",
