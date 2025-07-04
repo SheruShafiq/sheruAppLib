@@ -1,4 +1,4 @@
-import  { useRef} from "react";
+import { useRef } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
@@ -6,9 +6,9 @@ import useDynamicFont from "@hooks/useDynamicFontSize";
 import { badgeProps } from "./index";
 
 const ROLE_MIN = 12;
-const ROLE_MAX = 70;
+const ROLE_MAX = 75;
 const NAME_MIN = 12;
-const NAME_MAX = 30;
+const NAME_MAX = 50;
 const preloadFlag = new Image();
 preloadFlag.crossOrigin = "anonymous";
 function NationalIjtema({ role, name, preview }: badgeProps) {
@@ -17,7 +17,7 @@ function NationalIjtema({ role, name, preview }: badgeProps) {
   const roleFontSize = useDynamicFont(roleRef, [role], ROLE_MIN, ROLE_MAX);
   const nameFontSize = useDynamicFont(nameRef, [name], NAME_MIN, NAME_MAX);
   return (
-    <Stack mx="auto" width="660px" height="350px" bgcolor="white">
+    <Stack mx="auto" width="650px" height="440px" bgcolor="white">
       <Stack
         sx={{
           background: `linear-gradient( rgba(255,255,255,0.8)), url(/ijtema/width_2400.webp})`,
@@ -36,7 +36,7 @@ function NationalIjtema({ role, name, preview }: badgeProps) {
           justifyContent="space-between"
           alignItems="flex-start"
           sx={{
-            backgroundColor: "#aa8b0e",
+            background: 'linear-gradient(90deg,rgba(215, 192, 93, 1) 0%, rgba(176, 113, 25, 1) 66%)',
             alignItems: "center",
             py: 1,
           }}
@@ -51,8 +51,10 @@ function NationalIjtema({ role, name, preview }: badgeProps) {
               decoding="sync"
             />
           </Box>
-          <Stack px={1} mt={1} alignItems="center">
-           
+          <Stack px={1} mt={1} alignItems="center" sx={{
+            backgroundImage: `url(/ijtema/2025.png)`,
+          }}>
+
             <Typography
               sx={{
                 lineHeight: "40px",
@@ -65,8 +67,8 @@ function NationalIjtema({ role, name, preview }: badgeProps) {
             >
               40e Nationale Ijtema
             </Typography>
-            <Typography mt={1} fontWeight={400} color="#D8B00C" fontSize="14px">
-             11, 12, 13 July 2025 Paasheuvel, Vierhouten
+            <Typography mt={1} fontWeight={400} color="#ffcc00ff" fontSize="14px">
+              11, 12, 13 July 2025 Paasheuvel, Vierhouten
             </Typography>
           </Stack>
           <Box sx={{ width: "150px", height: "65px", mt: 1 }}>
@@ -86,16 +88,24 @@ function NationalIjtema({ role, name, preview }: badgeProps) {
           height="100%"
           justifyContent="center"
           alignItems="center"
+          sx={{
+            backgroundImage: `url(/ijtema/backdrop.webp)`,
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+            backgroundSize: "650px 350px",
+          }}
         >
-          <Box py={2} bgcolor="#fddfe094" width="100%" overflow="hidden">
+          <Box  width="100%" overflow="hidden">
             <Typography
               ref={roleRef}
               sx={{
+                fontFamily: 'math !important',
                 whiteSpace: "nowrap",
                 fontWeight: 500,
-                color: "black",
+                color: "white",
                 fontSize: `${roleFontSize}px`,
                 textAlign: "center",
+                pt: '40px'
               }}
             >
               {role}
@@ -105,9 +115,10 @@ function NationalIjtema({ role, name, preview }: badgeProps) {
             <Typography
               ref={nameRef}
               sx={{
+                fontFamily: 'math !important',
                 whiteSpace: "nowrap",
                 fontWeight: 500,
-                color: "black",
+                color: "#ffd500",
                 fontSize: `${nameFontSize}px`,
                 textAlign: "center",
               }}
@@ -115,30 +126,41 @@ function NationalIjtema({ role, name, preview }: badgeProps) {
               {name}
             </Typography>
           </Box>
-        </Stack>
-        <Stack
-          boxSizing="border-box"
-          pb={0.5}
-          px={1}
-          direction="row"
-          justifyContent="space-between"
-          width="100%"
-          alignItems="center"
-        >
-          <Typography
-            sx={{ display: "flex", alignItems: "center" }}
-            color="black"
+          <Stack
+            boxSizing="border-box"
+            pb={0.5}
+            px={1}
+            justifyContent="space-between"
+            width="40%"
+            alignItems="center"
+           mt={'auto'}
+           minHeight="40px"
+           sx={{ background: 'linear-gradient(90deg,rgba(171, 116, 42, 1) 0%, rgba(171, 116, 42, 1) 0%, rgba(215, 192, 93, 1) 100%, rgba(237, 221, 83, 1) 100%)',
+              borderTopRightRadius: '16px',
+              borderTopLeftRadius: '16px',
+            }}
           >
-            <CalendarMonthIcon sx={{ pb: 0.2 }} fontSize="small" /> 2,3,4 Mei
-            2025
-          </Typography>
-          <Typography
-            sx={{ display: "flex", alignItems: "center" }}
-            color="black"
-          >
-            <LocationOnIcon sx={{ pb: 0.2 }} fontSize="small" /> 't Frusselt 30,
-            8076 RE Vierhouten, Nederland
-          </Typography>
+            <Typography sx={{
+              fontFamily: 'math !important',
+              fontWeight: 900,
+              color: "white",
+              fontSize: "2rem",
+              textAlign: "center",
+            }}>
+              ہمارا عہد
+            </Typography>
+            <Typography sx={{
+              fontFamily: 'serif !important',
+              fontWeight: 1000,
+              color: "black",
+              fontSize: "1.5rem",
+              textAlign: "center",
+              letterSpacing: '4px',
+            }}>
+              ONZE GELOFTE
+            </Typography>
+           
+          </Stack>
         </Stack>
       </Stack>
     </Stack>

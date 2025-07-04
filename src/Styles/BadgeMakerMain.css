@@ -16,7 +16,7 @@
 
 /* Ensure text in exports is visible */
 .badge-export-container * {
-    font-family: 'Roboto Condensed', sans-serif !important;
+    font-family: 'Roboto Condensed', sans-serif ;
 }
 
 /* Ensure 2025 text is properly positioned */
