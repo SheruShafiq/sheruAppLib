@@ -137,6 +137,7 @@ function Home() {
   const variantDimensions = [
     { width: 660, height: 350 },
     { width: 660, height: 350 },
+    { width: 650, height: 440 },
     { width: 660, height: 400 },
   ];
 
