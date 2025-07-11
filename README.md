@@ -8,22 +8,20 @@ _A community driven resource sharing application_
 _A PDF Generating App for the Jalsa Community_
 - ### CV APP
 _An interactive CV showcasing Sheru_
-- ### Parsec status tool (Coming soon)
+- ### Parsec status tool (Failed Implementation)
 _A simple tool to see if my remote systems are online, and if not, the ability to remotey start them up and prepare to take connections_
-- ### Family guy to sleep app (Coming soon)
+- ### Family guy to sleep app 
 _A simple PWA to stream family guy audio to sleep to even when device is on sleep_
-- ### 3x3 Maker (with API intergrations for MAL, Steam and IMBD)
-_An easy to use 3x3 generator with a builtin search engine_
+- ### Game themed parody websites. I want to recreate UI(s) from my favourite games. 
+_Inspired by the raw_webshop project that I did for UNI where I made webshop in theme of OG FF7. I want to recreate all sorts of websites in the game's UIs with SFX and everything._
 
 
 ---
  ## **ROADMAP**
- 1) Move the project to NextJs
+ 1) Move the project to NextJs (Yeah that one is still kinda yeah... Happening maybe)
  2) Implenent a proper backend using Convex (See more reasoning in the nightmare log)
- 3) Parsec status tool
- 4) CV APP
- 5) Family Guy
- 6) New Game...?
+ 3) I definetely wanna dabble in a very long term over ambitious long term game dev project.
+ 4) Buy a Domain and proper branding for my own brand under "Sheru App Library"
 ---
 
 
@@ -34,32 +32,6 @@ _An easy to use 3x3 generator with a builtin search engine_
 3. Points system to promote legitmacy  
 4. Completely anonymouse usage  
 5. Non comercial  
-
----
-
-#### Sauce Product properties
-
-##### Must haves
-1. **SHARE DATA** (WHAT IS DATA? DATA: {Resource Name, Resource Value, Resource Description})  
-2. Data can be evalunted by other users on its legitimacy.  
-   `if (Resource === legit) ? upvote : downvote`  
-3. Home feed based off of upvotes.  
-4. A report button to report inactive resources that were active before  
-5. <del>No accounts system. Anyone can make a post without any signup and comment on it as well. Username will be generated automatically and kept track of locally via cookies.</del>  
-
-#### Nice to have
-6. Topic based filtering to be able to look up resources with specific assosciations.  
-7. Resource requesting.  
-8. Feedbased off "Sauces" where audio based is mustard, more explicit is chili etc  
-
-
-### API(s) I found for the family guy project
-- https://vidsrc.me/
-- https://embed.su/
-- https://vidlink.pro/
-- https://vidsrc.icu/
-- https://autoembed.cc/
-- https://vidsrc.to/
 
 ---
 
@@ -80,6 +52,12 @@ _An easy to use 3x3 generator with a builtin search engine_
 14. Java is a nightmare to deploy
 15. Concurency on scale is tuff (suddenly making Erlang so much cooler than it already was)
 16. Bash is very strong and exactly is what I thought python would be.
+17. Windows background services suck dick and need to be euthanised, which led me to the discovery of https://nssm.cc/ You'll see how right I am once you open this website.
+18. Python is magical for litteraly everything non web/crucial. Like litteraly, an average man shouldnt bother with anything except python for any non pro code. Its PLENTY for litteraly everything and the available libs are neigh infinite.
+19. There are APIs for pirated shows. And those APIs have their (understandably) dedicated popup ads. Which when combined with the host website's pop up app finally make sense as to why so many pop ads show up on any and all pirate websites.
+20. MUI is awesome, but now I have discovered shadCn and how vercel like it is.
+21. Vercel has the best UI ever.
+22. Claude 4 is the best coding AI model as of Jul 11 2025.
 
 
 ---
@@ -127,7 +105,7 @@ _An easy to use 3x3 generator with a builtin search engine_
 37. <del>Categories's PostsID array is also not working as intended</del>  
 38. <del>[BUG] Better error handeling when post ID in URL is wrong</del>  
 39. [Feature] Add a check if username and password already exist  
-40. [Feature] Lazy LOAD (where applicable)  
+40. <del>[Feature] Lazy LOAD (where applicable)</del>
 41. [Feature] MUSIC  
 42. [Feature] implementing categorisation with category based pages and filtering  
 43. [BUG] Comments chain overflow on mobile  
@@ -145,12 +123,13 @@ _An easy to use 3x3 generator with a builtin search engine_
 55. [Featuer expansion] Interactions like liking or disliking are locked behind an account system, but posting and commenting isnt.  
 56. <del>[Dating crypto app] Track the streets your partner has been to, every relation is more than a relation, its TANGIBLE.</del>  
 57. <del>[Feature] PDF generation is blocking UI thread and is slow as shit, move it to either server or something else. The current speed is unacceptable</del>  
-58. **New Project!! Remote Parsec activator.**  
+58. <del>**New Project!! Remote Parsec activator.**  
    - Uses a random github file as status (so no cold start, aka no delay)  
    - Windows service to ping every hour or so  
    - Webpage to update  
-   - SFW and NSFW version with a spread.
+   - SFW and NSFW version with a spread.</del>
 59. [BUG] Sauce posts dont have skeleton loading for the GIF if the Giphy API is taking its time. It just shows nothing.
+60. Something is wrong with my implementation of the parsec script that runs in the background causing the parsec to constantly relaunch. 
 
 </details>
 
